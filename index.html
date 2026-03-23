@@ -176,6 +176,16 @@ padding-top:40px;
 <!-- COLOCAR ID DEL LEAD -->
 <input id="idLead" placeholder="ID Lead">
 
+<!-- BOTON DE BUSCAR LEAD -->
+<button onclick="buscar()">Buscar lead</button>
+
+<div class="loader" id="loader">
+<div class="spinner"></div>
+</div>
+
+<div id="info" class="box"></div>
+<div id="estado" class="estado"></div>
+
 <!-- DESPLEGABLES -->
 <div id="zonaGestion" style="display:none">
 
@@ -213,16 +223,6 @@ Estado Actual: <b id="estadoTxt"></b>
 <button class="btnGuardar">Guardar Cambios</button>
 
 </div>
-
-<!-- BOTON DE BUSCAR LEAD -->
-<button onclick="buscar()">Buscar lead</button>
-
-<div class="loader" id="loader">
-<div class="spinner"></div>
-</div>
-
-<div id="info" class="box"></div>
-<div id="estado" class="estado"></div>
 
 </div>
 
