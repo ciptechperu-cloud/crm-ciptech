@@ -182,38 +182,41 @@ const URL = "https://script.google.com/macros/s/AKfycbzSc0ncg1rGKUxalwXtaQJ3qMEB
 
 function buscar(){
 
-const id = document.getElementById("id").value.trim()
+const id = document.getElementById("idLead").value.trim()
 
 if(!id){
 alert("Ingrese ID")
 return
 }
 
-loader.style.display="block"
+document.getElementById("loader").style.display="block"
 
-fetch(API_URL + "?accion=consultar&id=" + id)
+fetch(URL + "?accion=consultar&id=" + id)
 
 .then(r=>r.json())
 
 .then(data=>{
 
-loader.style.display="none"
+document.getElementById("loader").style.display="none"
 
 if(!data || !data.lead){
 alert("Lead no encontrado")
 return
 }
 
-document.getElementById("empresa").innerText = data.lead.empresa
-document.getElementById("ruc").innerText = data.lead.ruc
-document.getElementById("telefono").innerText = data.lead.telefono
+document.getElementById("info").style.display="block"
+document.getElementById("info").innerHTML =
+"Empresa: " + data.lead.empresa +
+"<br>RUC: " + data.lead.ruc +
+"<br>Teléfono: " + data.lead.telefono
 
-document.getElementById("estado").innerText = data.estado
+document.getElementById("estado").innerHTML =
+"Estado Actual: <b>" + data.estado + "</b>"
 
 })
 
 .catch(err=>{
-loader.style.display="none"
+document.getElementById("loader").style.display="none"
 alert("Error conexión")
 })
 
