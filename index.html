@@ -331,10 +331,6 @@ const estadoAvanzado = document.getElementById("estadoAvanzado").value
 
 let estadoFinal = ""
 
-if(estadoInicial=="ATENDIDO" && !asesor){
-alert("Seleccione asesor")
-return
-}
 if(estadoInicial) estadoFinal = estadoInicial
 if(estadoAvanzado) estadoFinal = estadoAvanzado
 
@@ -343,15 +339,24 @@ alert("Seleccione estado")
 return
 }
 
-fetch(URL + "?accion=guardar&id=" + id +
-"&asesor=" + asesor +
-"&estado=" + estadoFinal)
-
-.then(resp=>{
-document.getElementById("msgOk").style.display="block"
+fetch(URL,{
+method:"POST",
+body:JSON.stringify({
+accion:"atender",
+id:id,
+asesor:asesor
 })
-.catch(err=>{
-alert("Error al guardar")
+})
+.then(r=>r.json())
+.then(resp=>{
+if(resp.ok){
+document.getElementById("msgOk").style.display="block"
+}else{
+alert("No se pudo guardar")
+}
+})
+.catch(()=>{
+alert("Error conexión")
 })
 
 }
