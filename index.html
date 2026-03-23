@@ -1,47 +1,113 @@
 <!DOCTYPE html>
-<html lang="es">
-
+<html>
 <head>
 
 <meta charset="UTF-8">
-
-<!-- ⭐ CLAVE REAL para modo APP -->
-<meta name="viewport"
-content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>CRM Ciptech</title>
 
 <style>
 
-/* RESET TOTAL */
-
-html,body{
-margin:0;
-padding:0;
-height:100%;
-width:100%;
-background:#e9ecef;
-overflow:hidden;
+*{
+box-sizing:border-box;
 font-family:Arial, Helvetica, sans-serif;
 }
 
-/* ⭐ CONTENEDOR APP REAL */
-
-.app{
-position:fixed;
-top:0;
-left:0;
-right:0;
-bottom:0;
+body{
+margin:0;
+background:#e9ecef;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
 }
 
-/* ⭐ IFRAME FULL APP */
+/* CARD */
 
-.app iframe{
+.card{
+background:white;
 width:100%;
-height:100%;
+max-width:420px;
+border-radius:18px;
+padding:28px 20px 32px;
+box-shadow:0 10px 30px rgba(0,0,0,.12);
+text-align:center;
+}
+
+/* TITULOS */
+
+.t1{
+color:#7ED957;
+font-weight:bold;
+font-size:22px;
+margin-bottom:2px;
+}
+
+.t2{
+color:#123E7A;
+font-weight:bold;
+font-size:22px;
+margin-bottom:22px;
+}
+
+/* INPUT */
+
+input{
+width:100%;
+padding:14px;
+border-radius:12px;
+border:2px solid #444;
+font-size:16px;
+margin-bottom:16px;
+}
+
+/* BUTTON */
+
+button{
+width:100%;
+padding:15px;
 border:none;
-display:block;
+border-radius:12px;
+background:#1f4a83;
+color:white;
+font-size:16px;
+cursor:pointer;
+margin-bottom:18px;
+}
+
+/* INFO */
+
+.box{
+background:#dfe6ef;
+padding:16px;
+border-radius:12px;
+font-weight:bold;
+color:#123E7A;
+margin-bottom:18px;
+display:none;
+}
+
+.estado{
+margin-bottom:18px;
+font-size:17px;
+}
+
+/* MOBILE APP FULL */
+
+@media(max-width:480px){
+
+body{
+align-items:flex-start;
+padding:16px;
+}
+
+.card{
+max-width:100%;
+min-height:100vh;
+border-radius:0;
+}
+
 }
 
 </style>
@@ -50,13 +116,50 @@ display:block;
 
 <body>
 
-<div class="app">
+<div class="card">
 
-<iframe
-src="https://script.google.com/macros/s/AKfycbzSc0ncg1rGKUxalwXtaQJ3qMEB0sSBd5lhLs2pUVUcocNYWbd6CkW6HHmtQ4KRQ_dvLw/exec">
-</iframe>
+<div class="t1">Atención Leads</div>
+<div class="t2">MKT Ciptech</div>
+
+<input id="idLead" placeholder="ID Lead">
+
+<button onclick="buscar()">Buscar lead</button>
+
+<div id="info" class="box"></div>
+
+<div id="estado" class="estado"></div>
 
 </div>
+
+<script>
+
+const URL = "https://script.google.com/macros/s/AKfycbzSc0ncg1rGKUxalwXtaQJ3qMEB0sSBd5lhLs2pUVUcocNYWbd6CkW6HHmtQ4KRQ_dvLw/exec";
+
+function buscar(){
+
+const id = document.getElementById("idLead").value;
+
+fetch(URL + "?id=" + id)
+.then(r=>r.json())
+.then(d=>{
+
+if(d.no){
+alert("Lead no encontrado");
+return;
+}
+
+document.getElementById("info").style.display="block";
+document.getElementById("info").innerHTML=
+"Empresa: "+d.empresa+"<br>RUC: "+d.ruc+"<br>Teléfono: "+d.telefono;
+
+document.getElementById("estado").innerHTML=
+"Estado Actual: <b>"+d.estado+"</b>";
+
+});
+
+}
+
+</script>
 
 </body>
 </html>
