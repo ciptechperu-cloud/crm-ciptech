@@ -224,7 +224,7 @@ Estado Actual: <b id="estadoTxt"></b>
 </select>
 </div>
 
-<button class="btnGuardar">Guardar Cambios</button>
+<button class="btnGuardar" onclick="guardar()">Guardar Cambios</button>
 
 </div>
 
@@ -299,6 +299,40 @@ document.getElementById("bloqueEstadoInicial").style.display="block"
 if(estado=="ATENDIDO"){
 document.getElementById("bloqueEstadoAvanzado").style.display="block"
 }
+
+}
+
+//GUARDAR CAMBIOS
+function guardar(){
+
+const id = document.getElementById("idLead").value.trim()
+
+const asesor = document.getElementById("asesor").value
+const estadoInicial = document.getElementById("estadoInicial").value
+const estadoAvanzado = document.getElementById("estadoAvanzado").value
+
+let estadoFinal = ""
+
+if(estadoInicial) estadoFinal = estadoInicial
+if(estadoAvanzado) estadoFinal = estadoAvanzado
+
+if(!estadoFinal){
+alert("Seleccione estado")
+return
+}
+
+fetch(URL + "?accion=guardar&id=" + id +
+"&asesor=" + asesor +
+"&estado=" + estadoFinal)
+
+.then(r=>r.text())
+.then(resp=>{
+alert("Se guardó con éxito")
+})
+
+.catch(err=>{
+alert("Error al guardar")
+})
 
 }
 
