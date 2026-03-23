@@ -182,56 +182,40 @@ const URL = "https://script.google.com/macros/s/AKfycbzSc0ncg1rGKUxalwXtaQJ3qMEB
 
 function buscar(){
 
-const id = document.getElementById("idLead").value.trim();
+const id = document.getElementById("id").value.trim()
 
-if(id === ""){
-alert("Ingrese ID");
-return;
+if(!id){
+alert("Ingrese ID")
+return
 }
 
-document.getElementById("loader").style.display="block";
-document.getElementById("info").style.display="none";
-document.getElementById("estado").innerHTML="";
+loader.style.display="block"
 
-fetch(URL + "?id=" + encodeURIComponent(id))
+fetch(API_URL + "?accion=consultar&id=" + id)
 
-.then(r=>{
+.then(r=>r.json())
 
-if(!r.ok){
-throw "Error conexión servidor";
+.then(data=>{
+
+loader.style.display="none"
+
+if(!data || !data.lead){
+alert("Lead no encontrado")
+return
 }
 
-return r.json();
+document.getElementById("empresa").innerText = data.lead.empresa
+document.getElementById("ruc").innerText = data.lead.ruc
+document.getElementById("telefono").innerText = data.lead.telefono
+
+document.getElementById("estado").innerText = data.estado
 
 })
 
-.then(d=>{
-
-document.getElementById("loader").style.display="none";
-
-if(d.error || d.no){
-alert("Lead no encontrado");
-return;
-}
-
-document.getElementById("info").style.display="block";
-
-document.getElementById("info").innerHTML =
-"Empresa: "+d.empresa+
-"<br>RUC: "+d.ruc+
-"<br>Teléfono: "+d.telefono;
-
-document.getElementById("estado").innerHTML =
-"Estado Actual: <b>"+d.estado+"</b>";
-
+.catch(err=>{
+loader.style.display="none"
+alert("Error conexión")
 })
-
-.catch(e=>{
-
-document.getElementById("loader").style.display="none";
-alert("Error de conexión");
-
-});
 
 }
 
