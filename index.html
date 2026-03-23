@@ -163,6 +163,26 @@ padding-top:40px;
 
 <input id="idLead" placeholder="ID Lead">
 
+<div id="bloqueAsesor">
+<select>
+<option>Seleccionar asesor</option>
+</select>
+</div>
+
+<div id="bloqueEstadoInicial">
+<select>
+<option>Atendido</option>
+</select>
+</div>
+
+<div id="bloqueEstadoAvanzado">
+<select>
+<option>Cotizado</option>
+<option>Cerrado</option>
+<option>Perdido</option>
+</select>
+</div>
+
 <button onclick="buscar()">Buscar lead</button>
 
 <div class="loader" id="loader">
@@ -180,6 +200,7 @@ padding-top:40px;
 
 const URL = "https://script.google.com/macros/s/AKfycbzSc0ncg1rGKUxalwXtaQJ3qMEB0sSBd5lhLs2pUVUcocNYWbd6CkW6HHmtQ4KRQ_dvLw/exec";
 
+//FUNCIÓN DE CONSULTA DE LEADS
 function buscar(){
 
 const id = document.getElementById("idLead").value.trim()
@@ -219,6 +240,27 @@ document.getElementById("estado").innerHTML =
 document.getElementById("loader").style.display="none"
 alert("Error conexión")
 })
+
+}
+
+//FUNCIÓN PARA MOSTRAR LOS ESTADOS DEL LEAD
+  
+function pintarLead(data){
+
+const estado = data.estado
+
+document.getElementById("bloqueAsesor").style.display="none"
+document.getElementById("bloqueEstadoInicial").style.display="none"
+document.getElementById("bloqueEstadoAvanzado").style.display="none"
+
+if(estado=="SIN GESTIONAR"){
+document.getElementById("bloqueAsesor").style.display="block"
+document.getElementById("bloqueEstadoInicial").style.display="block"
+}
+
+if(estado=="ATENDIDO"){
+document.getElementById("bloqueEstadoAvanzado").style.display="block"
+}
 
 }
 
