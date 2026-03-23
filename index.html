@@ -145,6 +145,16 @@ margin-top:18px;
 font-size:17px;
 }
 
+.msgOk{
+background:#6fd14b;
+color:white;
+padding:14px;
+margin-top:15px;
+border-radius:12px;
+text-align:center;
+font-weight:600;
+}
+
 /* MOBILE FULL APP */
 
 @media(max-width:480px){
@@ -225,7 +235,10 @@ Estado Actual: <b id="estadoTxt"></b>
 </div>
 
 <button class="btnGuardar" onclick="guardar()">Guardar Cambios</button>
-
+<div id="msgOk" class="msgOk" style="display:none">
+Se guardó con éxito
+</div>
+  
 </div>
 
 </div>
@@ -272,6 +285,11 @@ document.getElementById("estado").innerHTML =
 pintarLead(data)
 })
 
+if(estadoInicial=="ATENDIDO" && !asesor){
+alert("Seleccione asesor")
+return
+}
+  
 .catch(err=>{
 document.getElementById("loader").style.display="none"
 alert("Error conexión")
@@ -313,6 +331,10 @@ const estadoAvanzado = document.getElementById("estadoAvanzado").value
 
 let estadoFinal = ""
 
+if(estadoInicial=="ATENDIDO" && !asesor){
+alert("Seleccione asesor")
+return
+}
 if(estadoInicial) estadoFinal = estadoInicial
 if(estadoAvanzado) estadoFinal = estadoAvanzado
 
@@ -325,11 +347,9 @@ fetch(URL + "?accion=guardar&id=" + id +
 "&asesor=" + asesor +
 "&estado=" + estadoFinal)
 
-.then(r=>r.text())
 .then(resp=>{
-alert("Se guardó con éxito")
+document.getElementById("msgOk").style.display="block"
 })
-
 .catch(err=>{
 alert("Error al guardar")
 })
