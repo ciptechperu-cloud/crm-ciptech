@@ -21,6 +21,18 @@ padding:0;
 height:100%;
 background:#e9ecef;
 }
+.campo{
+margin-top:14px;
+}
+
+select{
+width:100%;
+padding:14px;
+border-radius:14px;
+border:2px solid #3b3b3b;
+font-size:15px;
+background:white;
+}
 
 /* APP CONTAINER */
 
@@ -160,29 +172,49 @@ padding-top:40px;
 
 <div class="t1">Atención Leads</div>
 <div class="t2">MKT Ciptech</div>
-
+  
+//COLOCAR ID DEL LEAD
 <input id="idLead" placeholder="ID Lead">
 
-<div id="bloqueAsesor">
-<select>
-<option>Seleccionar asesor</option>
+//
+<div id="zonaGestion" style="display:none">
+
+<div class="boxInfo" id="infoLead"></div>
+
+<div class="estado">
+Estado Actual: <b id="estadoTxt"></b>
+</div>
+
+<div id="bloqueAsesor" class="campo">
+<select id="asesor">
+<option value="">Seleccionar Asesor</option>
+<option>Herson Zevallos</option>
+<option>Luz Arone</option>
+<option>Daniel Bravo</option>
+<option>Brayan Martinez</option>
 </select>
 </div>
 
-<div id="bloqueEstadoInicial">
-<select>
-<option>Atendido</option>
+<div id="bloqueEstadoInicial" class="campo">
+<select id="estadoInicial">
+<option value="">Seleccionar Estado</option>
+<option>ATENDIDO</option>
 </select>
 </div>
 
-<div id="bloqueEstadoAvanzado">
-<select>
-<option>Cotizado</option>
-<option>Cerrado</option>
-<option>Perdido</option>
+<div id="bloqueEstadoAvanzado" class="campo">
+<select id="estadoAvanzado">
+<option>COTIZADO</option>
+<option>CERRADO</option>
+<option>PERDIDO</option>
 </select>
 </div>
 
+<button class="btnGuardar">Guardar Cambios</button>
+
+</div>
+
+//BOTÓN DE BUSCAR LEAD
 <button onclick="buscar()">Buscar lead</button>
 
 <div class="loader" id="loader">
@@ -246,6 +278,8 @@ alert("Error conexión")
 //FUNCIÓN PARA MOSTRAR LOS ESTADOS DEL LEAD
   
 function pintarLead(data){
+
+document.getElementById("zonaGestion").style.display="block"
 
 const estado = data.estado
 
