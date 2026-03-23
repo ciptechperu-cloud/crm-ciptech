@@ -3,7 +3,8 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>CRM Ciptech</title>
 
@@ -14,13 +15,21 @@ box-sizing:border-box;
 font-family:Arial, Helvetica, sans-serif;
 }
 
-body{
+html,body{
 margin:0;
+padding:0;
+height:100%;
 background:#e9ecef;
+}
+
+/* APP CONTAINER */
+
+.app{
+min-height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-min-height:100vh;
+padding:20px;
 }
 
 /* CARD */
@@ -30,8 +39,8 @@ background:white;
 width:100%;
 max-width:420px;
 border-radius:18px;
-padding:28px 20px 32px;
-box-shadow:0 10px 30px rgba(0,0,0,.12);
+padding:28px 22px 32px;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
 text-align:center;
 }
 
@@ -39,15 +48,15 @@ text-align:center;
 
 .t1{
 color:#7ED957;
-font-weight:bold;
 font-size:22px;
+font-weight:bold;
 margin-bottom:2px;
 }
 
 .t2{
 color:#123E7A;
-font-weight:bold;
 font-size:22px;
+font-weight:bold;
 margin-bottom:22px;
 }
 
@@ -55,25 +64,52 @@ margin-bottom:22px;
 
 input{
 width:100%;
-padding:14px;
-border-radius:12px;
+padding:15px;
+border-radius:14px;
 border:2px solid #444;
-font-size:16px;
-margin-bottom:16px;
+font-size:17px;
+margin-bottom:18px;
+outline:none;
 }
 
 /* BUTTON */
 
 button{
 width:100%;
-padding:15px;
+padding:16px;
 border:none;
-border-radius:12px;
+border-radius:14px;
 background:#1f4a83;
 color:white;
-font-size:16px;
+font-size:17px;
 cursor:pointer;
-margin-bottom:18px;
+transition:.2s;
+}
+
+button:active{
+transform:scale(.97);
+}
+
+/* LOADER */
+
+.loader{
+display:none;
+margin:18px 0;
+}
+
+.spinner{
+width:28px;
+height:28px;
+border:4px solid #ddd;
+border-top:4px solid #1f4a83;
+border-radius:50%;
+animation:spin .8s linear infinite;
+margin:auto;
+}
+
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
 }
 
 /* INFO */
@@ -84,28 +120,30 @@ padding:16px;
 border-radius:12px;
 font-weight:bold;
 color:#123E7A;
-margin-bottom:18px;
+margin-top:18px;
 display:none;
 }
 
 .estado{
-margin-bottom:18px;
+margin-top:18px;
 font-size:17px;
 }
 
-/* MOBILE APP FULL */
+/* MOBILE FULL APP */
 
 @media(max-width:480px){
 
-body{
+.app{
 align-items:flex-start;
-padding:16px;
+padding:14px;
 }
 
 .card{
 max-width:100%;
 min-height:100vh;
 border-radius:0;
+box-shadow:none;
+padding-top:40px;
 }
 
 }
@@ -116,6 +154,8 @@ border-radius:0;
 
 <body>
 
+<div class="app">
+
 <div class="card">
 
 <div class="t1">Atención Leads</div>
@@ -125,9 +165,14 @@ border-radius:0;
 
 <button onclick="buscar()">Buscar lead</button>
 
-<div id="info" class="box"></div>
+<div class="loader" id="loader">
+<div class="spinner"></div>
+</div>
 
+<div id="info" class="box"></div>
 <div id="estado" class="estado"></div>
+
+</div>
 
 </div>
 
@@ -137,23 +182,54 @@ const URL = "https://script.google.com/macros/s/AKfycbzSc0ncg1rGKUxalwXtaQJ3qMEB
 
 function buscar(){
 
-const id = document.getElementById("idLead").value;
+const id = document.getElementById("idLead").value.trim();
 
-fetch(URL + "?id=" + id)
-.then(r=>r.json())
+if(id === ""){
+alert("Ingrese ID");
+return;
+}
+
+document.getElementById("loader").style.display="block";
+document.getElementById("info").style.display="none";
+document.getElementById("estado").innerHTML="";
+
+fetch(URL + "?id=" + encodeURIComponent(id))
+
+.then(r=>{
+
+if(!r.ok){
+throw "Error conexión servidor";
+}
+
+return r.json();
+
+})
+
 .then(d=>{
 
-if(d.no){
+document.getElementById("loader").style.display="none";
+
+if(d.error || d.no){
 alert("Lead no encontrado");
 return;
 }
 
 document.getElementById("info").style.display="block";
-document.getElementById("info").innerHTML=
-"Empresa: "+d.empresa+"<br>RUC: "+d.ruc+"<br>Teléfono: "+d.telefono;
 
-document.getElementById("estado").innerHTML=
+document.getElementById("info").innerHTML =
+"Empresa: "+d.empresa+
+"<br>RUC: "+d.ruc+
+"<br>Teléfono: "+d.telefono;
+
+document.getElementById("estado").innerHTML =
 "Estado Actual: <b>"+d.estado+"</b>";
+
+})
+
+.catch(e=>{
+
+document.getElementById("loader").style.display="none";
+alert("Error de conexión");
 
 });
 
@@ -163,4 +239,3 @@ document.getElementById("estado").innerHTML=
 
 </body>
 </html>
-
