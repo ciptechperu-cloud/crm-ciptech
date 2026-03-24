@@ -461,18 +461,6 @@ buscar()
 return
 }
 
-//sección de Cotizado
-document.getElementById("estadoAvanzado")
-.addEventListener("change",function(){
-
-if(this.value=="COTIZADO"){
-document.getElementById("bloqueCotizacion").style.display="block"
-}else{
-document.getElementById("bloqueCotizacion").style.display="none"
-}
-
-})
-
 document.getElementById("montoCot")
 .addEventListener("blur",function(){
 
@@ -530,6 +518,18 @@ document.getElementById("estado").innerHTML=""
 document.getElementById("msgOk").style.display="none"
 
 }
+
+//sección de Cotizado
+document.getElementById("estadoAvanzado")
+.addEventListener("change",function(){
+
+if(this.value=="COTIZADO"){
+document.getElementById("bloqueCotizacion").style.display="block"
+}else{
+document.getElementById("bloqueCotizacion").style.display="none"
+}
+
+})
 
 </script>
 
