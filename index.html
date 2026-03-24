@@ -248,12 +248,41 @@ Buscar Lead
 </select>
 </div>
 
+<!-- DROPDOWN DESPUES DE ATENCIÓN -->
 <div id="bloqueEstadoAvanzado" class="campo">
 <select id="estadoAvanzado">
 <option value="">Seleccionar Estado</option>
 <option>COTIZADO</option>
 <option>PERDIDO</option>
 </select>
+</div>
+
+<!-- CAMPOS PARA COTIZACIÓN -->
+<div id="bloqueCotizacion" class="campo" style="display:none">
+
+<select id="monedaCot">
+<option value="">Tipo Moneda</option>
+<option>PEN</option>
+<option>USD</option>
+</select>
+
+<input id="montoCot" placeholder="Monto de Cotización">
+
+<input id="numCot" placeholder="N° de Cotización">
+
+</div>
+
+<!-- DROPDOWN DESPUES DE COTIZACIÓN -->
+<div id="bloqueGestionCot" class="campo" style="display:none">
+
+<select id="listaCotizaciones"></select>
+
+<select id="estadoPostCot">
+<option value="">Seleccionar Estado</option>
+<option>CERRADO</option>
+<option>PERDIDO</option>
+</select>
+
 </div>
 
 <button class="btnGuardar" onclick="guardar()">Guardar Cambios</button>
@@ -273,7 +302,7 @@ const URL = "https://script.google.com/macros/s/AKfycbzSc0ncg1rGKUxalwXtaQJ3qMEB
 
 let leadActivo = null
 
-//FUNCIÓN DE CONSULTA DE LEADS
+//FUNCIÓN BUSCAR - CONSULTA DE LEADS
 function buscar(){
 
 const id = document.getElementById("idLead").value.trim()
@@ -346,6 +375,25 @@ document.getElementById("bloqueAsesor").style.display="block"
 document.getElementById("bloqueEstadoInicial").style.display="block"
 }
 
+if(data.estado=="COTIZADO"){
+
+const sel = document.getElementById("listaCotizaciones")
+sel.innerHTML = ""
+
+data.cotizaciones.forEach(c=>{
+let op = document.createElement("option")
+op.text = c
+sel.add(op)
+})
+
+let opNew = document.createElement("option")
+opNew.text = "Nueva Cotización"
+sel.add(opNew)
+
+document.getElementById("bloqueGestionCot").style.display="block"
+
+}
+
 if(estado=="ATENDIDO"){
 document.getElementById("bloqueEstadoAvanzado").style.display="block"
 }
@@ -370,6 +418,71 @@ if(!estadoFinal){
 alert("Seleccione estado")
 return
 }
+
+//Sección de Cotizado
+if(estadoFinal=="COTIZADO"){
+
+const moneda = document.getElementById("monedaCot").value
+const monto = document.getElementById("montoCot").value
+const numCot = document.getElementById("numCot").value
+
+if(!moneda || !monto || !numCot){
+alert("Complete datos cotización")
+return
+}
+
+fetch(URL,{
+method:"POST",
+body:JSON.stringify({
+accion:"cotizar",
+id:id,
+asesor:asesor,
+moneda:moneda,
+monto:monto,
+numCot:numCot
+})
+})
+.then(r=>r.json())
+.then(resp=>{
+
+if(resp.ok){
+
+document.getElementById("msgOk").style.display="block"
+
+// REFRESH SOLO SECCIÓN
+setTimeout(()=>{
+buscar()
+},800)
+
+}
+
+})
+
+return
+}
+
+//sección de Cotizado
+document.getElementById("estadoAvanzado")
+.addEventListener("change",function(){
+
+if(this.value=="COTIZADO"){
+document.getElementById("bloqueCotizacion").style.display="block"
+}else{
+document.getElementById("bloqueCotizacion").style.display="none"
+}
+
+})
+
+document.getElementById("montoCot")
+.addEventListener("blur",function(){
+
+let v = this.value.replace(",",".")
+
+if(v && !isNaN(v)){
+this.value = Number(v).toFixed(2)
+}
+
+})
 
 fetch(URL,{
 method:"POST",
