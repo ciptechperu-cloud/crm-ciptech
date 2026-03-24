@@ -319,7 +319,8 @@ document.getElementById("info").innerHTML =
 "<br>Teléfono: " + data.lead.telefono
 
 document.getElementById("estado").innerHTML =
-"Estado Actual: <b>" + data.estado + "</b>"
+"Estado Actual: <b>" + data.estado + "</b><br>" +
+"Asesor: <b>" + (data.asesor || "-") + "</b>"
 
 pintarLead(data)
 
@@ -385,7 +386,7 @@ estado:estadoFinal
 })
 .then(r=>r.json())
 .then(resp=>{
-if(resp.ok){
+if(resp && resp.ok){
 document.getElementById("msgOk").style.display="block"
 // SI ES ATENDIDO → REFRESH APP
 if(estadoFinal == "ATENDIDO"){
