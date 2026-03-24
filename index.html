@@ -109,16 +109,17 @@ margin-top:22px;
 
 .btn-mini{
 position:absolute;
-right:25px;
-top:70px;
+right:18px;
+top:18px;
 background:#1f4e8c;
 color:#fff;
 border:none;
-padding:10px 14px;
-border-radius:12px;
-font-size:13px;
+padding:8px 12px;
+border-radius:10px;
+font-size:12px;
 cursor:pointer;
 display:none;
+z-index:10;
 }
 
 /* LOADER */
@@ -211,10 +212,7 @@ Buscar Lead
 <input id="idLead" placeholder="ID Lead">
 
 <!-- BOTON DE BUSCAR LEAD -->
-<button onclick="buscar()">Buscar lead</button>
-<button id="btnBuscarGrande" onclick="nuevaBusqueda()" style="display:none">
-Nueva búsqueda
-</button>
+<button id="btnBuscarLead" onclick="buscar()">Buscar lead</button>
 
 <div class="loader" id="loader">
 <div class="spinner"></div>
@@ -305,7 +303,7 @@ leadActivo = id
 document.getElementById("idLead").readOnly = true
 
 // BOTONES
-document.getElementById("btnBuscarGrande").style.display="none"
+document.getElementById("btnBuscarLead").style.display="none"
 document.getElementById("btnBuscarMini").style.display="block"
 
 // INFO
