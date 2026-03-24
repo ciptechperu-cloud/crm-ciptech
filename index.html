@@ -54,6 +54,7 @@ border-radius:18px;
 padding:28px 22px 32px;
 box-shadow:0 10px 30px rgba(0,0,0,.15);
 text-align:center;
+position:relative;
 }
 
 /* TITULOS */
@@ -104,6 +105,20 @@ transform:scale(.97);
 
 #zonaGestion button{
 margin-top:22px;
+}
+
+.btn-mini{
+position:absolute;
+right:25px;
+top:70px;
+background:#1f4e8c;
+color:#fff;
+border:none;
+padding:10px 14px;
+border-radius:12px;
+font-size:13px;
+cursor:pointer;
+display:none;
 }
 
 /* LOADER */
@@ -186,12 +201,20 @@ padding-top:40px;
 
 <div class="t1">Atención Leads</div>
 <div class="t2">MKT Ciptech</div>
+
+<!-- BOTON NUEVA BUSQUEDA -->
+<button id="btnBuscarMini" onclick="nuevaBusqueda()" class="btn-mini">
+Buscar Lead
+</button>
   
 <!-- COLOCAR ID DEL LEAD -->
 <input id="idLead" placeholder="ID Lead">
 
 <!-- BOTON DE BUSCAR LEAD -->
 <button onclick="buscar()">Buscar lead</button>
+<button id="btnBuscarGrande" onclick="nuevaBusqueda()" style="display:none">
+Nueva búsqueda
+</button>
 
 <div class="loader" id="loader">
 <div class="spinner"></div>
@@ -267,7 +290,10 @@ fetch(URL + "?accion=consultar&id=" + id)
 
 .then(data=>{
 
+document.getElementById("btnBuscarGrande").style.display="none"
+document.getElementById("btnBuscarMini").style.display="block"
 document.getElementById("loader").style.display="none"
+document.getElementById("idLead").readOnly = true;
 
 if(!data || !data.lead){
 alert("Lead no encontrado")
@@ -354,6 +380,20 @@ alert("No se pudo guardar")
 .catch(()=>{
 alert("Error conexión")
 })
+
+}
+
+//Función boton para nueva busqueda
+
+function nuevaBusqueda(){
+
+document.getElementById("idLead").readOnly=false
+document.getElementById("idLead").value=""
+
+document.getElementById("btnBuscarGrande").style.display="block"
+document.getElementById("btnBuscarMini").style.display="none"
+
+document.getElementById("zonaResultado").style.display="none"
 
 }
 
