@@ -272,6 +272,8 @@ Se guardó con éxito
 
 const URL = "https://script.google.com/macros/s/AKfycbzSc0ncg1rGKUxalwXtaQJ3qMEB0sSBd5lhLs2pUVUcocNYWbd6CkW6HHmtQ4KRQ_dvLw/exec";
 
+let leadActivo = null
+
 //FUNCIÓN DE CONSULTA DE LEADS
 function buscar(){
 
@@ -290,16 +292,23 @@ fetch(URL + "?accion=consultar&id=" + id)
 
 .then(data=>{
 
-document.getElementById("btnBuscarGrande").style.display="none"
-document.getElementById("btnBuscarMini").style.display="block"
 document.getElementById("loader").style.display="none"
-document.getElementById("idLead").readOnly = true;
 
 if(!data || !data.lead){
 alert("Lead no encontrado")
 return
 }
 
+leadActivo = id
+
+// BLOQUEAR ID
+document.getElementById("idLead").readOnly = true
+
+// BOTONES
+document.getElementById("btnBuscarGrande").style.display="none"
+document.getElementById("btnBuscarMini").style.display="block"
+
+// INFO
 document.getElementById("info").style.display="block"
 document.getElementById("info").innerHTML =
 "Empresa: " + data.lead.empresa +
@@ -308,10 +317,12 @@ document.getElementById("info").innerHTML =
 
 document.getElementById("estado").innerHTML =
 "Estado Actual: <b>" + data.estado + "</b>"
+
 pintarLead(data)
+
 })
-  
-.catch(err=>{
+
+.catch(()=>{
 document.getElementById("loader").style.display="none"
 alert("Error conexión")
 })
@@ -344,7 +355,7 @@ document.getElementById("bloqueEstadoAvanzado").style.display="block"
 //GUARDAR CAMBIOS
 function guardar(){
 
-const id = document.getElementById("idLead").value.trim()
+const id = leadActivo
 
 const asesor = document.getElementById("asesor").value
 const estadoInicial = document.getElementById("estadoInicial").value
@@ -373,7 +384,12 @@ estado:estadoFinal
 .then(resp=>{
 if(resp.ok){
 document.getElementById("msgOk").style.display="block"
-}else{
+// SI ES ATENDIDO → REFRESH APP
+if(estadoFinal == "ATENDIDO"){
+setTimeout(()=>{
+nuevaBusqueda()
+},1200)}}
+else{
 alert("No se pudo guardar")
 }
 })
@@ -387,13 +403,18 @@ alert("Error conexión")
 
 function nuevaBusqueda(){
 
+leadActivo = null
+
 document.getElementById("idLead").readOnly=false
 document.getElementById("idLead").value=""
 
 document.getElementById("btnBuscarGrande").style.display="block"
 document.getElementById("btnBuscarMini").style.display="none"
 
-document.getElementById("zonaResultado").style.display="none"
+document.getElementById("zonaGestion").style.display="none"
+document.getElementById("info").style.display="none"
+document.getElementById("estado").innerHTML=""
+document.getElementById("msgOk").style.display="none"
 
 }
 
