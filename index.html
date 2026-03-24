@@ -34,6 +34,10 @@ font-size:15px;
 background:white;
 }
 
+.campo{
+margin-top:14px;
+}
+
 /* APP CONTAINER */
 
 .app{
@@ -257,6 +261,19 @@ Buscar Lead
 </select>
 </div>
 
+<!-- DROPDOWN DESPUES DE COTIZACIÓN -->
+<div id="bloqueGestionCot" class="campo" style="display:none">
+
+<select id="listaCotizaciones"></select>
+
+<select id="estadoPostCot">
+<option value="">Seleccionar Estado</option>
+<option>CERRADO</option>
+<option>PERDIDO</option>
+</select>
+
+</div>
+
 <!-- CAMPOS PARA COTIZACIÓN -->
 <div id="bloqueCotizacion" class="campo" style="display:none">
 
@@ -272,18 +289,7 @@ Buscar Lead
 
 </div>
 
-<!-- DROPDOWN DESPUES DE COTIZACIÓN -->
-<div id="bloqueGestionCot" class="campo" style="display:none">
 
-<select id="listaCotizaciones"></select>
-
-<select id="estadoPostCot">
-<option value="">Seleccionar Estado</option>
-<option>CERRADO</option>
-<option>PERDIDO</option>
-</select>
-
-</div>
 
 <button class="btnGuardar" onclick="guardar()">Guardar Cambios</button>
 <div id="msgOk" class="msgOk" style="display:none">
@@ -375,6 +381,8 @@ document.getElementById("bloqueAsesor").style.display="block"
 document.getElementById("bloqueEstadoInicial").style.display="block"
 }
 
+document.getElementById("bloqueCotizacion").style.display="none"
+
 if(data.estado=="COTIZADO"){
 
 const sel = document.getElementById("listaCotizaciones")
@@ -391,6 +399,9 @@ opNew.text = "Nueva Cotización"
 sel.add(opNew)
 
 document.getElementById("bloqueGestionCot").style.display="block"
+document.getElementById("bloqueAsesor").style.display="none"
+document.getElementById("bloqueEstadoInicial").style.display="none"
+document.getElementById("bloqueEstadoAvanzado").style.display="none"
 
 }
 
@@ -461,17 +472,6 @@ buscar()
 return
 }
 
-document.getElementById("montoCot")
-.addEventListener("blur",function(){
-
-let v = this.value.replace(",",".")
-
-if(v && !isNaN(v)){
-this.value = Number(v).toFixed(2)
-}
-
-})
-
 fetch(URL,{
 method:"POST",
 body:JSON.stringify({
@@ -485,6 +485,8 @@ estado:estadoFinal
 .then(resp=>{
 if(resp && resp.ok){
 document.getElementById("msgOk").style.display="block"
+document.getElementById("bloqueCotizacion").style.display="none"
+document.getElementById("bloqueGestionCot").style.display="block"
 // SI ES ATENDIDO → REFRESH APP
 if(estadoFinal == "ATENDIDO"){
 setTimeout(()=>{
@@ -527,6 +529,17 @@ if(this.value=="COTIZADO"){
 document.getElementById("bloqueCotizacion").style.display="block"
 }else{
 document.getElementById("bloqueCotizacion").style.display="none"
+}
+
+})
+
+document.getElementById("montoCot")
+.addEventListener("blur",function(){
+
+let v = this.value.replace(",",".")
+
+if(v && !isNaN(v)){
+this.value = Number(v).toFixed(2)
 }
 
 })
