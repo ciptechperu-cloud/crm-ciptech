@@ -437,6 +437,14 @@ let estadoFinal = ""
 if(estadoInicial) estadoFinal = estadoInicial
 if(estadoAvanzado) estadoFinal = estadoAvanzado
 
+// ⭐ FORZAR COTIZADO SI YA ESTÁ EN MODO COTIZACIÓN
+if(
+estadoAvanzado=="COTIZADO" ||
+document.getElementById("listaCotizaciones").value
+){
+estadoFinal = "COTIZADO"
+}
+
 const estadoActual = document.getElementById("estado").innerText
 
 // Solo exigir estado si NO está ya en COTIZADO
@@ -483,6 +491,7 @@ document.getElementById("msgOk").style.display="block"
 
 // REFRESH SOLO SECCIÓN
 setTimeout(()=>{
+document.getElementById("listaCotizaciones").value = ""
 buscar()
 },1500)
 
