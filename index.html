@@ -464,7 +464,7 @@ const numCot = document.getElementById("numCot").value
 const selCot = document.getElementById("listaCotizaciones").value
 
 
-if(selCot === "NEW"){
+if(selCot === "NEW" || !selCot){
 if(!moneda || !monto || !numCot){
 alert("Complete datos cotización")
 return
