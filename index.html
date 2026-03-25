@@ -466,7 +466,7 @@ method:"POST",
 body:JSON.stringify({
 accion:"cotizar",
 id:id,
-asesor:asesor,
+asesor: asesor || null,
 moneda:moneda,
 monto:monto,
 numCot: selCot === "NEW" ? numCot : selCot
@@ -496,7 +496,7 @@ method:"POST",
 body:JSON.stringify({
 accion:"atender",
 id:id,
-asesor:asesor,
+asesor: asesor || null,
 estado:estadoFinal
 })
 })
