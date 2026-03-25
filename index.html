@@ -479,7 +479,9 @@ id:id,
 asesor: asesor || null,
 moneda:moneda,
 monto:monto,
-numCot: selCot === "NEW" ? numCot : selCot
+numCot: selCot && selCot !== "NEW"
+        ? selCot
+        : numCot
 })
 })
 .then(r=>r.json())
