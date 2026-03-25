@@ -368,6 +368,7 @@ alert("Error conexión")
   
 function pintarLead(data){
 
+document.getElementById("bloqueGestionCot").style.display="none"
 document.getElementById("zonaGestion").style.display="block"
 
 const estado = data.estado
@@ -385,17 +386,28 @@ document.getElementById("bloqueCotizacion").style.display="none"
 
 if(data.estado=="COTIZADO"){
 
+document.getElementById("bloqueCotizacion").style.display="none"
+
 const sel = document.getElementById("listaCotizaciones")
 sel.innerHTML = ""
+sel.value = ""
+sel.selectedIndex = 0
+
+let op0 = document.createElement("option")
+op0.text = "N° de Cotización"
+op0.value = ""
+sel.add(op0)
 
 data.cotizaciones.forEach(c=>{
 let op = document.createElement("option")
 op.text = c
+op.value = c
 sel.add(op)
 })
 
 let opNew = document.createElement("option")
 opNew.text = "Nueva Cotización"
+opNew.value = "NEW"
 sel.add(opNew)
 
 document.getElementById("bloqueGestionCot").style.display="block"
@@ -425,21 +437,28 @@ let estadoFinal = ""
 if(estadoInicial) estadoFinal = estadoInicial
 if(estadoAvanzado) estadoFinal = estadoAvanzado
 
-if(!estadoFinal){
+const estadoActual = document.getElementById("estado").innerText
+
+// Solo exigir estado si NO está ya en COTIZADO
+if(!estadoFinal && !estadoActual.includes("COTIZADO")){
 alert("Seleccione estado")
 return
 }
 
 //Sección de Cotizado
-if(estadoFinal=="COTIZADO"){
+if(estadoFinal=="COTIZADO" || document.getElementById("listaCotizaciones").value){
 
 const moneda = document.getElementById("monedaCot").value
 const monto = document.getElementById("montoCot").value
 const numCot = document.getElementById("numCot").value
+const selCot = document.getElementById("listaCotizaciones").value
 
+
+if(selCot === "NEW"){
 if(!moneda || !monto || !numCot){
 alert("Complete datos cotización")
 return
+}
 }
 
 fetch(URL,{
@@ -450,7 +469,7 @@ id:id,
 asesor:asesor,
 moneda:moneda,
 monto:monto,
-numCot:numCot
+numCot: selCot === "NEW" ? numCot : selCot
 })
 })
 .then(r=>r.json())
@@ -540,6 +559,30 @@ let v = this.value.replace(",",".")
 
 if(v && !isNaN(v)){
 this.value = Number(v).toFixed(2)
+}
+
+})
+
+document.getElementById("listaCotizaciones")
+.addEventListener("change",function(){
+
+document.getElementById("numCot").readOnly = true
+
+if(this.value=="NEW"){
+document.getElementById("bloqueCotizacion").style.display="block"
+
+document.getElementById("monedaCot").value=""
+document.getElementById("montoCot").value=""
+document.getElementById("numCot").value=""
+document.getElementById("numCot").readOnly = false
+return
+}
+
+if(this.value){
+
+// aquí luego cargaremos datos reales desde backend
+document.getElementById("bloqueCotizacion").style.display="block"
+
 }
 
 })
