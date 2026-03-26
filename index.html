@@ -578,7 +578,11 @@ document.querySelector(".btnGuardar").innerText="Guardar Cambios"
 document.querySelector(".btnGuardar").disabled=false
 if(resp.ok){
 document.getElementById("msgOk").style.display="block"
-setTimeout(()=>buscar(),1200)
+setTimeout(()=>{
+document.getElementById("listaCotizaciones").value = ""
+document.getElementById("listaOV").value = ""
+buscar()
+},1200)
 }
 })
 
