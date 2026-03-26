@@ -666,6 +666,17 @@ this.value = Number(v).toFixed(2)
 
 })
 
+document.getElementById("montoOV")
+.addEventListener("blur",function(){
+
+let v = this.value.replace(",", ".")
+
+if(v && !isNaN(v)){
+this.value = Number(v).toFixed(2)
+}
+
+})
+
 document.getElementById("listaCotizaciones").addEventListener("change",function(){
 
 const num = this.value
