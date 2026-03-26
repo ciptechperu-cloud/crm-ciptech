@@ -306,7 +306,7 @@ Buscar Lead
 </select>
 
 <div id="bloqueOV" class="campo" style="display:none">
-<select id="listaOV"></select>
+<select id="listaOV" style="display:none"></select>
 <select id="monedaOV">
 <option value="">Tipo Moneda</option>
 <option>PEN</option>
@@ -551,9 +551,12 @@ if(estadoPost=="CERRADO"){
 const numCot = document.getElementById("listaCotizaciones").value
 const numOV = document.getElementById("numOV").value
 const montoOV = document.getElementById("montoOV").value
+const monedaOV = document.getElementById("monedaOV").value
 
-if(!numCot || !numOV || !montoOV){
+if(!numCot || !numOV || !montoOV || !monedaOV){
 alert("Complete datos de cierre")
+document.querySelector(".btnGuardar").innerText="Guardar Cambios"
+document.querySelector(".btnGuardar").disabled=false
 return
 }
 
@@ -564,6 +567,7 @@ accion:"ov",
 id:id,
 asesor: asesor || null,
 numCot:numCot,
+monedaOV: monedaOV,
 numOV:numOV,
 monto:montoOV
 })
@@ -710,6 +714,42 @@ document.getElementById("estadoPostCot").addEventListener("change",function(){
 
 if(this.value=="CERRADO"){
 document.getElementById("bloqueOV").style.display="block"
+const selOV = document.getElementById("listaOV")
+selOV.innerHTML = ""
+
+if(window.historialLead){
+
+const ovs = [...new Set(window.historialLead
+.filter(x=>x.numOV)
+.map(x=>x.numOV))]
+
+if(ovs.length > 0){
+
+let op0 = document.createElement("option")
+op0.text = "N° de Orden de Venta"
+op0.value = ""
+selOV.add(op0)
+
+ovs.forEach(o=>{
+let op = document.createElement("option")
+op.text = o
+op.value = o
+selOV.add(op)
+})
+
+let opNew = document.createElement("option")
+opNew.text = "Nueva Orden de Venta"
+opNew.value = "NEW"
+selOV.add(opNew)
+
+selOV.style.display="block"
+
+}else{
+selOV.style.display="none"
+}
+
+}
+
 }else{
 document.getElementById("bloqueOV").style.display="none"
 }
