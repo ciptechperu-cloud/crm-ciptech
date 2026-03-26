@@ -38,8 +38,20 @@ background:white;
 margin-top:14px;
 }
 
+#bloqueCotizacion{
+margin-bottom:18px;
+}
+
 #bloqueGestionCot select{
-margin-bottom:12px;
+margin-bottom:18px;
+}
+
+#estadoPostCot{
+margin-top:18px;
+}
+
+#listaCotizaciones{
+margin-bottom:18px;
 }
 
 /* APP CONTAINER */
@@ -220,7 +232,7 @@ padding-top:70px;
 <button id="btnBuscarMini" onclick="nuevaBusqueda()" class="btn-mini">
 Buscar Lead
 </button>
-  
+
 <!-- COLOCAR ID DEL LEAD -->
 <input id="idLead" placeholder="ID Lead">
 
@@ -270,12 +282,6 @@ Buscar Lead
 
 <select id="listaCotizaciones"></select>
 
-<select id="estadoPostCot">
-<option value="">Seleccionar Estado</option>
-<option>CERRADO</option>
-<option>PERDIDO</option>
-</select>
-
 </div>
 
 <!-- CAMPOS PARA COTIZACIÓN -->
@@ -292,6 +298,12 @@ Buscar Lead
 <input id="numCot" placeholder="N° de Cotización">
 
 </div>
+
+<select id="estadoPostCot">
+<option value="">Seleccionar Estado</option>
+<option>CERRADO</option>
+<option>PERDIDO</option>
+</select>
 
 
 
@@ -337,6 +349,8 @@ alert("Lead no encontrado")
 return
 }
 
+window.historialLead = data.historial
+
 leadActivo = id
 
 // BLOQUEAR ID
@@ -372,6 +386,7 @@ alert("Error conexión")
   
 function pintarLead(data){
 
+document.getElementById("estadoPostCot").style.display = "none"
 document.getElementById("bloqueGestionCot").style.display="none"
 document.getElementById("zonaGestion").style.display="block"
 
@@ -468,7 +483,7 @@ const numCot = document.getElementById("numCot").value
 const selCot = document.getElementById("listaCotizaciones").value
 
 
-if(selCot === "NEW" || !selCot){
+if(selCot === "NEW"){
 if(!moneda || !monto || !numCot){
 alert("Complete datos cotización")
 return
@@ -492,6 +507,9 @@ numCot: selCot && selCot !== "NEW"
 .then(resp=>{
 
 if(resp.ok){
+        
+document.getElementById("bloqueCotizacion").style.display="none"
+document.getElementById("bloqueGestionCot").style.display="block"
 
 document.getElementById("msgOk").style.display="block"
 
@@ -561,6 +579,8 @@ document.getElementById("msgOk").style.display="none"
 document.getElementById("estadoAvanzado")
 .addEventListener("change",function(){
 
+document.getElementById("estadoPostCot").style.display = "block"
+
 if(this.value=="COTIZADO"){
 document.getElementById("bloqueCotizacion").style.display="block"
 }else{
@@ -580,25 +600,45 @@ this.value = Number(v).toFixed(2)
 
 })
 
-document.getElementById("listaCotizaciones")
-.addEventListener("change",function(){
+document.getElementById("listaCotizaciones").addEventListener("change",function(){
 
-document.getElementById("numCot").readOnly = true
+const num = this.value
 
-if(this.value=="NEW"){
+// reset
+document.getElementById("estadoPostCot").style.display = "none"
+
+if(num=="NEW"){
+
 document.getElementById("bloqueCotizacion").style.display="block"
 
 document.getElementById("monedaCot").value=""
 document.getElementById("montoCot").value=""
 document.getElementById("numCot").value=""
-document.getElementById("numCot").readOnly = false
+document.getElementById("numCot").readOnly=false
+
+// estado SIEMPRE al final
+document.getElementById("estadoPostCot").style.display="block"
+
 return
 }
 
-if(this.value){
+if(num){
 
-// aquí luego cargaremos datos reales desde backend
+const cot = window.historialLead.find(x=>String(x.numCot).trim()==String(num).trim())
+
+if(cot){
+
 document.getElementById("bloqueCotizacion").style.display="block"
+
+document.getElementById("monedaCot").value = cot.monedaCot || ""
+document.getElementById("montoCot").value = cot.montoCot || ""
+document.getElementById("numCot").value = cot.numCot || ""
+document.getElementById("numCot").readOnly = true
+
+// estado al final
+document.getElementById("estadoPostCot").style.display="block"
+
+}
 
 }
 
