@@ -305,6 +305,12 @@ Buscar Lead
 <option>PERDIDO</option>
 </select>
 
+<div id="bloqueOV" class="campo" style="display:none">
+<select id="listaOV"></select>
+<input id="montoOV" placeholder="Monto de Cierre">
+<input id="numOV" placeholder="N° Orden de Venta">
+</div>
+
 
 
 <button class="btnGuardar" onclick="guardar()">Guardar Cambios</button>
@@ -489,7 +495,7 @@ alert("Complete datos cotización")
 return
 }
 }
-
+//-----Estado Cotizado------
 fetch(URL,{
 method:"POST",
 body:JSON.stringify({
@@ -529,7 +535,48 @@ return
 }
 
 document.querySelector(".btnGuardar").innerText="Guardando..."
-document.querySelector(".btnGuardar").disabled=true     
+document.querySelector(".btnGuardar").disabled=true
+
+//-----Estado Cerrado------
+
+const estadoPost = document.getElementById("estadoPostCot").value
+
+if(estadoPost=="CERRADO"){
+
+const numCot = document.getElementById("listaCotizaciones").value
+const numOV = document.getElementById("numOV").value
+const montoOV = document.getElementById("montoOV").value
+
+if(!numCot || !numOV || !montoOV){
+alert("Complete datos de cierre")
+return
+}
+
+fetch(URL,{
+method:"POST",
+body:JSON.stringify({
+accion:"ov",
+id:id,
+asesor: asesor || null,
+numCot:numCot,
+numOV:numOV,
+monto:montoOV
+})
+})
+.then(r=>r.json())
+.then(resp=>{
+document.querySelector(".btnGuardar").innerText="Guardar Cambios"
+document.querySelector(".btnGuardar").disabled=false
+if(resp.ok){
+document.getElementById("msgOk").style.display="block"
+setTimeout(()=>buscar(),1200)
+}
+})
+
+return
+}
+
+//----- Estado atendido
 
 fetch(URL,{
 method:"POST",
@@ -650,6 +697,16 @@ document.getElementById("estadoPostCot").style.display="block"
 
 }
 
+}
+
+})
+
+document.getElementById("estadoPostCot").addEventListener("change",function(){
+
+if(this.value=="CERRADO"){
+document.getElementById("bloqueOV").style.display="block"
+}else{
+document.getElementById("bloqueOV").style.display="none"
 }
 
 })
