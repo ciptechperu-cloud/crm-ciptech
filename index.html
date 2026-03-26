@@ -507,7 +507,7 @@ numCot: selCot && selCot !== "NEW"
 .then(resp=>{
 
 if(resp.ok){
-        
+
 document.getElementById("bloqueCotizacion").style.display="none"
 document.getElementById("bloqueGestionCot").style.display="block"
 
@@ -518,13 +518,18 @@ setTimeout(()=>{
 document.getElementById("listaCotizaciones").value = ""
 buscar()
 },1500)
-
 }
+})
 
+.catch(()=>{
+alert("Error al guardar cotización")
 })
 
 return
 }
+
+document.querySelector(".btnGuardar").innerText="Guardando..."
+document.querySelector(".btnGuardar").disabled=true     
 
 fetch(URL,{
 method:"POST",
@@ -541,6 +546,9 @@ if(resp && resp.ok){
 document.getElementById("msgOk").style.display="block"
 document.getElementById("bloqueCotizacion").style.display="none"
 document.getElementById("bloqueGestionCot").style.display="block"
+
+document.querySelector(".btnGuardar").innerText="Guardar Cambios"
+document.querySelector(".btnGuardar").disabled=false
 // SI ES ATENDIDO → REFRESH APP
 if(estadoFinal == "ATENDIDO"){
 setTimeout(()=>{
@@ -552,6 +560,8 @@ alert("No se pudo guardar")
 })
 .catch(()=>{
 alert("Error conexión")
+document.querySelector(".btnGuardar").innerText="Guardar Cambios"
+document.querySelector(".btnGuardar").disabled=false
 })
 
 }
