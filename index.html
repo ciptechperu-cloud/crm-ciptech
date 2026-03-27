@@ -1,891 +1,618 @@
-<!DOCTYPE html>
-<html>
+function doGet(e) {
 
-<head>
+  try {
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    if (e.parameter.accion == "consultar") {
 
-  <title>CRM Ciptech</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #e9ecef;
-    }
-
-    .campo {
-      margin-top: 14px;
-    }
-
-    select {
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      border: 2px solid #3b3b3b;
-      font-size: 15px;
-      background: white;
-    }
-
-    .campo {
-      margin-top: 14px;
-    }
-
-    #bloqueCotizacion {
-      margin-bottom: 18px;
-    }
-
-    #bloqueGestionCot select {
-      margin-bottom: 18px;
-    }
-
-    #estadoPostCot {
-      margin-top: 18px;
-    }
-
-    #listaCotizaciones {
-      margin-bottom: 18px;
-    }
-
-    /* APP CONTAINER */
-
-    .app {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    /* CARD */
-
-    .card {
-      background: white;
-      width: 100%;
-      max-width: 420px;
-      border-radius: 18px;
-      padding: 28px 22px 32px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
-      text-align: center;
-      position: relative;
-    }
-
-    /* TITULOS */
-
-    .t1 {
-      color: #7ED957;
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 2px;
-    }
-
-    .t2 {
-      color: #123E7A;
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 22px;
-    }
-
-    /* INPUT */
-
-    input {
-      width: 100%;
-      padding: 15px;
-      border-radius: 14px;
-      border: 2px solid #444;
-      font-size: 17px;
-      margin-bottom: 18px;
-      outline: none;
-    }
-
-    /* BUTTON */
-
-    button {
-      width: 100%;
-      padding: 16px;
-      border: none;
-      border-radius: 14px;
-      background: #1f4a83;
-      color: white;
-      font-size: 17px;
-      cursor: pointer;
-      transition: .2s;
-    }
-
-    button:active {
-      transform: scale(.97);
-    }
-
-    #zonaGestion button {
-      margin-top: 22px;
-    }
-
-    .btn-mini {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: #1f4e8c;
-      color: #fff;
-      border: none;
-      padding: 6px 10px;
-      border-radius: 10px;
-      font-size: 11px;
-      cursor: pointer;
-      display: none;
-      line-height: 1.2;
-    }
-
-    .btn-mini {
-      width: auto !important;
-      display: none;
-    }
-
-    /* LOADER */
-
-    .loader {
-      display: none;
-      margin: 18px 0;
-    }
-
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 4px solid #ddd;
-      border-top: 4px solid #1f4a83;
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-      margin: auto;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0)
-      }
-
-      100% {
-        transform: rotate(360deg)
-      }
-    }
-
-    /* INFO */
-
-    .box {
-      background: #dfe6ef;
-      padding: 16px;
-      border-radius: 12px;
-      font-weight: bold;
-      color: #123E7A;
-      margin-top: 18px;
-      display: none;
-    }
-
-    .estado {
-      margin-top: 18px;
-      font-size: 17px;
-    }
-
-    .msgOk {
-      background: #6fd14b;
-      color: white;
-      padding: 14px;
-      margin-top: 15px;
-      border-radius: 12px;
-      text-align: center;
-      font-weight: 600;
-    }
-
-    /* MOBILE FULL APP */
-
-    @media(max-width:480px) {
-
-      .app {
-        align-items: flex-start;
-        padding: 14px;
-      }
-
-      .card {
-        max-width: 100%;
-        min-height: 100vh;
-        border-radius: 0;
-        box-shadow: none;
-        padding-top: 70px;
-      }
+      return ContentService
+        .createTextOutput(
+          JSON.stringify(
+            consultarLeadCRM(e.parameter.id)
+          )
+        )
+        .setMimeType(ContentService.MimeType.JSON)
 
     }
-  </style>
 
-</head>
+    return ContentService
+      .createTextOutput("API OK")
 
-<body>
+  } catch (err) {
 
-  <div class="app">
-
-    <div class="card">
-
-      <div class="t1">Atención Leads</div>
-      <div class="t2">MKT Ciptech</div>
-
-      <!-- BOTON NUEVA BUSQUEDA -->
-      <button id="btnBuscarMini" onclick="nuevaBusqueda()" class="btn-mini">
-        Buscar Lead
-      </button>
-
-      <!-- COLOCAR ID DEL LEAD -->
-      <input id="idLead" placeholder="ID Lead">
-
-      <!-- BOTON DE BUSCAR LEAD -->
-      <button id="btnBuscarLead" onclick="buscar()">Buscar lead</button>
-
-      <div class="loader" id="loader">
-        <div class="spinner"></div>
-      </div>
-
-      <div id="info" class="box"></div>
-      <div id="estado" class="estado"></div>
-
-      <!-- DESPLEGABLES -->
-      <div id="zonaGestion" style="display:none">
-
-        <div class="boxInfo" id="infoLead"></div>
-
-        <div id="bloqueAsesor" class="campo">
-          <select id="asesor">
-            <option value="">Seleccionar Asesor</option>
-            <option>Herson Zevallos</option>
-            <option>Luz Arone</option>
-            <option>Daniel Bravo</option>
-            <option>Brayan Martinez</option>
-          </select>
-        </div>
-
-        <div id="bloqueEstadoInicial" class="campo">
-          <select id="estadoInicial">
-            <option value="">Seleccionar Estado</option>
-            <option>ATENDIDO</option>
-          </select>
-        </div>
-
-        <!-- DROPDOWN DESPUES DE ATENCIÓN -->
-        <div id="bloqueEstadoAvanzado" class="campo">
-          <select id="estadoAvanzado">
-            <option value="">Seleccionar Estado</option>
-            <option>COTIZADO</option>
-            <option>PERDIDO</option>
-          </select>
-        </div>
-
-        <!-- DROPDOWN DESPUES DE COTIZACIÓN -->
-        <div id="bloqueGestionCot" class="campo" style="display:none">
-
-          <select id="listaCotizaciones"></select>
-
-        </div>
-
-        <!-- CAMPOS PARA COTIZACIÓN -->
-        <div id="bloqueCotizacion" class="campo" style="display:none">
-
-          <select id="monedaCot">
-            <option value="">Tipo Moneda</option>
-            <option>PEN</option>
-            <option>USD</option>
-          </select>
-
-          <input id="montoCot" placeholder="Monto de Cotización">
-
-          <input id="numCot" placeholder="N° de Cotización">
-
-        </div>
-
-        <select id="estadoPostCot">
-          <option value="">Seleccionar Estado</option>
-          <option>CERRADO</option>
-          <option>PERDIDO</option>
-        </select>
-
-        <div id="bloqueOV" class="campo" style="display:none">
-          <select id="listaOV" style="display:none"></select>
-          <select id="monedaOV">
-            <option value="">Tipo Moneda</option>
-            <option>PEN</option>
-            <option>USD</option>
-          </select>
-          <input id="montoOV" placeholder="Monto de Cierre">
-          <input id="numOV" placeholder="N° Orden de Venta">
-        </div>
-
-
-
-        <button class="btnGuardar" onclick="guardar()">Guardar Cambios</button>
-        <div id="msgOk" class="msgOk" style="display:none">
-          Se guardó con éxito
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <script>
-
-    const URL = "https://script.google.com/macros/s/AKfycbzSc0ncg1rGKUxalwXtaQJ3qMEB0sSBd5lhLs2pUVUcocNYWbd6CkW6HHmtQ4KRQ_dvLw/exec";
-
-    let leadActivo = null
-
-    //FUNCIÓN BUSCAR - CONSULTA DE LEADS
-    function buscar() {
-
-      const id = document.getElementById("idLead").value.trim()
-
-      if (!id) {
-        alert("Ingrese ID")
-        return
-      }
-
-      document.getElementById("loader").style.display = "block"
-
-      fetch(URL + "?accion=consultar&id=" + id)
-
-        .then(r => r.json())
-
-        .then(data => {
-
-          document.getElementById("loader").style.display = "none"
-
-          if (!data || !data.lead) {
-            alert("Lead no encontrado")
-            return
-          }
-
-          window.historialLead = data.historial
-
-          leadActivo = id
-
-          // BLOQUEAR ID
-          document.getElementById("idLead").readOnly = true
-
-          // BOTONES
-          document.getElementById("btnBuscarLead").style.display = "none"
-          document.getElementById("btnBuscarMini").style.display = "block"
-
-          // INFO
-          document.getElementById("info").style.display = "block"
-          document.getElementById("info").innerHTML =
-            "Empresa: " + data.lead.empresa +
-            "<br>RUC: " + data.lead.ruc +
-            "<br>Teléfono: " + data.lead.telefono
-
-          document.getElementById("estado").innerHTML =
-            "Estado Actual: <b>" + data.estado + "</b><br>" +
-            "Asesor: <b>" + (data.asesor || "-") + "</b>"
-
-          pintarLead(data)
-
-        })
-
-        .catch(() => {
-          document.getElementById("loader").style.display = "none"
-          alert("Error conexión")
-        })
-
-    }
-
-    //FUNCIÓN PARA MOSTRAR LOS ESTADOS DEL LEAD
-
-    function pintarLead(data) {
-
-      document.getElementById("estadoPostCot").style.display = "none"
-      document.getElementById("bloqueGestionCot").style.display = "none"
-      document.getElementById("zonaGestion").style.display = "block"
-
-      const estado = data.estado
-
-      document.getElementById("bloqueAsesor").style.display = "none"
-      document.getElementById("bloqueEstadoInicial").style.display = "none"
-      document.getElementById("bloqueEstadoAvanzado").style.display = "none"
-
-      if (estado == "SIN GESTIONAR") {
-        document.getElementById("bloqueAsesor").style.display = "block"
-        document.getElementById("bloqueEstadoInicial").style.display = "block"
-      }
-
-      document.getElementById("bloqueCotizacion").style.display = "none"
-
-      if (data.estado == "COTIZADO") {
-
-        document.getElementById("bloqueCotizacion").style.display = "none"
-
-        const sel = document.getElementById("listaCotizaciones")
-        sel.innerHTML = ""
-        sel.value = ""
-        sel.selectedIndex = 0
-
-        let op0 = document.createElement("option")
-        op0.text = "N° de Cotización"
-        op0.value = ""
-        sel.add(op0)
-
-        data.cotizaciones.forEach(c => {
-          let op = document.createElement("option")
-          op.text = c
-          op.value = c
-          sel.add(op)
-        })
-
-        let opNew = document.createElement("option")
-        opNew.text = "Nueva Cotización"
-        opNew.value = "NEW"
-        sel.add(opNew)
-
-        document.getElementById("bloqueGestionCot").style.display = "block"
-        document.getElementById("bloqueAsesor").style.display = "none"
-        document.getElementById("bloqueEstadoInicial").style.display = "none"
-        document.getElementById("bloqueEstadoAvanzado").style.display = "none"
-
-      }
-
-      if (estado == "ATENDIDO") {
-        document.getElementById("bloqueEstadoAvanzado").style.display = "block"
-      }
-
-      if (estado == "CERRADO") {
-
-        document.getElementById("bloqueGestionCot").style.display = "block"
-        document.getElementById("estadoPostCot").style.display = "none"
-        document.getElementById("listaOV").style.display = "none"
-        document.getElementById("bloqueOV").style.display = "none"
-
-        document.getElementById("bloqueAsesor").style.display = "none"
-        document.getElementById("bloqueEstadoInicial").style.display = "none"
-        document.getElementById("bloqueEstadoAvanzado").style.display = "none"
-        document.getElementById("bloqueCotizacion").style.display = "none"
-
-        const sel = document.getElementById("listaCotizaciones")
-        sel.innerHTML = ""
-
-        let op0 = document.createElement("option")
-        op0.text = "N° de Cotización"
-        op0.value = ""
-        sel.add(op0)
-
-        data.cotizaciones.forEach(c => {
-          let op = document.createElement("option")
-          op.text = c
-          op.value = c
-          sel.add(op)
-        })
-
-      }
-
-    }
-
-    //GUARDAR CAMBIOS
-    function guardar() {
-
-      const id = leadActivo
-
-      const asesor = document.getElementById("asesor").value
-      const estadoInicial = document.getElementById("estadoInicial").value
-      const estadoAvanzado = document.getElementById("estadoAvanzado").value
-
-      let estadoFinal = ""
-
-      if (estadoInicial) estadoFinal = estadoInicial
-      if (estadoAvanzado) estadoFinal = estadoAvanzado
-
-      // ⭐ FORZAR COTIZADO SI YA ESTÁ EN MODO COTIZACIÓN
-      if (
-        estadoAvanzado == "COTIZADO" ||
-        document.getElementById("listaCotizaciones").value
-      ) {
-        estadoFinal = "COTIZADO"
-      }
-
-      const estadoActual = document.getElementById("estado").innerText
-
-      // Solo exigir estado si NO está ya en COTIZADO
-      if (!estadoFinal && !estadoActual.includes("COTIZADO")) {
-        alert("Seleccione estado")
-        return
-      }
-
-      //Sección de Cotizado
-      if (estadoFinal == "COTIZADO" || document.getElementById("listaCotizaciones").value) {
-
-        estadoFinal = "COTIZADO"
-
-        const moneda = document.getElementById("monedaCot").value
-        const monto = document.getElementById("montoCot").value
-        const numCot = document.getElementById("numCot").value
-        const selCot = document.getElementById("listaCotizaciones").value
-
-
-        if (selCot === "NEW") {
-          if (!moneda || !monto || !numCot) {
-            alert("Complete datos cotización")
-            return
-          }
-        }
-        //-----Estado Cotizado------
-        fetch(URL, {
-          method: "POST",
-          body: JSON.stringify({
-            accion: "cotizar",
-            id: id,
-            asesor: asesor || null,
-            moneda: moneda,
-            monto: monto,
-            numCot: selCot && selCot !== "NEW"
-              ? selCot
-              : numCot
-          })
-        })
-          .then(r => r.json())
-          .then(resp => {
-
-            if (resp.ok) {
-
-              document.getElementById("bloqueCotizacion").style.display = "none"
-              document.getElementById("bloqueGestionCot").style.display = "block"
-
-              document.getElementById("msgOk").style.display = "block"
-
-              // REFRESH SOLO SECCIÓN
-              setTimeout(() => {
-                document.getElementById("listaCotizaciones").value = ""
-                buscar()
-              }, 1500)
-            }
-          })
-
-          .catch(() => {
-            alert("Error al guardar cotización")
-          })
-
-        return
-      }
-
-      document.querySelector(".btnGuardar").innerText = "Guardando..."
-      document.querySelector(".btnGuardar").disabled = true
-
-      //-----Estado Cerrado------
-
-      const estadoPost = document.getElementById("estadoPostCot").value
-
-      if (estadoPost == "CERRADO") {
-
-        const numCot = document.getElementById("listaCotizaciones").value || document.getElementById("numCot").value
-        const numOV = document.getElementById("numOV").value
-        const montoOV = document.getElementById("montoOV").value
-        const monedaOV = document.getElementById("monedaOV").value
-
-        if (!numCot || numCot === "NEW" || !numOV || !montoOV || !monedaOV) {
-          alert("Complete datos de cierre")
-          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-          document.querySelector(".btnGuardar").disabled = false
-          return
-        }
-
-        const selOV = document.getElementById("listaOV").value
-
-        const numOVFinal = selOV && selOV !== "NEW"
-          ? selOV
-          : document.getElementById("numOV").value
-
-
-        fetch(URL, {
-          method: "POST",
-          body: JSON.stringify({
-            accion: "ov",
-            id: id,
-            asesor: asesor || null,
-            numCot: numCot,
-            monedaOV: monedaOV,
-            numOV: numOVFinal,
-            monto: montoOV,
-          })
-        })
-          .then(r => r.json())
-          .then(resp => {
-            document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-            document.querySelector(".btnGuardar").disabled = false
-            if (resp.ok) {
-              document.getElementById("msgOk").style.display = "block"
-              setTimeout(() => {
-                document.getElementById("listaCotizaciones").value = ""
-                document.getElementById("estadoPostCot").value = ""
-                document.getElementById("listaOV").innerHTML = ""
-                document.getElementById("bloqueOV").style.display = "none"
-                buscar()
-              }, 1500)
-            }
-          })
-          console.log(resp)
-
-        return
-      }
-
-      //----- Estado atendido
-
-      fetch(URL, {
-        method: "POST",
-        body: JSON.stringify({
-          accion: "atender",
-          id: id,
-          asesor: asesor || null,
-          estado: estadoFinal
-        })
-      })
-        .then(r => r.json())
-        .then(resp => {
-          if (resp && resp.ok) {
-            document.getElementById("msgOk").style.display = "block"
-            document.getElementById("bloqueCotizacion").style.display = "none"
-            document.getElementById("bloqueGestionCot").style.display = "block"
-
-            document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-            document.querySelector(".btnGuardar").disabled = false
-            // SI ES ATENDIDO → REFRESH APP
-            if (estadoFinal == "ATENDIDO") {
-              setTimeout(() => {
-                nuevaBusqueda()
-              }, 1200)
-            }
-          }
-          else {
-            alert("No se pudo guardar")
-          }
-        })
-        .catch(() => {
-          alert("Error conexión")
-          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-          document.querySelector(".btnGuardar").disabled = false
-        })
-
-    }
-
-    //Función boton para nueva busqueda
-
-    function nuevaBusqueda() {
-
-      leadActivo = null
-
-      document.getElementById("idLead").readOnly = false
-      document.getElementById("idLead").value = ""
-
-      document.getElementById("btnBuscarLead").style.display = "block"
-      document.getElementById("btnBuscarMini").style.display = "none"
-
-      document.getElementById("zonaGestion").style.display = "none"
-      document.getElementById("info").style.display = "none"
-      document.getElementById("estado").innerHTML = ""
-      document.getElementById("msgOk").style.display = "none"
-
-    }
-
-    //sección de Cotizado
-    document.getElementById("estadoAvanzado")
-      .addEventListener("change", function () {
-
-        document.getElementById("estadoPostCot").style.display = "block"
-
-        if (this.value == "COTIZADO") {
-          document.getElementById("bloqueCotizacion").style.display = "block"
-        } else {
-          document.getElementById("bloqueCotizacion").style.display = "none"
-        }
-
-      })
-
-    document.getElementById("montoCot")
-      .addEventListener("blur", function () {
-
-        let v = this.value.replace(",", ".")
-
-        if (v && !isNaN(v)) {
-          this.value = Number(v).toFixed(2)
-        }
-
-      })
-
-    document.getElementById("montoOV")
-      .addEventListener("blur", function () {
-
-        let v = this.value.replace(",", ".")
-
-        if (v && !isNaN(v)) {
-          this.value = Number(v).toFixed(2)
-        }
-
-      })
-
-    document.getElementById("listaCotizaciones").addEventListener("change", function () {
-
-      const num = this.value
-
-      // reset
-      document.getElementById("estadoPostCot").style.display = "none"
-
-      if (num == "NEW") {
-
-        document.getElementById("bloqueCotizacion").style.display = "block"
-
-        document.getElementById("monedaCot").value = ""
-        document.getElementById("montoCot").value = ""
-        document.getElementById("numCot").value = ""
-        document.getElementById("numCot").readOnly = false
-
-        // estado SIEMPRE al final
-        document.getElementById("estadoPostCot").style.display = "block"
-
-        return
-      }
-
-      if (num) {
-
-        const cot = window.historialLead.find(x => String(x.numCot).trim() == String(num).trim())
-
-        if (cot) {
-
-          document.getElementById("bloqueCotizacion").style.display = "block"
-
-          document.getElementById("monedaCot").value = cot.monedaCot || ""
-          document.getElementById("montoCot").value = cot.montoCot || ""
-          document.getElementById("numCot").value = cot.numCot || ""
-          document.getElementById("numCot").readOnly = true
-
-          // estado al final
-          document.getElementById("estadoPostCot").style.display = "block"
-
-          // ===== CARGAR OVS AUTOMÁTICAMENTE =====
-          const selOV = document.getElementById("listaOV")
-          selOV.innerHTML = ""
-
-          const ovs = [...new Set(window.historialLead
-            .filter(x => x.numOV && String(x.numCot).trim() === String(num).trim())
-            .map(x => x.numOV))]
-
-          if (ovs.length > 0) {
-
-            let op0 = document.createElement("option")
-            op0.text = "N° de Orden de Venta"
-            op0.value = ""
-            selOV.add(op0)
-
-            ovs.forEach(o => {
-              let op = document.createElement("option")
-              op.text = o
-              op.value = o
-              selOV.add(op)
-            })
-
-            let opNew = document.createElement("option")
-            opNew.text = "Nueva Orden de Venta"
-            opNew.value = "NEW"
-            selOV.add(opNew)
-
-            selOV.style.display = "block"
-
-          } else {
-            selOV.style.display = "none"
-          }
-          if (document.getElementById("estadoPostCot").value === "CERRADO") {
-            document.getElementById("bloqueOV").style.display = "block"
-          }
-        }
-
-      }
-
-    })
-
-    document.getElementById("estadoPostCot").addEventListener("change", function () {
-
-      const selOV = document.getElementById("listaOV")
-      selOV.innerHTML = ""
-
-      if (this.value == "CERRADO") {
-        document.getElementById("bloqueOV").style.display = "block"
-
-        if (window.historialLead) {
-
-          const cotSel = document.getElementById("listaCotizaciones").value
-
-          const ovs = [...new Set(window.historialLead
-            .filter(x => x.numOV && String(x.numCot).trim() === String(cotSel).trim())
-            .map(x => x.numOV))]
-
-          if (ovs.length > 0) {
-
-            let op0 = document.createElement("option")
-            op0.text = "N° de Orden de Venta"
-            op0.value = ""
-            selOV.add(op0)
-
-            ovs.forEach(o => {
-              let op = document.createElement("option")
-              op.text = o
-              op.value = o
-              selOV.add(op)
-            })
-
-            let opNew = document.createElement("option")
-            opNew.text = "Nueva Orden de Venta"
-            opNew.value = "NEW"
-            selOV.add(opNew)
-
-            selOV.style.display = "block"
-
-          } else {
-            selOV.style.display = "none"
-          }
-
-        }
-
-      } else {
-        document.getElementById("bloqueOV").style.display = "none"
-      }
-
-    })
-
-    document.getElementById("listaOV").addEventListener("change", function () {
-
-      const numOV = this.value
-
-      if (!numOV || numOV == "NEW") {
-
-        document.getElementById("monedaOV").value = ""
-        document.getElementById("montoOV").value = ""
-        document.getElementById("numOV").value = ""
-        document.getElementById("numOV").readOnly = false
-        return
-
-      }
-
-      const ov = window.historialLead.find(x =>
-        String(x.numOV).trim() === String(numOV).trim()
+    return ContentService
+      .createTextOutput(
+        JSON.stringify({ error: String(err) })
       )
+      .setMimeType(ContentService.MimeType.JSON)
 
-      if (ov) {
+  }
 
-        document.getElementById("monedaOV").value = ov.monedaOV || ""
-        document.getElementById("montoOV").value = ov.montoOV || ""
-        document.getElementById("numOV").value = ov.numOV || ""
-        document.getElementById("numOV").readOnly = true
+}
 
+//Busca el lead + trae historial + arma estructura para el frontend.
+function consultarLeadCRM(id) {
+
+  const ss = SpreadsheetApp.openById("1_1Xk_3P4J38oopm6rQACpiXrR2nDNqgiTb69tFTrgiw")
+
+  const shLeads = ss.getSheetByName("BASE_LEADS")
+  const shGestion = ss.getSheetByName("GESTION_COMERCIAL")
+
+  const dataLeads = shLeads.getDataRange().getValues()
+
+  let lead = null
+
+  for (let i = 1; i < dataLeads.length; i++) {
+
+    if (String(dataLeads[i][0]).trim() == String(id).trim()) {
+
+      lead = {
+        fila: i + 1,
+        id: dataLeads[i][0],
+        fechaLead: Utilities.formatDate(
+          new Date(dataLeads[i][1]),
+          Session.getScriptTimeZone(),
+          "dd/MM/yyyy"
+        ),
+        empresa: dataLeads[i][5],
+        ruc: dataLeads[i][6],
+        contacto: dataLeads[i][7],
+        telefono: dataLeads[i][8],
+        email: dataLeads[i][9],
+        producto: dataLeads[i][10]
       }
 
-    })
+      break
+    }
 
-  </script>
+  }
 
-</body>
+  if (!lead) return null
 
-</html>
+
+  // ===== HISTORIAL =====
+
+  const dataGest = shGestion.getDataRange().getValues()
+
+  let historial = []
+  let asesor = ""
+  let estadoActual = ""
+
+  let cotizaciones = new Set()
+  let ovs = new Set()
+
+  for (let i = dataGest.length - 1; i >= 1; i--) {
+
+    if (String(dataGest[i][0]).trim() == String(id).trim()) {
+
+      let obj = {
+        fila: i + 1,
+        asesor: dataGest[i][1],
+        fecha: Utilities.formatDate(
+          new Date(dataGest[i][2]),
+          Session.getScriptTimeZone(),
+          "dd/MM/yyyy"
+        ),
+
+        hora: Utilities.formatDate(
+          new Date(dataGest[i][3]),
+          Session.getScriptTimeZone(),
+          "HH:mm:ss"
+        ),
+        estado: dataGest[i][4],
+        numCot: dataGest[i][5],
+        monedaCot: dataGest[i][6],
+        montoCot: dataGest[i][7],
+        tcCot: dataGest[i][8],
+        totalCot: dataGest[i][9],
+        numOV: dataGest[i][10],
+        monedaOV: dataGest[i][11],
+        montoOV: dataGest[i][12],
+        tcOV: dataGest[i][13],
+        totalOV: dataGest[i][14],
+        comentario: dataGest[i][15]
+      }
+
+      historial.push(obj)
+
+      if (dataGest[i][1]) asesor = dataGest[i][1]
+      if (dataGest[i][4]) {
+        estadoActual = dataGest[i][4]
+      }
+
+      if (dataGest[i][5]) cotizaciones.add(dataGest[i][5])
+      if (dataGest[i][10]) ovs.add(dataGest[i][10])
+
+    }
+
+  }
+
+  if (!estadoActual) estadoActual = "SIN GESTIONAR"
+
+  return {
+    lead: lead,
+    asesor: asesor,
+    estado: estadoActual,
+    historial: historial,
+    cotizaciones: [...cotizaciones],
+    ovs: [...ovs]
+  }
+
+}
+
+//FUNCAIÓN 2: Valida que no exista ATENDIDO:
+//registra gestión
+//guarda asesor
+//guarda fecha y hora
+//devuelve respuesta al frontend
+
+function registrarAtencionLead(obj) {
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet()
+  const sh = ss.getSheetByName("GESTION_COMERCIAL")
+
+  const data = sh.getDataRange().getValues()
+
+  // ===== VALIDAR ATENDIDO EXISTENTE =====
+
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).trim() === String(obj.id).trim() && data[i][4] == "ATENDIDO") {
+      return { ok: false, msg: "YA_ATENDIDO" }
+    }
+  }
+
+  // ===== FECHA Y HORA =====
+
+  const now = new Date()
+
+  const fecha = Utilities.formatDate(now, "America/Lima", "dd/MM/yyyy")
+  const hora = Utilities.formatDate(now, "America/Lima", "HH:mm:ss")
+
+  // ===== INSERTAR FILA =====
+
+  sh.appendRow([
+    obj.id,
+    obj.asesor,
+    fecha,
+    hora,
+    "ATENDIDO",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ])
+
+  const shLeads = ss.getSheetByName("BASE_LEADS")
+  const dataLeads = shLeads.getDataRange().getValues()
+
+  for (let i = 1; i < dataLeads.length; i++) {
+    if (String(dataLeads[i][0]).trim() === String(obj.id).trim()) {
+      shLeads.getRange(i + 1, 12).setValue("ATENDIDO")
+      break
+    }
+  }
+
+  return { ok: true }
+
+}
+
+//FUNCIÓN 3, esta función:
+//crea nueva cotización
+//o edita una existente
+//calcula total
+//consulta TC automático SUNAT
+//cambia estado maestro a COTIZADO
+
+function crearOActualizarCotizacion(obj) {
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet()
+  const sh = ss.getSheetByName("GESTION_COMERCIAL")
+  const shLeads = ss.getSheetByName("BASE_LEADS")
+
+  const data = sh.getDataRange().getValues()
+
+  if (!obj.asesor) {
+    obj.asesor = obtenerAsesorActual(obj.id)
+  }
+
+  // ===== OBTENER TC DESDE API =====
+
+  let tc = 1
+
+  if (obj.moneda == "USD") {
+
+    try {
+
+      const resp = UrlFetchApp.fetch("https://api.apis.net.pe/v1/tipo-cambio-sunat")
+      const json = JSON.parse(resp.getContentText())
+      tc = json.venta
+
+    } catch (e) {
+      tc = 3.46 // fallback
+    }
+
+  }
+
+  const total = Number(obj.monto) * Number(tc)
+
+  // ===== FECHA HORA =====
+
+  const now = new Date()
+  const fecha = Utilities.formatDate(now, "America/Lima", "dd/MM/yyyy")
+  const hora = Utilities.formatDate(now, "America/Lima", "HH:mm:ss")
+
+  // ===== INSERTAR HISTORIAL COTIZACIÓN =====
+
+  let filaEditar = null
+
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (
+      String(data[i][0]).trim() === String(obj.id).trim() &&
+      String(data[i][5]).trim() === String(obj.numCot).trim()
+    ) {
+      filaEditar = i + 1
+      break
+    }
+  }
+
+  if (filaEditar) {
+
+    sh.getRange(filaEditar, 2).setValue(obj.asesor)
+    sh.getRange(filaEditar, 3).setValue(fecha)
+    sh.getRange(filaEditar, 4).setValue(hora)
+    sh.getRange(filaEditar, 7).setValue(obj.moneda)
+    sh.getRange(filaEditar, 8).setValue(obj.monto)
+    sh.getRange(filaEditar, 9).setValue(tc)
+    sh.getRange(filaEditar, 10).setValue(total)
+
+  } else {
+
+    sh.appendRow([
+      obj.id,
+      obj.asesor,
+      fecha,
+      hora,
+      "COTIZADO",
+      obj.numCot,
+      obj.moneda,
+      obj.monto,
+      tc,
+      total,
+      "", "", "", "", ""
+    ])
+
+  }
+
+  // ===== ACTUALIZAR ESTADO MAESTRO =====
+
+  const dataLeads = shLeads.getDataRange().getValues()
+
+  for (let i = 1; i < dataLeads.length; i++) {
+    if (String(dataLeads[i][0]).trim() === String(obj.id).trim()) {
+      shLeads.getRange(i + 1, 12).setValue("COTIZADO")
+      break
+    }
+  }
+
+  return { ok: true }
+
+}
+
+function obtenerAsesorActual(id) {
+
+  const sh = SpreadsheetApp.getActive().getSheetByName("GESTION_COMERCIAL")
+  const data = sh.getDataRange().getValues()
+
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (String(data[i][0]).trim() === String(id).trim()) {
+      return data[i][1]
+    }
+  }
+
+  return ""
+}
+
+//FUNCIÓN 4 Esta función:
+//valida que exista la cotización
+//toma su moneda
+//consulta TC automático
+//permite múltiples OV
+//cambia estado maestro a CERRADO
+
+function registrarOV(obj) {
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet()
+  const sh = ss.getSheetByName("GESTION_COMERCIAL")
+  const shLeads = ss.getSheetByName("BASE_LEADS")
+
+  const data = sh.getDataRange().getValues()
+
+  if (!obj.asesor) {
+    obj.asesor = obtenerAsesorActual(obj.id)
+  }
+
+  let filaCot = null
+  let monedaCot = null
+
+  // ===== BUSCAR COTIZACION =====
+
+  for (let i = data.length - 1; i >= 1; i--) {
+
+    if (
+      String(data[i][0]).trim() == String(obj.id).trim() &&
+      String(data[i][5]).trim() == String(obj.numCot).trim()
+    ) {
+      filaCot = i + 1
+      monedaCot = data[i][6]
+      break
+    }
+
+  }
+
+  if (!filaCot) return { ok: false, msg: "COT_NO_EXISTE" }
+
+
+  // ===== TC =====
+
+  let tc = 1
+
+  if (monedaCot == "USD") {
+
+    try {
+
+      const resp = UrlFetchApp.fetch("https://api.apis.net.pe/v1/tipo-cambio-sunat")
+      const json = JSON.parse(resp.getContentText())
+      tc = json.venta
+
+    } catch (e) {
+      tc = 3.8
+    }
+
+  }
+
+  const total = Number(obj.monto) * Number(tc)
+
+
+  // ===== FECHA =====
+
+  const now = new Date()
+
+  const fecha = Utilities.formatDate(now, "America/Lima", "dd/MM/yyyy")
+  const hora = Utilities.formatDate(now, "America/Lima", "HH:mm:ss")
+
+
+  // ===== VALIDAR SI EXISTE OV =====
+
+  let filaOV = null
+
+  for (let i = data.length - 1; i >= 1; i--) {
+
+    if (String(data[i][0]).trim() == String(obj.id).trim() &&
+      String(data[i][5]).trim() == String(obj.numCot).trim() &&
+      String(data[i][10]).trim() == String(obj.numOV).trim()) {
+
+      filaOV = i + 1
+      break
+
+    }
+
+  }
+
+
+  // ===== EDITAR =====
+
+  if (filaOV) {
+
+    sh.getRange(filaOV, 3).setValue(fecha)
+    sh.getRange(filaOV, 4).setValue(hora)
+    sh.getRange(filaOV, 12).setValue(obj.monedaOV)
+    sh.getRange(filaOV, 13).setValue(obj.monto)
+    sh.getRange(filaOV, 14).setValue(tc)
+    sh.getRange(filaOV, 15).setValue(total)
+
+    const dataLeads = shLeads.getDataRange().getValues()
+
+    for (let i = 1; i < dataLeads.length; i++) {
+      if (String(dataLeads[i][0]).trim() == String(obj.id).trim()) {
+        shLeads.getRange(i + 1, 12).setValue("CERRADO")
+        break
+      }
+    }
+
+    return { ok: true, modo: "editado" }
+
+  }
+
+  // ===== BUSCAR FILA BASE DE COTIZACIÓN =====
+
+  let filaCotBase = null
+
+  for (let i = data.length - 1; i >= 1; i--) {
+
+    if (
+      String(data[i][0]).trim() === String(obj.id).trim() &&
+      String(data[i][5]).trim() === String(obj.numCot).trim()
+    ) {
+      filaCotBase = i + 1
+      break
+    }
+
+  }
+
+  // VALIDAR SI ESA FILA YA TIENE OV
+  if (!filaCotBase) return { ok: false, msg: "ERROR_COT_BASE" }
+
+  let yaTieneOV = data[filaCotBase - 1][10]
+
+  // ===== CASO 1: PRIMERA OV → MISMA FILA =====
+
+  if (!yaTieneOV) {
+
+    sh.getRange(filaCotBase, 3).setValue(fecha)
+    sh.getRange(filaCotBase, 4).setValue(hora)
+    sh.getRange(filaCotBase, 5).setValue("CERRADO")
+
+    sh.getRange(filaCotBase, 11).setValue(obj.numOV)
+    sh.getRange(filaCotBase, 12).setValue(obj.monedaOV)
+    sh.getRange(filaCotBase, 13).setValue(obj.monto)
+    sh.getRange(filaCotBase, 14).setValue(tc)
+    sh.getRange(filaCotBase, 15).setValue(total)
+
+    const dataLeads = shLeads.getDataRange().getValues()
+
+    for (let i = 1; i < dataLeads.length; i++) {
+      if (String(dataLeads[i][0]).trim() == String(obj.id).trim()) {
+        shLeads.getRange(i + 1, 12).setValue("CERRADO")
+        break
+      }
+    }
+    return { ok: true, modo: "update_cot" }
+
+  }
+
+  // ===== CASO 2: NUEVA OV → NUEVA FILA =====
+
+  sh.appendRow([
+    obj.id,
+    obj.asesor,
+    fecha,
+    hora,
+    "CERRADO",
+    obj.numCot,
+    monedaCot,
+    data[filaCot - 1][7],
+    data[filaCot - 1][8],
+    data[filaCot - 1][9],
+    obj.numOV,
+    obj.monedaOV,
+    obj.monto,
+    tc,
+    total,
+    ""
+  ])
+  // ===== ACTUALIZAR ESTADO MAESTRO =====
+  const dataLeads = shLeads.getDataRange().getValues()
+
+  for (let i = 1; i < dataLeads.length; i++) {
+    if (String(dataLeads[i][0]).trim() == String(obj.id).trim()) {
+      shLeads.getRange(i + 1, 12).setValue("CERRADO")
+      break
+    }
+  }
+
+
+  return { ok: true, modo: "nuevo" }
+
+}
+
+//FUNCIÓN 5 Esta función:
+//valida que no exista OV
+//registra estado PERDIDO
+//guarda comentario
+//actualiza estado maestro
+
+function marcarLeadPerdido(obj) {
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet()
+  const sh = ss.getSheetByName("GESTION_COMERCIAL")
+  const shLeads = ss.getSheetByName("BASE_LEADS")
+
+  const data = sh.getDataRange().getValues()
+
+  // ===== VALIDAR SI EXISTE CIERRE =====
+
+  for (let i = 1; i < data.length; i++) {
+
+    if (String(data[i][0]).trim() === String(obj.id).trim() &&
+      data[i][4] == "CERRADO") {
+
+      return { ok: false, msg: "YA_CERRADO" }
+
+    }
+
+  }
+
+
+  // ===== FECHA =====
+
+  const now = new Date()
+
+  const fecha = Utilities.formatDate(now, "America/Lima", "dd/MM/yyyy")
+  const hora = Utilities.formatDate(now, "America/Lima", "HH:mm:ss")
+
+
+  // ===== REGISTRAR PERDIDO =====
+
+  sh.appendRow([
+    obj.id,
+    obj.asesor,
+    fecha,
+    hora,
+    "PERDIDO",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    obj.comentario
+  ])
+
+
+  // ===== ACTUALIZAR ESTADO MAESTRO =====
+
+  const dataLeads = shLeads.getDataRange().getValues()
+
+  for (let i = 1; i < dataLeads.length; i++) {
+
+    if (String(dataLeads[i][0]).trim() === String(obj.id).trim()) {
+      shLeads.getRange(i + 1, 12).setValue("PERDIDO")
+      break
+    }
+
+  }
+
+  return { ok: true }
+
+}
+
+function doPost(e) {
+
+  const data = JSON.parse(e.postData.contents)
+  let resp = null
+
+  if (data.accion == "consultar") {
+    resp = consultarLeadCRM(data.id)
+  }
+
+  if (data.accion == "atender") {
+    resp = registrarAtencionLead(data)
+  }
+
+  if (data.accion == "cotizar") {
+    resp = crearOActualizarCotizacion(data)
+  }
+
+  if (data.accion == "ov") {
+    resp = registrarOV(data)
+  }
+
+  if (data.accion == "perdido") {
+    resp = marcarLeadPerdido(data)
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify(resp))
+    .setMimeType(ContentService.MimeType.JSON)
+
+}
