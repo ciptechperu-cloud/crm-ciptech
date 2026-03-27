@@ -456,6 +456,35 @@
         document.getElementById("bloqueEstadoAvanzado").style.display = "block"
       }
 
+      if (estado == "CERRADO") {
+
+        document.getElementById("bloqueGestionCot").style.display = "block"
+        document.getElementById("estadoPostCot").style.display = "none"
+        document.getElementById("listaOV").style.display = "none"
+        document.getElementById("bloqueOV").style.display = "none"
+
+        document.getElementById("bloqueAsesor").style.display = "none"
+        document.getElementById("bloqueEstadoInicial").style.display = "none"
+        document.getElementById("bloqueEstadoAvanzado").style.display = "none"
+        document.getElementById("bloqueCotizacion").style.display = "none"
+
+        const sel = document.getElementById("listaCotizaciones")
+        sel.innerHTML = ""
+
+        let op0 = document.createElement("option")
+        op0.text = "N° de Cotización"
+        op0.value = ""
+        sel.add(op0)
+
+        data.cotizaciones.forEach(c => {
+          let op = document.createElement("option")
+          op.text = c
+          op.value = c
+          sel.add(op)
+        })
+
+      }
+
     }
 
     //GUARDAR CAMBIOS
@@ -553,12 +582,12 @@
 
       if (estadoPost == "CERRADO") {
 
-        const numCot = document.getElementById("listaCotizaciones").value
+        const numCot = document.getElementById("listaCotizaciones").value || document.getElementById("numCot").value
         const numOV = document.getElementById("numOV").value
         const montoOV = document.getElementById("montoOV").value
         const monedaOV = document.getElementById("monedaOV").value
 
-        if (!numCot || !numOV || !montoOV || !monedaOV) {
+        if (!numCot || numCot === "NEW" || !numOV || !montoOV || !monedaOV) {
           alert("Complete datos de cierre")
           document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
           document.querySelector(".btnGuardar").disabled = false
@@ -582,7 +611,6 @@
             monedaOV: monedaOV,
             numOV: numOVFinal,
             monto: montoOV,
-            estado: "CERRADO"
           })
         })
           .then(r => r.json())
@@ -593,10 +621,14 @@
               document.getElementById("msgOk").style.display = "block"
               setTimeout(() => {
                 document.getElementById("listaCotizaciones").value = ""
+                document.getElementById("estadoPostCot").value = ""
+                document.getElementById("listaOV").innerHTML = ""
+                document.getElementById("bloqueOV").style.display = "none"
                 buscar()
               }, 1500)
             }
           })
+          console.log(resp)
 
         return
       }
@@ -776,17 +808,18 @@
 
     document.getElementById("estadoPostCot").addEventListener("change", function () {
 
+      const selOV = document.getElementById("listaOV")
+      selOV.innerHTML = ""
+
       if (this.value == "CERRADO") {
         document.getElementById("bloqueOV").style.display = "block"
-        const selOV = document.getElementById("listaOV")
-        selOV.innerHTML = ""
 
         if (window.historialLead) {
 
           const cotSel = document.getElementById("listaCotizaciones").value
 
           const ovs = [...new Set(window.historialLead
-            .filter(x => x.numOV && String(x.numCot) === String(cotSel))
+            .filter(x => x.numOV && String(x.numCot).trim() === String(cotSel).trim())
             .map(x => x.numOV))]
 
           if (ovs.length > 0) {
