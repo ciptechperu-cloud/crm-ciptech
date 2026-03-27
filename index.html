@@ -383,10 +383,6 @@
             "<br>RUC: " + data.lead.ruc +
             "<br>Teléfono: " + data.lead.telefono
 
-          document.getElementById("estado").innerHTML =
-            "Estado Actual: <b>" + data.estado + "</b><br>" +
-            "Asesor: <b>" + (data.asesor || "-") + "</b>"
-
           pintarLead(data)
 
         })
@@ -406,10 +402,16 @@
       document.getElementById("bloqueGestionCot").style.display = "none"
       document.getElementById("zonaGestion").style.display = "block"
 
-      const estado = data.estado
+      let estado = data.estado
+
+      if (data.historial && data.historial.some(x => x.estado === "CERRADO")) {
+        estado = "CERRADO"
+      } else if (data.cotizaciones && data.cotizaciones.length > 0) {
+        estado = "COTIZADO"
+      }
 
       document.getElementById("estado").innerHTML =
-        "Estado Actual: <b>" + data.estado + "</b><br>" +
+        "Estado Actual: <b>" + estado + "</b><br>" +
         "Asesor: <b>" + (data.asesor || "-") + "</b>"
 
       document.getElementById("bloqueAsesor").style.display = "none"
@@ -427,6 +429,9 @@
       sel.innerHTML = ""
 
       if (estado == "COTIZADO" || estado == "CERRADO") {
+
+        document.getElementById("estadoPostCot").style.display = "block"
+        document.getElementById("bloqueGestionCot").style.display = "block" // 👈 AGREGA ESTA
 
         if (estado == "COTIZADO") {
           document.getElementById("bloqueCotizacion").style.display = "block"
@@ -451,14 +456,14 @@
         opNew.value = "NEW"
         sel.add(opNew)
 
-        document.getElementById("bloqueGestionCot").style.display = "block"
-        document.getElementById("bloqueAsesor").style.display = "none"
-        document.getElementById("bloqueEstadoInicial").style.display = "none"
-        document.getElementById("bloqueEstadoAvanzado").style.display = "none"
-        if (estado == "CERRADO") {
-          document.getElementById("estadoPostCot").style.display = "block"
+        if (estado == "SIN GESTIONAR") {
+          document.getElementById("bloqueAsesor").style.display = "block"
+          document.getElementById("bloqueEstadoInicial").style.display = "block"
         }
 
+        if (estado == "ATENDIDO") {
+          document.getElementById("bloqueEstadoAvanzado").style.display = "block"
+        }
       }
 
       if (estado == "ATENDIDO") {
@@ -482,10 +487,7 @@
       if (estadoAvanzado) estadoFinal = estadoAvanzado
 
       // ⭐ FORZAR COTIZADO SI YA ESTÁ EN MODO COTIZACIÓN
-      if (
-        estadoAvanzado == "COTIZADO" ||
-        document.getElementById("listaCotizaciones").value
-      ) {
+      if (estadoAvanzado == "COTIZADO") {
         estadoFinal = "COTIZADO"
       }
 
@@ -563,6 +565,12 @@
       if (estadoPost == "CERRADO") {
 
         const numCot = document.getElementById("listaCotizaciones").value || document.getElementById("numCot").value
+        if (!numCot || numCot === "") {
+          alert("Seleccione cotización")
+          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+          document.querySelector(".btnGuardar").disabled = false
+          return
+        }
         const numOV = document.getElementById("numOV").value
         const montoOV = document.getElementById("montoOV").value
         const monedaOV = document.getElementById("monedaOV").value
@@ -612,6 +620,28 @@
               }, 1500)
             }
             console.log(resp)
+          })
+
+        return
+      }
+
+      //----- Estado perdido
+      if (estadoPost == "PERDIDO") {
+
+        fetch(URL, {
+          method: "POST",
+          body: JSON.stringify({
+            accion: "perdido",
+            id: id,
+            asesor: asesor || null
+          })
+        })
+          .then(r => r.json())
+          .then(resp => {
+            if (resp.ok) {
+              document.getElementById("msgOk").style.display = "block"
+              setTimeout(() => buscar(), 1200)
+            }
           })
 
         return
@@ -691,14 +721,12 @@
 
           if (window.historialLead) {
 
-            const cots = [...new Set(window.historialLead
-              .filter(x => x.numCot)
-              .map(x => x.numCot))]
-
             let op0 = document.createElement("option")
             op0.text = "N° de Cotización"
             op0.value = ""
             sel.add(op0)
+
+            const cots = [...new Set(window.historialLead.map(x => x.numCot).filter(Boolean))]
 
             cots.forEach(c => {
               let op = document.createElement("option")
