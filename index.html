@@ -1,777 +1,858 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>CRM Ciptech</title>
+  <title>CRM Ciptech</title>
 
-<style>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
-*{
-box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
-}
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #e9ecef;
+    }
 
-html,body{
-margin:0;
-padding:0;
-height:100%;
-background:#e9ecef;
-}
-.campo{
-margin-top:14px;
-}
+    .campo {
+      margin-top: 14px;
+    }
 
-select{
-width:100%;
-padding:14px;
-border-radius:14px;
-border:2px solid #3b3b3b;
-font-size:15px;
-background:white;
-}
+    select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: 2px solid #3b3b3b;
+      font-size: 15px;
+      background: white;
+    }
 
-.campo{
-margin-top:14px;
-}
+    .campo {
+      margin-top: 14px;
+    }
 
-#bloqueCotizacion{
-margin-bottom:18px;
-}
+    #bloqueCotizacion {
+      margin-bottom: 18px;
+    }
 
-#bloqueGestionCot select{
-margin-bottom:18px;
-}
+    #bloqueGestionCot select {
+      margin-bottom: 18px;
+    }
 
-#estadoPostCot{
-margin-top:18px;
-}
+    #estadoPostCot {
+      margin-top: 18px;
+    }
 
-#listaCotizaciones{
-margin-bottom:18px;
-}
+    #listaCotizaciones {
+      margin-bottom: 18px;
+    }
 
-/* APP CONTAINER */
+    /* APP CONTAINER */
 
-.app{
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-padding:20px;
-}
+    .app {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
 
-/* CARD */
+    /* CARD */
 
-.card{
-background:white;
-width:100%;
-max-width:420px;
-border-radius:18px;
-padding:28px 22px 32px;
-box-shadow:0 10px 30px rgba(0,0,0,.15);
-text-align:center;
-position:relative;
-}
+    .card {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 18px;
+      padding: 28px 22px 32px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .15);
+      text-align: center;
+      position: relative;
+    }
 
-/* TITULOS */
+    /* TITULOS */
 
-.t1{
-color:#7ED957;
-font-size:22px;
-font-weight:bold;
-margin-bottom:2px;
-}
+    .t1 {
+      color: #7ED957;
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
 
-.t2{
-color:#123E7A;
-font-size:22px;
-font-weight:bold;
-margin-bottom:22px;
-}
+    .t2 {
+      color: #123E7A;
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 22px;
+    }
 
-/* INPUT */
+    /* INPUT */
 
-input{
-width:100%;
-padding:15px;
-border-radius:14px;
-border:2px solid #444;
-font-size:17px;
-margin-bottom:18px;
-outline:none;
-}
+    input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 14px;
+      border: 2px solid #444;
+      font-size: 17px;
+      margin-bottom: 18px;
+      outline: none;
+    }
 
-/* BUTTON */
+    /* BUTTON */
 
-button{
-width:100%;
-padding:16px;
-border:none;
-border-radius:14px;
-background:#1f4a83;
-color:white;
-font-size:17px;
-cursor:pointer;
-transition:.2s;
-}
+    button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      background: #1f4a83;
+      color: white;
+      font-size: 17px;
+      cursor: pointer;
+      transition: .2s;
+    }
 
-button:active{
-transform:scale(.97);
-}
+    button:active {
+      transform: scale(.97);
+    }
 
-#zonaGestion button{
-margin-top:22px;
-}
+    #zonaGestion button {
+      margin-top: 22px;
+    }
 
-.btn-mini{
-position:absolute;
-top:20px;
-right:20px;
-background:#1f4e8c;
-color:#fff;
-border:none;
-padding:6px 10px;
-border-radius:10px;
-font-size:11px;
-cursor:pointer;
-display:none;
-line-height:1.2;
-}
+    .btn-mini {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #1f4e8c;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      cursor: pointer;
+      display: none;
+      line-height: 1.2;
+    }
 
-.btn-mini{
-width:auto !important;
-display:none;
-}
+    .btn-mini {
+      width: auto !important;
+      display: none;
+    }
 
-/* LOADER */
+    /* LOADER */
 
-.loader{
-display:none;
-margin:18px 0;
-}
+    .loader {
+      display: none;
+      margin: 18px 0;
+    }
 
-.spinner{
-width:28px;
-height:28px;
-border:4px solid #ddd;
-border-top:4px solid #1f4a83;
-border-radius:50%;
-animation:spin .8s linear infinite;
-margin:auto;
-}
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 4px solid #ddd;
+      border-top: 4px solid #1f4a83;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+      margin: auto;
+    }
 
-@keyframes spin{
-0%{transform:rotate(0)}
-100%{transform:rotate(360deg)}
-}
+    @keyframes spin {
+      0% {
+        transform: rotate(0)
+      }
 
-/* INFO */
+      100% {
+        transform: rotate(360deg)
+      }
+    }
 
-.box{
-background:#dfe6ef;
-padding:16px;
-border-radius:12px;
-font-weight:bold;
-color:#123E7A;
-margin-top:18px;
-display:none;
-}
+    /* INFO */
 
-.estado{
-margin-top:18px;
-font-size:17px;
-}
+    .box {
+      background: #dfe6ef;
+      padding: 16px;
+      border-radius: 12px;
+      font-weight: bold;
+      color: #123E7A;
+      margin-top: 18px;
+      display: none;
+    }
 
-.msgOk{
-background:#6fd14b;
-color:white;
-padding:14px;
-margin-top:15px;
-border-radius:12px;
-text-align:center;
-font-weight:600;
-}
+    .estado {
+      margin-top: 18px;
+      font-size: 17px;
+    }
 
-/* MOBILE FULL APP */
+    .msgOk {
+      background: #6fd14b;
+      color: white;
+      padding: 14px;
+      margin-top: 15px;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: 600;
+    }
 
-@media(max-width:480px){
+    /* MOBILE FULL APP */
 
-.app{
-align-items:flex-start;
-padding:14px;
-}
+    @media(max-width:480px) {
 
-.card{
-max-width:100%;
-min-height:100vh;
-border-radius:0;
-box-shadow:none;
-padding-top:70px;
-}
+      .app {
+        align-items: flex-start;
+        padding: 14px;
+      }
 
-}
+      .card {
+        max-width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
+        box-shadow: none;
+        padding-top: 70px;
+      }
 
-</style>
+    }
+  </style>
 
 </head>
 
 <body>
 
-<div class="app">
-
-<div class="card">
-
-<div class="t1">Atención Leads</div>
-<div class="t2">MKT Ciptech</div>
+  <div class="app">
+
+    <div class="card">
 
-<!-- BOTON NUEVA BUSQUEDA -->
-<button id="btnBuscarMini" onclick="nuevaBusqueda()" class="btn-mini">
-Buscar Lead
-</button>
+      <div class="t1">Atención Leads</div>
+      <div class="t2">MKT Ciptech</div>
 
-<!-- COLOCAR ID DEL LEAD -->
-<input id="idLead" placeholder="ID Lead">
+      <!-- BOTON NUEVA BUSQUEDA -->
+      <button id="btnBuscarMini" onclick="nuevaBusqueda()" class="btn-mini">
+        Buscar Lead
+      </button>
 
-<!-- BOTON DE BUSCAR LEAD -->
-<button id="btnBuscarLead" onclick="buscar()">Buscar lead</button>
+      <!-- COLOCAR ID DEL LEAD -->
+      <input id="idLead" placeholder="ID Lead">
 
-<div class="loader" id="loader">
-<div class="spinner"></div>
-</div>
+      <!-- BOTON DE BUSCAR LEAD -->
+      <button id="btnBuscarLead" onclick="buscar()">Buscar lead</button>
 
-<div id="info" class="box"></div>
-<div id="estado" class="estado"></div>
+      <div class="loader" id="loader">
+        <div class="spinner"></div>
+      </div>
 
-<!-- DESPLEGABLES -->
-<div id="zonaGestion" style="display:none">
+      <div id="info" class="box"></div>
+      <div id="estado" class="estado"></div>
 
-<div class="boxInfo" id="infoLead"></div>
+      <!-- DESPLEGABLES -->
+      <div id="zonaGestion" style="display:none">
 
-<div id="bloqueAsesor" class="campo">
-<select id="asesor">
-<option value="">Seleccionar Asesor</option>
-<option>Herson Zevallos</option>
-<option>Luz Arone</option>
-<option>Daniel Bravo</option>
-<option>Brayan Martinez</option>
-</select>
-</div>
+        <div class="boxInfo" id="infoLead"></div>
 
-<div id="bloqueEstadoInicial" class="campo">
-<select id="estadoInicial">
-<option value="">Seleccionar Estado</option>
-<option>ATENDIDO</option>
-</select>
-</div>
+        <div id="bloqueAsesor" class="campo">
+          <select id="asesor">
+            <option value="">Seleccionar Asesor</option>
+            <option>Herson Zevallos</option>
+            <option>Luz Arone</option>
+            <option>Daniel Bravo</option>
+            <option>Brayan Martinez</option>
+          </select>
+        </div>
 
-<!-- DROPDOWN DESPUES DE ATENCIÓN -->
-<div id="bloqueEstadoAvanzado" class="campo">
-<select id="estadoAvanzado">
-<option value="">Seleccionar Estado</option>
-<option>COTIZADO</option>
-<option>PERDIDO</option>
-</select>
-</div>
+        <div id="bloqueEstadoInicial" class="campo">
+          <select id="estadoInicial">
+            <option value="">Seleccionar Estado</option>
+            <option>ATENDIDO</option>
+          </select>
+        </div>
 
-<!-- DROPDOWN DESPUES DE COTIZACIÓN -->
-<div id="bloqueGestionCot" class="campo" style="display:none">
+        <!-- DROPDOWN DESPUES DE ATENCIÓN -->
+        <div id="bloqueEstadoAvanzado" class="campo">
+          <select id="estadoAvanzado">
+            <option value="">Seleccionar Estado</option>
+            <option>COTIZADO</option>
+            <option>PERDIDO</option>
+          </select>
+        </div>
 
-<select id="listaCotizaciones"></select>
+        <!-- DROPDOWN DESPUES DE COTIZACIÓN -->
+        <div id="bloqueGestionCot" class="campo" style="display:none">
 
-</div>
+          <select id="listaCotizaciones"></select>
 
-<!-- CAMPOS PARA COTIZACIÓN -->
-<div id="bloqueCotizacion" class="campo" style="display:none">
+        </div>
 
-<select id="monedaCot">
-<option value="">Tipo Moneda</option>
-<option>PEN</option>
-<option>USD</option>
-</select>
+        <!-- CAMPOS PARA COTIZACIÓN -->
+        <div id="bloqueCotizacion" class="campo" style="display:none">
 
-<input id="montoCot" placeholder="Monto de Cotización">
+          <select id="monedaCot">
+            <option value="">Tipo Moneda</option>
+            <option>PEN</option>
+            <option>USD</option>
+          </select>
 
-<input id="numCot" placeholder="N° de Cotización">
+          <input id="montoCot" placeholder="Monto de Cotización">
 
-</div>
+          <input id="numCot" placeholder="N° de Cotización">
 
-<select id="estadoPostCot">
-<option value="">Seleccionar Estado</option>
-<option>CERRADO</option>
-<option>PERDIDO</option>
-</select>
+        </div>
 
-<div id="bloqueOV" class="campo" style="display:none">
-<select id="listaOV" style="display:none"></select>
-<select id="monedaOV">
-<option value="">Tipo Moneda</option>
-<option>PEN</option>
-<option>USD</option>
-</select>
-<input id="montoOV" placeholder="Monto de Cierre">
-<input id="numOV" placeholder="N° Orden de Venta">
-</div>
+        <select id="estadoPostCot">
+          <option value="">Seleccionar Estado</option>
+          <option>CERRADO</option>
+          <option>PERDIDO</option>
+        </select>
 
+        <div id="bloqueOV" class="campo" style="display:none">
+          <select id="listaOV" style="display:none"></select>
+          <select id="monedaOV">
+            <option value="">Tipo Moneda</option>
+            <option>PEN</option>
+            <option>USD</option>
+          </select>
+          <input id="montoOV" placeholder="Monto de Cierre">
+          <input id="numOV" placeholder="N° Orden de Venta">
+        </div>
 
 
-<button class="btnGuardar" onclick="guardar()">Guardar Cambios</button>
-<div id="msgOk" class="msgOk" style="display:none">
-Se guardó con éxito
-</div>
-  
-</div>
 
-</div>
+        <button class="btnGuardar" onclick="guardar()">Guardar Cambios</button>
+        <div id="msgOk" class="msgOk" style="display:none">
+          Se guardó con éxito
+        </div>
 
-</div>
+      </div>
 
-<script>
+    </div>
 
-const URL = "https://script.google.com/macros/s/AKfycbzSc0ncg1rGKUxalwXtaQJ3qMEB0sSBd5lhLs2pUVUcocNYWbd6CkW6HHmtQ4KRQ_dvLw/exec";
+  </div>
 
-let leadActivo = null
+  <script>
 
-//FUNCIÓN BUSCAR - CONSULTA DE LEADS
-function buscar(){
+    const URL = "https://script.google.com/macros/s/AKfycbzSc0ncg1rGKUxalwXtaQJ3qMEB0sSBd5lhLs2pUVUcocNYWbd6CkW6HHmtQ4KRQ_dvLw/exec";
 
-const id = document.getElementById("idLead").value.trim()
+    let leadActivo = null
 
-if(!id){
-alert("Ingrese ID")
-return
-}
+    //FUNCIÓN BUSCAR - CONSULTA DE LEADS
+    function buscar() {
 
-document.getElementById("loader").style.display="block"
+      const id = document.getElementById("idLead").value.trim()
 
-fetch(URL + "?accion=consultar&id=" + id)
+      if (!id) {
+        alert("Ingrese ID")
+        return
+      }
 
-.then(r=>r.json())
+      document.getElementById("loader").style.display = "block"
 
-.then(data=>{
+      fetch(URL + "?accion=consultar&id=" + id)
 
-document.getElementById("loader").style.display="none"
+        .then(r => r.json())
 
-if(!data || !data.lead){
-alert("Lead no encontrado")
-return
-}
+        .then(data => {
 
-window.historialLead = data.historial
+          document.getElementById("loader").style.display = "none"
 
-leadActivo = id
+          if (!data || !data.lead) {
+            alert("Lead no encontrado")
+            return
+          }
 
-// BLOQUEAR ID
-document.getElementById("idLead").readOnly = true
+          window.historialLead = data.historial
 
-// BOTONES
-document.getElementById("btnBuscarLead").style.display="none"
-document.getElementById("btnBuscarMini").style.display="block"
+          leadActivo = id
 
-// INFO
-document.getElementById("info").style.display="block"
-document.getElementById("info").innerHTML =
-"Empresa: " + data.lead.empresa +
-"<br>RUC: " + data.lead.ruc +
-"<br>Teléfono: " + data.lead.telefono
+          // BLOQUEAR ID
+          document.getElementById("idLead").readOnly = true
 
-document.getElementById("estado").innerHTML =
-"Estado Actual: <b>" + data.estado + "</b><br>" +
-"Asesor: <b>" + (data.asesor || "-") + "</b>"
+          // BOTONES
+          document.getElementById("btnBuscarLead").style.display = "none"
+          document.getElementById("btnBuscarMini").style.display = "block"
 
-pintarLead(data)
+          // INFO
+          document.getElementById("info").style.display = "block"
+          document.getElementById("info").innerHTML =
+            "Empresa: " + data.lead.empresa +
+            "<br>RUC: " + data.lead.ruc +
+            "<br>Teléfono: " + data.lead.telefono
 
-})
+          document.getElementById("estado").innerHTML =
+            "Estado Actual: <b>" + data.estado + "</b><br>" +
+            "Asesor: <b>" + (data.asesor || "-") + "</b>"
 
-.catch(()=>{
-document.getElementById("loader").style.display="none"
-alert("Error conexión")
-})
+          pintarLead(data)
 
-}
+        })
 
-//FUNCIÓN PARA MOSTRAR LOS ESTADOS DEL LEAD
-  
-function pintarLead(data){
+        .catch(() => {
+          document.getElementById("loader").style.display = "none"
+          alert("Error conexión")
+        })
 
-document.getElementById("estadoPostCot").style.display = "none"
-document.getElementById("bloqueGestionCot").style.display="none"
-document.getElementById("zonaGestion").style.display="block"
+    }
 
-const estado = data.estado
+    //FUNCIÓN PARA MOSTRAR LOS ESTADOS DEL LEAD
 
-document.getElementById("bloqueAsesor").style.display="none"
-document.getElementById("bloqueEstadoInicial").style.display="none"
-document.getElementById("bloqueEstadoAvanzado").style.display="none"
+    function pintarLead(data) {
 
-if(estado=="SIN GESTIONAR"){
-document.getElementById("bloqueAsesor").style.display="block"
-document.getElementById("bloqueEstadoInicial").style.display="block"
-}
+      document.getElementById("estadoPostCot").style.display = "none"
+      document.getElementById("bloqueGestionCot").style.display = "none"
+      document.getElementById("zonaGestion").style.display = "block"
 
-document.getElementById("bloqueCotizacion").style.display="none"
+      const estado = data.estado
 
-if(data.estado=="COTIZADO"){
+      document.getElementById("bloqueAsesor").style.display = "none"
+      document.getElementById("bloqueEstadoInicial").style.display = "none"
+      document.getElementById("bloqueEstadoAvanzado").style.display = "none"
 
-document.getElementById("bloqueCotizacion").style.display="none"
+      if (estado == "SIN GESTIONAR") {
+        document.getElementById("bloqueAsesor").style.display = "block"
+        document.getElementById("bloqueEstadoInicial").style.display = "block"
+      }
 
-const sel = document.getElementById("listaCotizaciones")
-sel.innerHTML = ""
-sel.value = ""
-sel.selectedIndex = 0
+      document.getElementById("bloqueCotizacion").style.display = "none"
 
-let op0 = document.createElement("option")
-op0.text = "N° de Cotización"
-op0.value = ""
-sel.add(op0)
+      if (data.estado == "COTIZADO") {
 
-data.cotizaciones.forEach(c=>{
-let op = document.createElement("option")
-op.text = c
-op.value = c
-sel.add(op)
-})
+        document.getElementById("bloqueCotizacion").style.display = "none"
 
-let opNew = document.createElement("option")
-opNew.text = "Nueva Cotización"
-opNew.value = "NEW"
-sel.add(opNew)
+        const sel = document.getElementById("listaCotizaciones")
+        sel.innerHTML = ""
+        sel.value = ""
+        sel.selectedIndex = 0
 
-document.getElementById("bloqueGestionCot").style.display="block"
-document.getElementById("bloqueAsesor").style.display="none"
-document.getElementById("bloqueEstadoInicial").style.display="none"
-document.getElementById("bloqueEstadoAvanzado").style.display="none"
+        let op0 = document.createElement("option")
+        op0.text = "N° de Cotización"
+        op0.value = ""
+        sel.add(op0)
 
-}
+        data.cotizaciones.forEach(c => {
+          let op = document.createElement("option")
+          op.text = c
+          op.value = c
+          sel.add(op)
+        })
 
-if(estado=="ATENDIDO"){
-document.getElementById("bloqueEstadoAvanzado").style.display="block"
-}
+        let opNew = document.createElement("option")
+        opNew.text = "Nueva Cotización"
+        opNew.value = "NEW"
+        sel.add(opNew)
 
-}
+        document.getElementById("bloqueGestionCot").style.display = "block"
+        document.getElementById("bloqueAsesor").style.display = "none"
+        document.getElementById("bloqueEstadoInicial").style.display = "none"
+        document.getElementById("bloqueEstadoAvanzado").style.display = "none"
 
-//GUARDAR CAMBIOS
-function guardar(){
+      }
 
-const id = leadActivo
+      if (estado == "ATENDIDO") {
+        document.getElementById("bloqueEstadoAvanzado").style.display = "block"
+      }
 
-const asesor = document.getElementById("asesor").value
-const estadoInicial = document.getElementById("estadoInicial").value
-const estadoAvanzado = document.getElementById("estadoAvanzado").value
+    }
 
-let estadoFinal = ""
+    //GUARDAR CAMBIOS
+    function guardar() {
 
-if(estadoInicial) estadoFinal = estadoInicial
-if(estadoAvanzado) estadoFinal = estadoAvanzado
+      const id = leadActivo
 
-// ⭐ FORZAR COTIZADO SI YA ESTÁ EN MODO COTIZACIÓN
-if(
-estadoAvanzado=="COTIZADO" ||
-document.getElementById("listaCotizaciones").value
-){
-estadoFinal = "COTIZADO"
-}
+      const asesor = document.getElementById("asesor").value
+      const estadoInicial = document.getElementById("estadoInicial").value
+      const estadoAvanzado = document.getElementById("estadoAvanzado").value
 
-const estadoActual = document.getElementById("estado").innerText
+      let estadoFinal = ""
 
-// Solo exigir estado si NO está ya en COTIZADO
-if(!estadoFinal && !estadoActual.includes("COTIZADO")){
-alert("Seleccione estado")
-return
-}
+      if (estadoInicial) estadoFinal = estadoInicial
+      if (estadoAvanzado) estadoFinal = estadoAvanzado
 
-//Sección de Cotizado
-if(estadoFinal=="COTIZADO" || document.getElementById("listaCotizaciones").value){
+      // ⭐ FORZAR COTIZADO SI YA ESTÁ EN MODO COTIZACIÓN
+      if (
+        estadoAvanzado == "COTIZADO" ||
+        document.getElementById("listaCotizaciones").value
+      ) {
+        estadoFinal = "COTIZADO"
+      }
 
-estadoFinal = "COTIZADO" 
+      const estadoActual = document.getElementById("estado").innerText
 
-const moneda = document.getElementById("monedaCot").value
-const monto = document.getElementById("montoCot").value
-const numCot = document.getElementById("numCot").value
-const selCot = document.getElementById("listaCotizaciones").value
+      // Solo exigir estado si NO está ya en COTIZADO
+      if (!estadoFinal && !estadoActual.includes("COTIZADO")) {
+        alert("Seleccione estado")
+        return
+      }
 
+      //Sección de Cotizado
+      if (estadoFinal == "COTIZADO" || document.getElementById("listaCotizaciones").value) {
 
-if(selCot === "NEW"){
-if(!moneda || !monto || !numCot){
-alert("Complete datos cotización")
-return
-}
-}
-//-----Estado Cotizado------
-fetch(URL,{
-method:"POST",
-body:JSON.stringify({
-accion:"cotizar",
-id:id,
-asesor: asesor || null,
-moneda:moneda,
-monto:monto,
-numCot: selCot && selCot !== "NEW"
-        ? selCot
-        : numCot
-})
-})
-.then(r=>r.json())
-.then(resp=>{
-
-if(resp.ok){
-
-document.getElementById("bloqueCotizacion").style.display="none"
-document.getElementById("bloqueGestionCot").style.display="block"
-
-document.getElementById("msgOk").style.display="block"
-
-// REFRESH SOLO SECCIÓN
-setTimeout(()=>{
-document.getElementById("listaCotizaciones").value = ""
-buscar()
-},1500)
-}
-})
-
-.catch(()=>{
-alert("Error al guardar cotización")
-})
-
-return
-}
-
-document.querySelector(".btnGuardar").innerText="Guardando..."
-document.querySelector(".btnGuardar").disabled=true
-
-//-----Estado Cerrado------
-
-const estadoPost = document.getElementById("estadoPostCot").value
-
-if(estadoPost=="CERRADO"){
-
-const numCot = document.getElementById("listaCotizaciones").value
-const numOV = document.getElementById("numOV").value
-const montoOV = document.getElementById("montoOV").value
-const monedaOV = document.getElementById("monedaOV").value
-
-if(!numCot || !numOV || !montoOV || !monedaOV){
-alert("Complete datos de cierre")
-document.querySelector(".btnGuardar").innerText="Guardar Cambios"
-document.querySelector(".btnGuardar").disabled=false
-return
-}
-
-fetch(URL,{
-method:"POST",
-body:JSON.stringify({
-accion:"ov",
-id:id,
-asesor: asesor || null,
-numCot:numCot,
-monedaOV: monedaOV,
-numOV:numOV,
-monto:montoOV
-})
-})
-.then(r=>r.json())
-.then(resp=>{
-document.querySelector(".btnGuardar").innerText="Guardar Cambios"
-document.querySelector(".btnGuardar").disabled=false
-if(resp.ok){
-document.getElementById("msgOk").style.display="block"
-setTimeout(()=>{
-document.getElementById("listaCotizaciones").value = ""
-document.getElementById("listaOV").value = ""
-buscar()
-},1200)
-}
-})
+        estadoFinal = "COTIZADO"
 
-return
-}
+        const moneda = document.getElementById("monedaCot").value
+        const monto = document.getElementById("montoCot").value
+        const numCot = document.getElementById("numCot").value
+        const selCot = document.getElementById("listaCotizaciones").value
 
-//----- Estado atendido
 
-fetch(URL,{
-method:"POST",
-body:JSON.stringify({
-accion:"atender",
-id:id,
-asesor: asesor || null,
-estado:estadoFinal
-})
-})
-.then(r=>r.json())
-.then(resp=>{
-if(resp && resp.ok){
-document.getElementById("msgOk").style.display="block"
-document.getElementById("bloqueCotizacion").style.display="none"
-document.getElementById("bloqueGestionCot").style.display="block"
+        if (selCot === "NEW") {
+          if (!moneda || !monto || !numCot) {
+            alert("Complete datos cotización")
+            return
+          }
+        }
+        //-----Estado Cotizado------
+        fetch(URL, {
+          method: "POST",
+          body: JSON.stringify({
+            accion: "cotizar",
+            id: id,
+            asesor: asesor || null,
+            moneda: moneda,
+            monto: monto,
+            numCot: selCot && selCot !== "NEW"
+              ? selCot
+              : numCot
+          })
+        })
+          .then(r => r.json())
+          .then(resp => {
 
-document.querySelector(".btnGuardar").innerText="Guardar Cambios"
-document.querySelector(".btnGuardar").disabled=false
-// SI ES ATENDIDO → REFRESH APP
-if(estadoFinal == "ATENDIDO"){
-setTimeout(()=>{
-nuevaBusqueda()
-},1200)}}
-else{
-alert("No se pudo guardar")
-}
-})
-.catch(()=>{
-alert("Error conexión")
-document.querySelector(".btnGuardar").innerText="Guardar Cambios"
-document.querySelector(".btnGuardar").disabled=false
-})
+            if (resp.ok) {
 
-}
+              document.getElementById("bloqueCotizacion").style.display = "none"
+              document.getElementById("bloqueGestionCot").style.display = "block"
 
-//Función boton para nueva busqueda
+              document.getElementById("msgOk").style.display = "block"
+
+              // REFRESH SOLO SECCIÓN
+              setTimeout(() => {
+                document.getElementById("listaCotizaciones").value = ""
+                buscar()
+              }, 1500)
+            }
+          })
+
+          .catch(() => {
+            alert("Error al guardar cotización")
+          })
+
+        return
+      }
+
+      document.querySelector(".btnGuardar").innerText = "Guardando..."
+      document.querySelector(".btnGuardar").disabled = true
 
-function nuevaBusqueda(){
+      //-----Estado Cerrado------
+
+      const estadoPost = document.getElementById("estadoPostCot").value
 
-leadActivo = null
+      if (estadoPost == "CERRADO") {
 
-document.getElementById("idLead").readOnly=false
-document.getElementById("idLead").value=""
+        const numCot = document.getElementById("listaCotizaciones").value
+        const numOV = document.getElementById("numOV").value
+        const montoOV = document.getElementById("montoOV").value
+        const monedaOV = document.getElementById("monedaOV").value
 
-document.getElementById("btnBuscarLead").style.display="block"
-document.getElementById("btnBuscarMini").style.display="none"
+        if (!numCot || !numOV || !montoOV || !monedaOV) {
+          alert("Complete datos de cierre")
+          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+          document.querySelector(".btnGuardar").disabled = false
+          return
+        }
 
-document.getElementById("zonaGestion").style.display="none"
-document.getElementById("info").style.display="none"
-document.getElementById("estado").innerHTML=""
-document.getElementById("msgOk").style.display="none"
+        const selOV = document.getElementById("listaOV").value
 
-}
+        const numOVFinal = selOV && selOV !== "NEW"
+          ? selOV
+          : document.getElementById("numOV").value
 
-//sección de Cotizado
-document.getElementById("estadoAvanzado")
-.addEventListener("change",function(){
 
-document.getElementById("estadoPostCot").style.display = "block"
+        fetch(URL, {
+          method: "POST",
+          body: JSON.stringify({
+            accion: "ov",
+            id: id,
+            asesor: asesor || null,
+            numCot: numCot,
+            monedaOV: monedaOV,
+            numOV: numOVFinal,
+            monto: montoOV,
+            estado: "CERRADO"
+          })
+        })
+          .then(r => r.json())
+          .then(resp => {
+            document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+            document.querySelector(".btnGuardar").disabled = false
+            if (resp.ok) {
+              document.getElementById("msgOk").style.display = "block"
+              setTimeout(() => {
+                document.getElementById("listaCotizaciones").value = ""
+                buscar()
+              }, 1500)
+            }
+          })
 
-if(this.value=="COTIZADO"){
-document.getElementById("bloqueCotizacion").style.display="block"
-}else{
-document.getElementById("bloqueCotizacion").style.display="none"
-}
+        return
+      }
 
-})
+      //----- Estado atendido
 
-document.getElementById("montoCot")
-.addEventListener("blur",function(){
+      fetch(URL, {
+        method: "POST",
+        body: JSON.stringify({
+          accion: "atender",
+          id: id,
+          asesor: asesor || null,
+          estado: estadoFinal
+        })
+      })
+        .then(r => r.json())
+        .then(resp => {
+          if (resp && resp.ok) {
+            document.getElementById("msgOk").style.display = "block"
+            document.getElementById("bloqueCotizacion").style.display = "none"
+            document.getElementById("bloqueGestionCot").style.display = "block"
 
-let v = this.value.replace(",",".")
+            document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+            document.querySelector(".btnGuardar").disabled = false
+            // SI ES ATENDIDO → REFRESH APP
+            if (estadoFinal == "ATENDIDO") {
+              setTimeout(() => {
+                nuevaBusqueda()
+              }, 1200)
+            }
+          }
+          else {
+            alert("No se pudo guardar")
+          }
+        })
+        .catch(() => {
+          alert("Error conexión")
+          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+          document.querySelector(".btnGuardar").disabled = false
+        })
 
-if(v && !isNaN(v)){
-this.value = Number(v).toFixed(2)
-}
+    }
 
-})
+    //Función boton para nueva busqueda
 
-document.getElementById("montoOV")
-.addEventListener("blur",function(){
+    function nuevaBusqueda() {
 
-let v = this.value.replace(",", ".")
+      leadActivo = null
 
-if(v && !isNaN(v)){
-this.value = Number(v).toFixed(2)
-}
+      document.getElementById("idLead").readOnly = false
+      document.getElementById("idLead").value = ""
 
-})
+      document.getElementById("btnBuscarLead").style.display = "block"
+      document.getElementById("btnBuscarMini").style.display = "none"
 
-document.getElementById("listaCotizaciones").addEventListener("change",function(){
+      document.getElementById("zonaGestion").style.display = "none"
+      document.getElementById("info").style.display = "none"
+      document.getElementById("estado").innerHTML = ""
+      document.getElementById("msgOk").style.display = "none"
 
-const num = this.value
+    }
 
-// reset
-document.getElementById("estadoPostCot").style.display = "none"
+    //sección de Cotizado
+    document.getElementById("estadoAvanzado")
+      .addEventListener("change", function () {
 
-if(num=="NEW"){
+        document.getElementById("estadoPostCot").style.display = "block"
 
-document.getElementById("bloqueCotizacion").style.display="block"
+        if (this.value == "COTIZADO") {
+          document.getElementById("bloqueCotizacion").style.display = "block"
+        } else {
+          document.getElementById("bloqueCotizacion").style.display = "none"
+        }
 
-document.getElementById("monedaCot").value=""
-document.getElementById("montoCot").value=""
-document.getElementById("numCot").value=""
-document.getElementById("numCot").readOnly=false
+      })
 
-// estado SIEMPRE al final
-document.getElementById("estadoPostCot").style.display="block"
+    document.getElementById("montoCot")
+      .addEventListener("blur", function () {
 
-return
-}
+        let v = this.value.replace(",", ".")
 
-if(num){
+        if (v && !isNaN(v)) {
+          this.value = Number(v).toFixed(2)
+        }
 
-const cot = window.historialLead.find(x=>String(x.numCot).trim()==String(num).trim())
+      })
 
-if(cot){
+    document.getElementById("montoOV")
+      .addEventListener("blur", function () {
 
-document.getElementById("bloqueCotizacion").style.display="block"
+        let v = this.value.replace(",", ".")
 
-document.getElementById("monedaCot").value = cot.monedaCot || ""
-document.getElementById("montoCot").value = cot.montoCot || ""
-document.getElementById("numCot").value = cot.numCot || ""
-document.getElementById("numCot").readOnly = true
+        if (v && !isNaN(v)) {
+          this.value = Number(v).toFixed(2)
+        }
 
-// estado al final
-document.getElementById("estadoPostCot").style.display="block"
+      })
 
-}
+    document.getElementById("listaCotizaciones").addEventListener("change", function () {
 
-}
+      const num = this.value
 
-})
+      // reset
+      document.getElementById("estadoPostCot").style.display = "none"
 
-document.getElementById("estadoPostCot").addEventListener("change",function(){
+      if (num == "NEW") {
 
-if(this.value=="CERRADO"){
-document.getElementById("bloqueOV").style.display="block"
-const selOV = document.getElementById("listaOV")
-selOV.innerHTML = ""
+        document.getElementById("bloqueCotizacion").style.display = "block"
 
-if(window.historialLead){
+        document.getElementById("monedaCot").value = ""
+        document.getElementById("montoCot").value = ""
+        document.getElementById("numCot").value = ""
+        document.getElementById("numCot").readOnly = false
 
-const ovs = [...new Set(window.historialLead
-.filter(x=>x.numOV)
-.map(x=>x.numOV))]
+        // estado SIEMPRE al final
+        document.getElementById("estadoPostCot").style.display = "block"
 
-if(ovs.length > 0){
+        return
+      }
 
-let op0 = document.createElement("option")
-op0.text = "N° de Orden de Venta"
-op0.value = ""
-selOV.add(op0)
+      if (num) {
 
-ovs.forEach(o=>{
-let op = document.createElement("option")
-op.text = o
-op.value = o
-selOV.add(op)
-})
+        const cot = window.historialLead.find(x => String(x.numCot).trim() == String(num).trim())
 
-let opNew = document.createElement("option")
-opNew.text = "Nueva Orden de Venta"
-opNew.value = "NEW"
-selOV.add(opNew)
+        if (cot) {
 
-selOV.style.display="block"
+          document.getElementById("bloqueCotizacion").style.display = "block"
 
-}else{
-selOV.style.display="none"
-}
+          document.getElementById("monedaCot").value = cot.monedaCot || ""
+          document.getElementById("montoCot").value = cot.montoCot || ""
+          document.getElementById("numCot").value = cot.numCot || ""
+          document.getElementById("numCot").readOnly = true
 
-}
+          // estado al final
+          document.getElementById("estadoPostCot").style.display = "block"
 
-}else{
-document.getElementById("bloqueOV").style.display="none"
-}
+          // ===== CARGAR OVS AUTOMÁTICAMENTE =====
+          const selOV = document.getElementById("listaOV")
+          selOV.innerHTML = ""
 
-})
+          const ovs = [...new Set(window.historialLead
+            .filter(x => x.numOV && String(x.numCot).trim() === String(num).trim())
+            .map(x => x.numOV))]
 
-</script>
+          if (ovs.length > 0) {
+
+            let op0 = document.createElement("option")
+            op0.text = "N° de Orden de Venta"
+            op0.value = ""
+            selOV.add(op0)
+
+            ovs.forEach(o => {
+              let op = document.createElement("option")
+              op.text = o
+              op.value = o
+              selOV.add(op)
+            })
+
+            let opNew = document.createElement("option")
+            opNew.text = "Nueva Orden de Venta"
+            opNew.value = "NEW"
+            selOV.add(opNew)
+
+            selOV.style.display = "block"
+
+          } else {
+            selOV.style.display = "none"
+          }
+          if (document.getElementById("estadoPostCot").value === "CERRADO") {
+            document.getElementById("bloqueOV").style.display = "block"
+          }
+        }
+
+      }
+
+    })
+
+    document.getElementById("estadoPostCot").addEventListener("change", function () {
+
+      if (this.value == "CERRADO") {
+        document.getElementById("bloqueOV").style.display = "block"
+        const selOV = document.getElementById("listaOV")
+        selOV.innerHTML = ""
+
+        if (window.historialLead) {
+
+          const cotSel = document.getElementById("listaCotizaciones").value
+
+          const ovs = [...new Set(window.historialLead
+            .filter(x => x.numOV && String(x.numCot) === String(cotSel))
+            .map(x => x.numOV))]
+
+          if (ovs.length > 0) {
+
+            let op0 = document.createElement("option")
+            op0.text = "N° de Orden de Venta"
+            op0.value = ""
+            selOV.add(op0)
+
+            ovs.forEach(o => {
+              let op = document.createElement("option")
+              op.text = o
+              op.value = o
+              selOV.add(op)
+            })
+
+            let opNew = document.createElement("option")
+            opNew.text = "Nueva Orden de Venta"
+            opNew.value = "NEW"
+            selOV.add(opNew)
+
+            selOV.style.display = "block"
+
+          } else {
+            selOV.style.display = "none"
+          }
+
+        }
+
+      } else {
+        document.getElementById("bloqueOV").style.display = "none"
+      }
+
+    })
+
+    document.getElementById("listaOV").addEventListener("change", function () {
+
+      const numOV = this.value
+
+      if (!numOV || numOV == "NEW") {
+
+        document.getElementById("monedaOV").value = ""
+        document.getElementById("montoOV").value = ""
+        document.getElementById("numOV").value = ""
+        document.getElementById("numOV").readOnly = false
+        return
+
+      }
+
+      const ov = window.historialLead.find(x =>
+        String(x.numOV).trim() === String(numOV).trim()
+      )
+
+      if (ov) {
+
+        document.getElementById("monedaOV").value = ov.monedaOV || ""
+        document.getElementById("montoOV").value = ov.montoOV || ""
+        document.getElementById("numOV").value = ov.numOV || ""
+        document.getElementById("numOV").readOnly = true
+
+      }
+
+    })
+
+  </script>
 
 </body>
+
 </html>
