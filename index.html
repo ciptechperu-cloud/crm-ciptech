@@ -366,6 +366,7 @@
           }
 
           window.historialLead = data.historial
+          window.dataOVs = data.ovs
 
           leadActivo = id
 
@@ -815,9 +816,7 @@
           const selOV = document.getElementById("listaOV")
           selOV.innerHTML = ""
 
-          const ovs = [...new Set(window.historialLead
-            .filter(x => x.numOV && String(x.numCot).trim() === String(num).trim())
-            .map(x => x.numOV))]
+          const ovs = (window.dataOVs && window.dataOVs[num]) || []
 
           if (ovs.length > 0) {
 
