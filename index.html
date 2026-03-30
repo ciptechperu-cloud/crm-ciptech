@@ -432,7 +432,22 @@
         op.value = "CERRADO"
         selEstado.add(op)
 
-      } else if (estado === "COTIZADO" || estado === "ATENDIDO") {
+      } // 👉 ATENDIDO
+      else if (estado === "ATENDIDO") {
+
+        let op1 = document.createElement("option")
+        op1.text = "COTIZADO"
+        op1.value = "COTIZADO"
+        selEstado.add(op1)
+
+        let op2 = document.createElement("option")
+        op2.text = "PERDIDO"
+        op2.value = "PERDIDO"
+        selEstado.add(op2)
+      }
+
+      // 👉 COTIZADO
+      else if (estado === "COTIZADO") {
 
         let op1 = document.createElement("option")
         op1.text = "CERRADO"
@@ -443,7 +458,6 @@
         op2.text = "PERDIDO"
         op2.value = "PERDIDO"
         selEstado.add(op2)
-
       }
 
       document.getElementById("estado").innerHTML =
