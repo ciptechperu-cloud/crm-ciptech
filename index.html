@@ -686,12 +686,15 @@
 
       const motivo = document.getElementById("motivoPerdido").value
 
-      if (estadoPost === "PERDIDO" && (!motivo || motivo.trim() === "")) {
+      if (
+        (estadoPost === "PERDIDO" || estadoAvanzado === "PERDIDO") &&
+        (!motivo || motivo.trim() === "")
+      ) {
         alert("Ingrese motivo de pérdida")
         return
       }
 
-      if (estadoPost == "PERDIDO") {
+      if (estadoPost == "PERDIDO" || estadoAvanzado == "PERDIDO") {
 
         fetch(URL, {
           method: "POST",
@@ -707,6 +710,8 @@
             if (resp.ok) {
               document.getElementById("msgOk").style.display = "block"
               setTimeout(() => buscar(), 1200)
+            } else {
+              alert(resp.msg || "No se pudo guardar")
             }
           })
 
