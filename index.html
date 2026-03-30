@@ -775,8 +775,6 @@
     document.getElementById("estadoAvanzado")
       .addEventListener("change", function () {
 
-        document.getElementById("estadoPostCot").style.display = "block"
-
         if (this.value == "COTIZADO") {
 
           document.getElementById("bloqueCotizacion").style.display = "block"
@@ -920,7 +918,9 @@
 
       document.getElementById("bloquePerdido").style.display = "none"
       document.getElementById("bloqueOV").style.display = "none"
-      document.getElementById("bloqueEstadoAvanzado").style.display = "none"
+      if (this.value === "CERRADO") {
+        document.getElementById("bloqueEstadoAvanzado").style.display = "none"
+      }
 
       if (estado === "CERRADO") {
 
