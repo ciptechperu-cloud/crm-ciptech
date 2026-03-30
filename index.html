@@ -405,17 +405,22 @@
 
       let estado = data.estado
 
+      if (data.historial && data.historial.some(x => x.estado === "CERRADO")) {
+        estado = "CERRADO"
+      } else if (data.cotizaciones && data.cotizaciones.length > 0) {
+        estado = "COTIZADO"
+      }
+
       const selEstado = document.getElementById("estadoPostCot")
       selEstado.innerHTML = ""
 
-      // opción default
+      // default
       let op0 = document.createElement("option")
       op0.text = "Seleccionar Estado"
       op0.value = ""
       selEstado.add(op0)
 
-      // SI YA ESTÁ CERRADO → SOLO CERRADO
-      if (estado == "CERRADO") {
+      if (estado === "CERRADO") {
 
         let op = document.createElement("option")
         op.text = "CERRADO"
@@ -424,7 +429,6 @@
 
       } else {
 
-        // opciones normales
         let op1 = document.createElement("option")
         op1.text = "CERRADO"
         op1.value = "CERRADO"
@@ -434,12 +438,6 @@
         op2.text = "PERDIDO"
         op2.value = "PERDIDO"
         selEstado.add(op2)
-      }
-
-      if (data.historial && data.historial.some(x => x.estado === "CERRADO")) {
-        estado = "CERRADO"
-      } else if (data.cotizaciones && data.cotizaciones.length > 0) {
-        estado = "COTIZADO"
       }
 
       document.getElementById("estado").innerHTML =
