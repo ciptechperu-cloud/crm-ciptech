@@ -416,24 +416,15 @@
         estado = "COTIZADO"
       }
 
-      const selEstado = document.getElementById("estadoPostCot")
+      const selEstado = document.getElementById("estadoAvanzado")
       selEstado.innerHTML = ""
 
-      // default
       let op0 = document.createElement("option")
       op0.text = "Seleccionar Estado"
       op0.value = ""
       selEstado.add(op0)
 
-      if (estado === "CERRADO") {
-
-        let op = document.createElement("option")
-        op.text = "CERRADO"
-        op.value = "CERRADO"
-        selEstado.add(op)
-
-      } // 👉 ATENDIDO
-      else if (estado === "ATENDIDO") {
+      if (estado === "ATENDIDO") {
 
         let op1 = document.createElement("option")
         op1.text = "COTIZADO"
@@ -444,10 +435,10 @@
         op2.text = "PERDIDO"
         op2.value = "PERDIDO"
         selEstado.add(op2)
+
       }
 
-      // 👉 COTIZADO
-      else if (estado === "COTIZADO") {
+      if (estado === "COTIZADO") {
 
         let op1 = document.createElement("option")
         op1.text = "CERRADO"
@@ -458,6 +449,7 @@
         op2.text = "PERDIDO"
         op2.value = "PERDIDO"
         selEstado.add(op2)
+
       }
 
       document.getElementById("estado").innerHTML =
@@ -484,8 +476,13 @@
       sel.innerHTML = ""
 
       if (estado == "ATENDIDO") {
+
+        document.getElementById("bloqueEstadoAvanzado").style.display = "block" // 👈 CLAVE
+
         document.getElementById("estadoPostCot").style.display = "none"
         document.getElementById("bloqueGestionCot").style.display = "none"
+        document.getElementById("bloqueCotizacion").style.display = "none"
+
       }
 
       if (estado == "COTIZADO" || estado == "CERRADO") {
