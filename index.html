@@ -484,7 +484,7 @@
       sel.innerHTML = ""
 
       if (estado == "ATENDIDO") {
-        document.getElementById("estadoPostCot").style.display = "block"
+        document.getElementById("estadoPostCot").style.display = "none"
         document.getElementById("bloqueGestionCot").style.display = "none"
       }
 
@@ -941,6 +941,8 @@
       }
 
       if (estado === "COTIZADO") {
+
+        document.getElementById("estadoPostCot").style.display = "none"
 
         document.getElementById("bloqueGestionCot").style.display = "block"
         document.getElementById("bloqueCotizacion").style.display = "block"
