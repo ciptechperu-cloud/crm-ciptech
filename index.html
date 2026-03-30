@@ -777,6 +777,8 @@
 
         if (this.value == "COTIZADO") {
 
+          document.getElementById("bloquePerdido").style.display = "none"
+
           document.getElementById("bloqueCotizacion").style.display = "block"
           document.getElementById("bloqueGestionCot").style.display = "block"
 
@@ -806,9 +808,17 @@
 
           }
 
-        } else {
+        } if (this.value == "PERDIDO") {
+
           document.getElementById("bloqueCotizacion").style.display = "none"
           document.getElementById("bloqueGestionCot").style.display = "none"
+
+          document.getElementById("bloquePerdido").style.display = "block"
+
+        } else if (this.value == "") {
+          document.getElementById("bloqueCotizacion").style.display = "none"
+          document.getElementById("bloqueGestionCot").style.display = "none"
+          document.getElementById("bloquePerdido").style.display = "none"
         }
 
       })
