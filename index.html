@@ -940,6 +940,15 @@
 
       }
 
+      if (estado === "COTIZADO") {
+
+        document.getElementById("bloqueGestionCot").style.display = "block"
+        document.getElementById("bloqueCotizacion").style.display = "block"
+        document.getElementById("bloqueOV").style.display = "none"
+        document.getElementById("bloquePerdido").style.display = "none"
+
+      }
+
     })
 
     document.getElementById("listaOV").addEventListener("change", function () {
