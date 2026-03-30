@@ -454,6 +454,15 @@
       document.getElementById("bloqueEstadoInicial").style.display = "none"
       document.getElementById("bloqueEstadoAvanzado").style.display = "none"
 
+      if (estado === "ATENDIDO" || estado === "COTIZADO") {
+        document.getElementById("bloqueEstadoAvanzado").style.display = "block"
+      }
+
+      // 👇 SI YA ES PERDIDO → NO mostrar nada arriba
+      if (estado === "PERDIDO") {
+        document.getElementById("bloqueEstadoAvanzado").style.display = "none"
+      }
+
       if (estado == "SIN GESTIONAR") {
         document.getElementById("bloqueAsesor").style.display = "block"
         document.getElementById("bloqueEstadoInicial").style.display = "block"
