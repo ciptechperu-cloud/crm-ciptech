@@ -497,7 +497,11 @@
       const estadoActual = document.getElementById("estado").innerText
 
       // Solo exigir estado si NO está ya en COTIZADO
-      if (!estadoFinal && !estadoActual.includes("COTIZADO")) {
+      if (
+        !estadoFinal &&
+        !estadoActual.includes("COTIZADO") &&
+        !estadoActual.includes("CERRADO")
+      ) {
         alert("Seleccione estado")
         return
       }
