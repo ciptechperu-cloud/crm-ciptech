@@ -467,7 +467,7 @@
       if (estado == "COTIZADO" || estado == "CERRADO") {
 
         document.getElementById("estadoPostCot").style.display = "block"
-        document.getElementById("bloqueGestionCot").style.display = "block" // 👈 AGREGA ESTA
+        document.getElementById("bloqueGestionCot").style.display = "block"
 
         if (estado == "COTIZADO") {
           document.getElementById("bloqueCotizacion").style.display = "none"
@@ -499,9 +499,6 @@
           document.getElementById("bloqueEstadoInicial").style.display = "block"
         }
 
-        if (estado == "ATENDIDO") {
-          document.getElementById("bloqueEstadoAvanzado").style.display = "block"
-        }
       }
 
       if (estado == "ATENDIDO") {
@@ -906,6 +903,7 @@
 
       document.getElementById("bloquePerdido").style.display = "none"
       document.getElementById("bloqueOV").style.display = "none"
+      document.getElementById("bloqueEstadoAvanzado").style.display = "none"
 
       if (estado === "CERRADO") {
 
