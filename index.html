@@ -469,6 +469,11 @@
       const sel = document.getElementById("listaCotizaciones")
       sel.innerHTML = ""
 
+      if (estado == "ATENDIDO") {
+        document.getElementById("estadoPostCot").style.display = "block"
+        document.getElementById("bloqueGestionCot").style.display = "none"
+      }
+
       if (estado == "COTIZADO" || estado == "CERRADO") {
 
         document.getElementById("estadoPostCot").style.display = "block"
