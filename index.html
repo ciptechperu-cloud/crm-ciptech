@@ -310,6 +310,11 @@
           <option>PERDIDO</option>
         </select>
 
+        <div id="bloquePerdido" class="campo" style="display:none">
+          <textarea id="motivoPerdido" placeholder="Motivo de pérdida"
+            style="width:100%;padding:14px;border-radius:14px;border:2px solid #444;font-size:15px;"></textarea>
+        </div>
+
         <div id="bloqueOV" class="campo" style="display:none">
           <select id="listaOV" style="display:none"></select>
           <select id="monedaOV">
@@ -427,7 +432,7 @@
         op.value = "CERRADO"
         selEstado.add(op)
 
-      } else {
+      } else if (estado === "COTIZADO" || estado === "ATENDIDO") {
 
         let op1 = document.createElement("option")
         op1.text = "CERRADO"
@@ -438,6 +443,7 @@
         op2.text = "PERDIDO"
         op2.value = "PERDIDO"
         selEstado.add(op2)
+
       }
 
       document.getElementById("estado").innerHTML =
@@ -662,6 +668,14 @@
       document.querySelector(".btnGuardar").disabled = true
 
       //----- Estado perdido
+
+      const motivo = document.getElementById("motivoPerdido").value
+
+      if (estadoPost === "PERDIDO" && (!motivo || motivo.trim() === "")) {
+        alert("Ingrese motivo de pérdida")
+        return
+      }
+
       if (estadoPost == "PERDIDO") {
 
         fetch(URL, {
@@ -669,7 +683,8 @@
           body: JSON.stringify({
             accion: "perdido",
             id: id,
-            asesor: asesor || null
+            asesor: asesor || null,
+            comentario: motivo
           })
         })
           .then(r => r.json())
@@ -721,6 +736,7 @@
         })
 
     }
+
 
     //Función boton para nueva busqueda
 
@@ -886,52 +902,24 @@
 
     document.getElementById("estadoPostCot").addEventListener("change", function () {
 
-      const selOV = document.getElementById("listaOV")
-      selOV.innerHTML = ""
+      const estado = this.value
 
-      if (this.value == "CERRADO") {
-        const selCot = document.getElementById("listaCotizaciones")
+      document.getElementById("bloquePerdido").style.display = "none"
+      document.getElementById("bloqueOV").style.display = "none"
+
+      if (estado === "CERRADO") {
+
         document.getElementById("bloqueCotizacion").style.display = "none"
         document.getElementById("bloqueOV").style.display = "block"
 
-        if (window.historialLead) {
+      }
 
-          const cotSel = document.getElementById("listaCotizaciones").value
+      if (estado === "PERDIDO") {
 
-          const ovs = [...new Set(window.historialLead
-            .filter(x => x.numOV && String(x.numCot).trim() === String(cotSel).trim())
-            .map(x => x.numOV))]
-
-          if (ovs.length > 0) {
-
-            let op0 = document.createElement("option")
-            op0.text = "N° de Orden de Venta"
-            op0.value = ""
-            selOV.add(op0)
-
-            ovs.forEach(o => {
-              let op = document.createElement("option")
-              op.text = o
-              op.value = o
-              selOV.add(op)
-            })
-
-            let opNew = document.createElement("option")
-            opNew.text = "Nueva Orden de Venta"
-            opNew.value = "NEW"
-            selOV.add(opNew)
-
-            selOV.style.display = "block"
-
-          } else {
-            selOV.style.display = "none"
-          }
-
-        }
-
-      } else {
-        document.getElementById("bloqueCotizacion").style.display = "block"
+        document.getElementById("bloqueCotizacion").style.display = "none"
         document.getElementById("bloqueOV").style.display = "none"
+        document.getElementById("bloquePerdido").style.display = "block"
+
       }
 
     })
