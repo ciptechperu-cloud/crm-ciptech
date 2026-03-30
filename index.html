@@ -459,6 +459,7 @@
       document.getElementById("bloqueAsesor").style.display = "none"
       document.getElementById("bloqueEstadoInicial").style.display = "none"
       document.getElementById("bloqueEstadoAvanzado").style.display = "none"
+      document.getElementById("bloquePerdido").style.display = "none"
 
       // 👇 SI YA ES PERDIDO → NO mostrar nada arriba
       if (estado === "PERDIDO") {
@@ -926,7 +927,9 @@
 
       const estado = this.value
 
-      document.getElementById("bloquePerdido").style.display = "none"
+      if (this.value !== "PERDIDO") {
+        document.getElementById("bloquePerdido").style.display = "none"
+      }
       document.getElementById("bloqueOV").style.display = "none"
       if (this.value === "CERRADO") {
         document.getElementById("bloqueEstadoAvanzado").style.display = "none"
