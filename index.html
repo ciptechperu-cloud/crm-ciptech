@@ -437,6 +437,12 @@
           document.getElementById("bloqueCotizacion").style.display = "none"
         }
 
+        if (estado == "CERRADO") {
+          document.getElementById("bloqueCotizacion").style.display = "none"
+        } else {
+          document.getElementById("bloqueCotizacion").style.display = "block"
+        }
+
         let op0 = document.createElement("option")
         op0.text = "N° de Cotización"
         op0.value = ""
@@ -855,6 +861,7 @@
 
       if (this.value == "CERRADO") {
         const selCot = document.getElementById("listaCotizaciones")
+        document.getElementById("bloqueCotizacion").style.display = "none"
         document.getElementById("bloqueOV").style.display = "block"
 
         if (window.historialLead) {
@@ -893,6 +900,7 @@
         }
 
       } else {
+        document.getElementById("bloqueCotizacion").style.display = "block"
         document.getElementById("bloqueOV").style.display = "none"
       }
 
