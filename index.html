@@ -439,8 +439,8 @@
 
         if (estado == "CERRADO") {
           document.getElementById("bloqueCotizacion").style.display = "none"
-        } 
-        
+        }
+
         let op0 = document.createElement("option")
         op0.text = "N° de Cotización"
         op0.value = ""
@@ -501,69 +501,9 @@
         return
       }
 
-      //Sección de Cotizado
-      if (estadoFinal == "COTIZADO" || document.getElementById("listaCotizaciones").value) {
-
-        estadoFinal = "COTIZADO"
-
-        const moneda = document.getElementById("monedaCot").value
-        const monto = document.getElementById("montoCot").value
-        const numCot = document.getElementById("numCot").value
-        const selCot = document.getElementById("listaCotizaciones").value
-
-
-        if (selCot === "NEW") {
-          if (!moneda || !monto || !numCot) {
-            alert("Complete datos cotización")
-            return
-          }
-        }
-        //-----Estado Cotizado------
-        fetch(URL, {
-          method: "POST",
-          body: JSON.stringify({
-            accion: "cotizar",
-            id: id,
-            asesor: asesor || null,
-            moneda: moneda,
-            monto: monto,
-            numCot: selCot && selCot !== "NEW"
-              ? selCot
-              : numCot
-          })
-        })
-          .then(r => r.json())
-          .then(resp => {
-
-            if (resp.ok) {
-
-              document.getElementById("bloqueCotizacion").style.display = "none"
-              document.getElementById("bloqueGestionCot").style.display = "block"
-
-              document.getElementById("msgOk").style.display = "block"
-
-              // REFRESH SOLO SECCIÓN
-              setTimeout(() => {
-                document.getElementById("listaCotizaciones").value = ""
-                buscar()
-              }, 1500)
-            }
-          })
-
-          .catch(() => {
-            alert("Error al guardar cotización")
-          })
-
-        return
-      }
-
-      document.querySelector(".btnGuardar").innerText = "Guardando..."
-      document.querySelector(".btnGuardar").disabled = true
-
-      //-----Estado Cerrado------
-
       const estadoPost = document.getElementById("estadoPostCot").value
 
+      //Sección de CERRADO
       if (estadoPost == "CERRADO") {
 
         const numCot = document.getElementById("listaCotizaciones").value || document.getElementById("numCot").value
@@ -626,6 +566,66 @@
 
         return
       }
+
+
+      //Sección de Cotizado
+      if (estadoFinal == "COTIZADO" && estadoPost !== "CERRADO") {
+
+        estadoFinal = "COTIZADO"
+
+        const moneda = document.getElementById("monedaCot").value
+        const monto = document.getElementById("montoCot").value
+        const numCot = document.getElementById("numCot").value
+        const selCot = document.getElementById("listaCotizaciones").value
+
+
+        if (selCot === "NEW") {
+          if (!moneda || !monto || !numCot) {
+            alert("Complete datos cotización")
+            return
+          }
+        }
+        //-----Estado Cotizado------
+        fetch(URL, {
+          method: "POST",
+          body: JSON.stringify({
+            accion: "cotizar",
+            id: id,
+            asesor: asesor || null,
+            moneda: moneda,
+            monto: monto,
+            numCot: selCot && selCot !== "NEW"
+              ? selCot
+              : numCot
+          })
+        })
+          .then(r => r.json())
+          .then(resp => {
+
+            if (resp.ok) {
+
+              document.getElementById("bloqueCotizacion").style.display = "none"
+              document.getElementById("bloqueGestionCot").style.display = "block"
+
+              document.getElementById("msgOk").style.display = "block"
+
+              // REFRESH SOLO SECCIÓN
+              setTimeout(() => {
+                document.getElementById("listaCotizaciones").value = ""
+                buscar()
+              }, 1500)
+            }
+          })
+
+          .catch(() => {
+            alert("Error al guardar cotización")
+          })
+
+        return
+      }
+
+      document.querySelector(".btnGuardar").innerText = "Guardando..."
+      document.querySelector(".btnGuardar").disabled = true
 
       //----- Estado perdido
       if (estadoPost == "PERDIDO") {
