@@ -854,6 +854,8 @@
       selOV.innerHTML = ""
 
       if (this.value == "CERRADO") {
+        const selCot = document.getElementById("listaCotizaciones")
+        selCot.disabled = true
         document.getElementById("bloqueOV").style.display = "block"
 
         if (window.historialLead) {
@@ -892,6 +894,7 @@
         }
 
       } else {
+        document.getElementById("listaCotizaciones").disabled = false
         document.getElementById("bloqueOV").style.display = "none"
       }
 
