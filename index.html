@@ -451,6 +451,15 @@
         selEstado.add(op2)
 
       }
+      
+      if (estado === "PERDIDO") {
+
+        let op1 = document.createElement("option")
+        op1.text = "COTIZADO"
+        op1.value = "COTIZADO"
+        selEstado.add(op1)
+
+      }
 
       document.getElementById("estado").innerHTML =
         "Estado Actual: <b>" + estado + "</b><br>" +
