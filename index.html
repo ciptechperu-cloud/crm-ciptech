@@ -872,10 +872,15 @@
       // 🔥 SI ESTÁ EN DEFAULT → OCULTAR TODO
       if (num === "") {
 
-        document.getElementById("bloqueCotizacion").style.display = "none"
-        document.getElementById("bloqueGestionCot").style.display = "none"
+        // ❌ NO ocultar el contenedor
+        // document.getElementById("bloqueGestionCot").style.display = "none"
 
-        // opcional limpiar campos
+        // ✅ SOLO ocultar inputs
+        document.getElementById("bloqueCotizacion").style.display = "none"
+        document.getElementById("estadoPostCot").style.display = "none"
+        document.getElementById("bloqueOV").style.display = "none"
+
+        // limpiar campos
         document.getElementById("monedaCot").value = ""
         document.getElementById("montoCot").value = ""
         document.getElementById("numCot").value = ""
