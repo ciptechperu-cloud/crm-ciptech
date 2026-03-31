@@ -410,10 +410,15 @@
 
       let estado = data.estado
 
-      if (data.historial && data.historial.some(x => x.estado === "CERRADO")) {
-        estado = "CERRADO"
-      } else if (data.cotizaciones && data.cotizaciones.length > 0) {
-        estado = "COTIZADO"
+      // 🔴 RESPETAR SI ES PERDIDO
+      if (estado !== "PERDIDO") {
+
+        if (data.historial && data.historial.some(x => x.estado === "CERRADO")) {
+          estado = "CERRADO"
+        } else if (data.cotizaciones && data.cotizaciones.length > 0) {
+          estado = "COTIZADO"
+        }
+
       }
 
       const selEstado = document.getElementById("estadoAvanzado")
@@ -451,7 +456,7 @@
         selEstado.add(op2)
 
       }
-      
+
       if (estado === "PERDIDO") {
 
         let op1 = document.createElement("option")
