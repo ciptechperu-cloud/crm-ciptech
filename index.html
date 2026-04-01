@@ -651,6 +651,9 @@
 
         fetch(URL, {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({
             accion: "ov",
             id: id,
@@ -712,6 +715,9 @@
         //-----Estado Cotizado------
         fetch(URL, {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({
             accion: "cotizar",
             id: id,
@@ -766,6 +772,9 @@
 
         fetch(URL, {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({
             accion: "perdido",
             id: id,
@@ -791,6 +800,9 @@
 
       fetch(URL, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           accion: "atender",
           id: id,
