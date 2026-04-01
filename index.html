@@ -48,12 +48,14 @@
       margin-bottom: 10px;
       background: #7ed957;
       color: #ffffff;
+      font-weight: bolder;
     }
 
     #estadoPostCot {
       margin-top: 10px;
       background: #7ed957;
       color: #ffffff;
+      font-weight: bolder;
     }
 
     #listaCotizaciones {
@@ -335,6 +337,9 @@
 
 
         <button class="btnGuardar" onclick="guardar()">Guardar Cambios</button>
+        <div class="loader" id="loaderGuardar">
+          <div class="spinner"></div>
+        </div>
         <div id="msgOk" class="msgOk" style="display:none">
           Se guardó con éxito
         </div>
@@ -576,6 +581,9 @@
 
       const id = leadActivo
 
+      document.getElementById("loaderGuardar").style.display = "block"
+      document.querySelector(".btnGuardar").style.display = "none"
+
       const asesor = document.getElementById("asesor").value
       const estadoInicial = document.getElementById("estadoInicial").value
       const estadoAvanzado = document.getElementById("estadoAvanzado").value
@@ -599,6 +607,8 @@
         !estadoActual.includes("CERRADO")
       ) {
         alert("Seleccione estado")
+        document.getElementById("loaderGuardar").style.display = "none"
+        document.querySelector(".btnGuardar").style.display = "block"
         return
       }
 
