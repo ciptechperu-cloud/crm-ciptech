@@ -345,6 +345,13 @@
 
     let leadActivo = null
 
+    document.getElementById("idLead").addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault()
+        buscar()
+      }
+    })
+
     //FUNCIÓN BUSCAR - CONSULTA DE LEADS
     function buscar() {
 
