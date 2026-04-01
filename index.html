@@ -394,7 +394,12 @@
       document.getElementById("bloqueOV").style.display = "none"
       document.getElementById("bloquePerdido").style.display = "none"
 
-      fetch(URL + "?accion=consultar&id=" + id)
+      const controller = new AbortController()
+      setTimeout(() => controller.abort(), 8000)
+
+      fetch(URL + "?accion=consultar&id=" + id, {
+        signal: controller.signal
+      })
 
         .then(r => r.json())
 
@@ -430,9 +435,14 @@
 
         })
 
-        .catch(() => {
+        .catch((err) => {
           document.getElementById("loader").style.display = "none"
-          alert("Error conexión")
+
+          if (err.name === "AbortError") {
+            alert("El servidor está tardando demasiado")
+          } else {
+            alert("Error conexión")
+          }
         })
 
     }
