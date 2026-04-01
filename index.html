@@ -632,6 +632,7 @@
           alert("Complete datos de cierre")
           document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
           document.querySelector(".btnGuardar").disabled = false
+          resetGuardarUI()
           return
         }
 
@@ -693,6 +694,7 @@
         if (selCot === "NEW") {
           if (!moneda || !monto || !numCot) {
             alert("Complete datos cotización")
+            resetGuardarUI()
             return
           }
         }
@@ -729,6 +731,7 @@
           })
 
           .catch(() => {
+            resetGuardarUI()
             alert("Error al guardar cotización")
           })
 
@@ -747,6 +750,7 @@
         (!motivo || motivo.trim() === "")
       ) {
         alert("Ingrese motivo de pérdida")
+        resetGuardarUI()
         return
       }
 
@@ -763,6 +767,7 @@
         })
           .then(r => r.json())
           .then(resp => {
+            resetGuardarUI()
             if (resp.ok) {
               document.getElementById("msgOk").style.display = "block"
               setTimeout(() => buscar(), 1200)
@@ -806,6 +811,7 @@
           }
         })
         .catch(() => {
+          resetGuardarUI()
           alert("Error conexión")
           document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
           document.querySelector(".btnGuardar").disabled = false
@@ -1086,6 +1092,16 @@
 
       }
 
+    })
+
+    function resetGuardarUI() {
+      document.getElementById("loaderGuardar").style.display = "none"
+      document.querySelector(".btnGuardar").style.display = "block"
+    }
+
+    document.querySelectorAll("input, select, textarea").forEach(el => {
+      el.addEventListener("input", resetGuardarUI)
+      el.addEventListener("change", resetGuardarUI)
     })
 
   </script>
