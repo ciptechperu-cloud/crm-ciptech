@@ -607,8 +607,7 @@
         !estadoActual.includes("CERRADO")
       ) {
         alert("Seleccione estado")
-        document.getElementById("loaderGuardar").style.display = "none"
-        document.querySelector(".btnGuardar").style.display = "block"
+        resetGuardarUI() // 🔥 USAR SIEMPRE ESTO
         return
       }
 
@@ -620,8 +619,7 @@
         const numCot = document.getElementById("listaCotizaciones").value || document.getElementById("numCot").value
         if (!numCot || numCot === "") {
           alert("Seleccione cotización")
-          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-          document.querySelector(".btnGuardar").disabled = false
+          resetGuardarUI() // 🔥 CLAVE
           return
         }
         const numOV = document.getElementById("numOV").value
@@ -630,9 +628,7 @@
 
         if (!numCot || numCot === "NEW" || !numOV || !montoOV || !monedaOV) {
           alert("Complete datos de cierre")
-          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-          document.querySelector(".btnGuardar").disabled = false
-          resetGuardarUI()
+          resetGuardarUI() // 🔥 FALTA ESTO
           return
         }
 
@@ -657,8 +653,8 @@
         })
           .then(r => r.json())
           .then(resp => {
+            resetGuardarUI()
             document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-            document.querySelector(".btnGuardar").disabled = false
             if (resp.ok) {
               document.getElementById("msgOk").style.display = "block"
               setTimeout(() => {
@@ -674,6 +670,11 @@
               }, 1500)
             }
             console.log(resp)
+          })
+
+          .catch(() => {
+            resetGuardarUI()
+            alert("Error conexión")
           })
 
         return
@@ -714,7 +715,7 @@
         })
           .then(r => r.json())
           .then(resp => {
-
+            resetGuardarUI()
             if (resp.ok) {
 
               document.getElementById("bloqueCotizacion").style.display = "none"
@@ -731,15 +732,12 @@
           })
 
           .catch(() => {
-            resetGuardarUI()
+            resetGuardarUI() // 🔥 FALTA
             alert("Error al guardar cotización")
           })
 
         return
       }
-
-      document.querySelector(".btnGuardar").innerText = "Guardando..."
-      document.querySelector(".btnGuardar").disabled = true
 
       //----- Estado perdido
 
@@ -792,13 +790,13 @@
       })
         .then(r => r.json())
         .then(resp => {
+          resetGuardarUI()
           if (resp && resp.ok) {
             document.getElementById("msgOk").style.display = "block"
             document.getElementById("bloqueCotizacion").style.display = "none"
             document.getElementById("bloqueGestionCot").style.display = "block"
 
             document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-            document.querySelector(".btnGuardar").disabled = false
             // SI ES ATENDIDO → REFRESH APP
             if (estadoFinal == "ATENDIDO") {
               setTimeout(() => {
@@ -811,10 +809,8 @@
           }
         })
         .catch(() => {
-          resetGuardarUI()
+          resetGuardarUI() // 🔥 CLAVE
           alert("Error conexión")
-          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-          document.querySelector(".btnGuardar").disabled = false
         })
 
     }
