@@ -667,6 +667,7 @@
           .then(r => r.json())
           .then(resp => {
             resetGuardarUI()
+            console.log(resp)
             document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
             if (resp.ok) {
               document.getElementById("msgOk").style.display = "block"
@@ -732,6 +733,7 @@
           .then(r => r.json())
           .then(resp => {
             resetGuardarUI()
+            console.log(resp)
             if (resp.ok) {
 
               document.getElementById("bloqueCotizacion").style.display = "none"
@@ -785,6 +787,7 @@
           .then(r => r.json())
           .then(resp => {
             resetGuardarUI()
+            console.log(resp)
             if (resp.ok) {
               document.getElementById("msgOk").style.display = "block"
               setTimeout(() => buscar(), 1200)
@@ -813,6 +816,7 @@
         .then(r => r.json())
         .then(resp => {
           resetGuardarUI()
+          console.log(resp)
           if (resp && resp.ok) {
             document.getElementById("msgOk").style.display = "block"
             document.getElementById("bloqueCotizacion").style.display = "none"
