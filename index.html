@@ -429,8 +429,10 @@
 
       let estado = data.estado
 
-      // 🔴 RESPETAR SI ES PERDIDO
-      if (estado !== "PERDIDO") {
+      // 🔴 PRIORIDAD ABSOLUTA: PERDIDO
+      if (data.estado === "PERDIDO") {
+        estado = "PERDIDO"
+      } else {
 
         if (data.historial && data.historial.some(x => x.estado === "CERRADO")) {
           estado = "CERRADO"
