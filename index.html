@@ -95,14 +95,14 @@
 
     .t1 {
       color: #7ED957;
-      font-size: 22px;
+      font-size: 30px;
       font-weight: bold;
       margin-bottom: 2px;
     }
 
     .t2 {
       color: #123E7A;
-      font-size: 22px;
+      font-size: 25px;
       font-weight: bold;
       margin-bottom: 22px;
     }
@@ -131,6 +131,11 @@
       font-size: 17px;
       cursor: pointer;
       transition: .2s;
+    }
+
+    /* nuevo */
+    button:hover {
+      transform: scale(0.98);
     }
 
     button:active {
@@ -1079,6 +1084,16 @@
       }
 
     })
+
+    document.getElementById("idLead")
+      .addEventListener("keypress", function (e) {
+
+        if (e.key === "Enter") {
+          e.preventDefault()
+          buscar()
+        }
+
+      })
 
   </script>
 
