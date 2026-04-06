@@ -650,13 +650,15 @@
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            accion: "ov",
-            id: id,
-            asesor: asesor || null,
-            numCot: numCot,
-            monedaOV: monedaOV,
-            numOV: numOVFinal,
-            monto: montoOV,
+            data: {
+              accion: "ov",
+              id: id,
+              asesor: asesor || null,
+              numCot: numCot,
+              monedaOV: monedaOV,
+              numOV: numOVFinal,
+              monto: montoOV
+            }
           })
         })
           .then(r => r.json())
@@ -715,14 +717,14 @@
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            accion: "cotizar",
-            id: id,
-            asesor: asesor || null,
-            moneda: moneda,
-            monto: monto,
-            numCot: selCot && selCot !== "NEW"
-              ? selCot
-              : numCot
+            data: {
+              accion: "cotizar",
+              id: id,
+              asesor: asesor || null,
+              moneda: moneda,
+              monto: monto,
+              numCot: selCot && selCot !== "NEW" ? selCot : numCot
+            }
           })
         })
           .then(r => r.json())
@@ -774,10 +776,12 @@
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            accion: "perdido",
-            id: id,
-            asesor: asesor || null,
-            comentario: motivo
+            data: {
+              accion: "perdido",
+              id: id,
+              asesor: asesor || null,
+              comentario: motivo
+            }
           })
         })
           .then(r => r.json())
@@ -791,6 +795,11 @@
               alert(resp.msg || "No se pudo guardar")
             }
           })
+          .catch((err) => {
+            resetGuardarUI()
+            console.error("ERROR REAL:", err)
+            alert("Error conexión")
+          })
 
         return
       }
@@ -803,10 +812,12 @@
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          accion: "atender",
-          id: id,
-          asesor: asesor || null,
-          estado: estadoFinal
+          data: {
+            accion: "atender",
+            id: id,
+            asesor: asesor || null,
+            estado: estadoFinal
+          }
         })
       })
         .then(r => r.json())
