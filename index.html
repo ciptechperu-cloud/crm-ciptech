@@ -402,6 +402,10 @@
 
           document.getElementById("loader").style.display = "none"
 
+          if (typeof data.lead === "string") {
+            data.lead = JSON.parse(data.lead)
+          }
+
           if (!data || !data.lead) {
             alert("Lead no encontrado")
             return
