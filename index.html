@@ -30,10 +30,9 @@
       width: 100%;
       padding: 14px;
       border-radius: 14px;
-      border: 1px solid #3b3b3b;
+      border: 2px solid #3b3b3b;
       font-size: 15px;
       background: white;
-      margin-bottom: 10px;
     }
 
     .campo {
@@ -46,16 +45,10 @@
 
     #bloqueGestionCot select {
       margin-bottom: 10px;
-      background: #7ed957;
-      color: #ffffff;
-      font-weight: bolder;
     }
 
     #estadoPostCot {
       margin-top: 10px;
-      background: #7ed957;
-      color: #ffffff;
-      font-weight: bolder;
     }
 
     #listaCotizaciones {
@@ -107,7 +100,7 @@
       width: 100%;
       padding: 15px;
       border-radius: 14px;
-      border: 1px solid #444;
+      border: 2px solid #444;
       font-size: 17px;
       margin-bottom: 18px;
       outline: none;
@@ -197,7 +190,6 @@
     .estado {
       margin-top: 18px;
       font-size: 17px;
-      color: #1f4a83;
     }
 
     .msgOk {
@@ -337,9 +329,6 @@
 
 
         <button class="btnGuardar" onclick="guardar()">Guardar Cambios</button>
-        <div class="loader" id="loaderGuardar">
-          <div class="spinner"></div>
-        </div>
         <div id="msgOk" class="msgOk" style="display:none">
           Se guardó con éxito
         </div>
@@ -402,10 +391,6 @@
 
           document.getElementById("loader").style.display = "none"
 
-          if (typeof data.lead === "string") {
-            data.lead = JSON.parse(data.lead)
-          }
-
           if (!data || !data.lead) {
             alert("Lead no encontrado")
             return
@@ -434,14 +419,9 @@
 
         })
 
-        .catch((err) => {
+        .catch(() => {
           document.getElementById("loader").style.display = "none"
-
-          if (err.name === "AbortError") {
-            alert("El servidor está tardando demasiado")
-          } else {
-            alert("Error conexión")
-          }
+          alert("Error conexión")
         })
 
     }
@@ -590,9 +570,6 @@
 
       const id = leadActivo
 
-      document.getElementById("loaderGuardar").style.display = "block"
-      document.querySelector(".btnGuardar").style.display = "none"
-
       const asesor = document.getElementById("asesor").value
       const estadoInicial = document.getElementById("estadoInicial").value
       const estadoAvanzado = document.getElementById("estadoAvanzado").value
@@ -616,7 +593,6 @@
         !estadoActual.includes("CERRADO")
       ) {
         alert("Seleccione estado")
-        resetGuardarUI() // 🔥 USAR SIEMPRE ESTO
         return
       }
 
@@ -628,7 +604,8 @@
         const numCot = document.getElementById("listaCotizaciones").value || document.getElementById("numCot").value
         if (!numCot || numCot === "") {
           alert("Seleccione cotización")
-          resetGuardarUI() // 🔥 CLAVE
+          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+          document.querySelector(".btnGuardar").disabled = false
           return
         }
         const numOV = document.getElementById("numOV").value
@@ -637,7 +614,8 @@
 
         if (!numCot || numCot === "NEW" || !numOV || !montoOV || !monedaOV) {
           alert("Complete datos de cierre")
-          resetGuardarUI() // 🔥 FALTA ESTO
+          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+          document.querySelector(".btnGuardar").disabled = false
           return
         }
 
@@ -650,26 +628,20 @@
 
         fetch(URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
           body: JSON.stringify({
-            data: {
-              accion: "ov",
-              id: id,
-              asesor: asesor || null,
-              numCot: numCot,
-              monedaOV: monedaOV,
-              numOV: numOVFinal,
-              monto: montoOV
-            }
+            accion: "ov",
+            id: id,
+            asesor: asesor || null,
+            numCot: numCot,
+            monedaOV: monedaOV,
+            numOV: numOVFinal,
+            monto: montoOV,
           })
         })
           .then(r => r.json())
           .then(resp => {
-            resetGuardarUI()
-            console.log(resp)
             document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+            document.querySelector(".btnGuardar").disabled = false
             if (resp.ok) {
               document.getElementById("msgOk").style.display = "block"
               setTimeout(() => {
@@ -687,11 +659,6 @@
             console.log(resp)
           })
 
-          .catch((err) => {
-            resetGuardarUI()
-            console.error("ERROR REAL:", err)
-            alert("Error conexión")
-          })
         return
       }
 
@@ -710,31 +677,26 @@
         if (selCot === "NEW") {
           if (!moneda || !monto || !numCot) {
             alert("Complete datos cotización")
-            resetGuardarUI()
             return
           }
         }
         //-----Estado Cotizado------
         fetch(URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
           body: JSON.stringify({
-            data: {
-              accion: "cotizar",
-              id: id,
-              asesor: asesor || null,
-              moneda: moneda,
-              monto: monto,
-              numCot: selCot && selCot !== "NEW" ? selCot : numCot
-            }
+            accion: "cotizar",
+            id: id,
+            asesor: asesor || null,
+            moneda: moneda,
+            monto: monto,
+            numCot: selCot && selCot !== "NEW"
+              ? selCot
+              : numCot
           })
         })
           .then(r => r.json())
           .then(resp => {
-            resetGuardarUI()
-            console.log(resp)
+
             if (resp.ok) {
 
               document.getElementById("bloqueCotizacion").style.display = "none"
@@ -750,14 +712,15 @@
             }
           })
 
-          .catch((err) => {
-            resetGuardarUI()
-            console.error("ERROR REAL:", err)
-            alert("Error conexión")
+          .catch(() => {
+            alert("Error al guardar cotización")
           })
 
         return
       }
+
+      document.querySelector(".btnGuardar").innerText = "Guardando..."
+      document.querySelector(".btnGuardar").disabled = true
 
       //----- Estado perdido
 
@@ -768,7 +731,6 @@
         (!motivo || motivo.trim() === "")
       ) {
         alert("Ingrese motivo de pérdida")
-        resetGuardarUI()
         return
       }
 
@@ -776,33 +738,21 @@
 
         fetch(URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
           body: JSON.stringify({
-            data: {
-              accion: "perdido",
-              id: id,
-              asesor: asesor || null,
-              comentario: motivo
-            }
+            accion: "perdido",
+            id: id,
+            asesor: asesor || null,
+            comentario: motivo
           })
         })
           .then(r => r.json())
           .then(resp => {
-            resetGuardarUI()
-            console.log(resp)
             if (resp.ok) {
               document.getElementById("msgOk").style.display = "block"
               setTimeout(() => buscar(), 1200)
             } else {
               alert(resp.msg || "No se pudo guardar")
             }
-          })
-          .catch((err) => {
-            resetGuardarUI()
-            console.error("ERROR REAL:", err)
-            alert("Error conexión")
           })
 
         return
@@ -812,28 +762,22 @@
 
       fetch(URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
         body: JSON.stringify({
-          data: {
-            accion: "atender",
-            id: id,
-            asesor: asesor || null,
-            estado: estadoFinal
-          }
+          accion: "atender",
+          id: id,
+          asesor: asesor || null,
+          estado: estadoFinal
         })
       })
         .then(r => r.json())
         .then(resp => {
-          resetGuardarUI()
-          console.log(resp)
           if (resp && resp.ok) {
             document.getElementById("msgOk").style.display = "block"
             document.getElementById("bloqueCotizacion").style.display = "none"
             document.getElementById("bloqueGestionCot").style.display = "block"
 
             document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+            document.querySelector(".btnGuardar").disabled = false
             // SI ES ATENDIDO → REFRESH APP
             if (estadoFinal == "ATENDIDO") {
               setTimeout(() => {
@@ -845,10 +789,10 @@
             alert("No se pudo guardar")
           }
         })
-        .catch((err) => {
-          resetGuardarUI()
-          console.error("ERROR REAL:", err)
+        .catch(() => {
           alert("Error conexión")
+          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+          document.querySelector(".btnGuardar").disabled = false
         })
 
     }
@@ -1126,16 +1070,6 @@
 
       }
 
-    })
-
-    function resetGuardarUI() {
-      document.getElementById("loaderGuardar").style.display = "none"
-      document.querySelector(".btnGuardar").style.display = "block"
-    }
-
-    document.querySelectorAll("input, select, textarea").forEach(el => {
-      el.addEventListener("input", resetGuardarUI)
-      el.addEventListener("change", resetGuardarUI)
     })
 
   </script>
