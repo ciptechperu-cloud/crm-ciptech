@@ -48,11 +48,18 @@
     }
 
     #estadoPostCot {
-      margin-top: 10px;
+      font-weight: bold;
+      background: #3168b2;
+      color: #fff;
+
     }
 
     #listaCotizaciones {
       margin-bottom: 18px;
+      font-weight: bold;
+      background: #3168b2;
+      color: #fff;
+
     }
 
     /* APP CONTAINER */
@@ -102,7 +109,7 @@
       border-radius: 14px;
       border: 2px solid #444;
       font-size: 17px;
-      margin-bottom: 18px;
+      margin: 10px 0;
       outline: none;
     }
 
@@ -190,6 +197,7 @@
     .estado {
       margin-top: 18px;
       font-size: 17px;
+      color: #123E7A;
     }
 
     .msgOk {
@@ -269,7 +277,7 @@
         <div id="bloqueEstadoInicial" class="campo">
           <select id="estadoInicial">
             <option value="">Seleccionar Estado</option>
-            <option>ATENDIDO</option>
+            <option>ATENDIDO 🟡</option>
           </select>
         </div>
 
@@ -277,8 +285,8 @@
         <div id="bloqueEstadoAvanzado" class="campo">
           <select id="estadoAvanzado">
             <option value="">Seleccionar Estado</option>
-            <option>COTIZADO</option>
-            <option>PERDIDO</option>
+            <option>COTIZADO 🔵</option>
+            <option>PERDIDO 🔴</option>
           </select>
         </div>
 
@@ -306,8 +314,8 @@
 
         <select id="estadoPostCot">
           <option value="">Seleccionar Estado</option>
-          <option>CERRADO</option>
-          <option>PERDIDO</option>
+          <option>CERRADO 🟢</option>
+          <option>PERDIDO 🔴</option>
         </select>
 
         <div id="bloquePerdido" class="campo" style="display:none">
