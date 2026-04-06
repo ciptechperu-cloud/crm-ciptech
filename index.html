@@ -44,11 +44,11 @@
     }
 
     #bloqueGestionCot select {
-      margin-bottom: 18px;
+      margin-bottom: 10px;
     }
 
     #estadoPostCot {
-      margin-top: 18px;
+      margin-top: 10px;
     }
 
     #listaCotizaciones {
@@ -356,6 +356,25 @@
       }
 
       document.getElementById("loader").style.display = "block"
+
+      // 🔥 RESET TOTAL UI + MEMORIA
+      window.historialLead = []
+      window.dataOVs = {}
+
+      document.getElementById("listaCotizaciones").innerHTML = ""
+      document.getElementById("listaOV").innerHTML = ""
+
+      document.getElementById("monedaCot").value = ""
+      document.getElementById("montoCot").value = ""
+      document.getElementById("numCot").value = ""
+
+      document.getElementById("monedaOV").value = ""
+      document.getElementById("montoOV").value = ""
+      document.getElementById("numOV").value = ""
+
+      document.getElementById("bloqueCotizacion").style.display = "none"
+      document.getElementById("bloqueOV").style.display = "none"
+      document.getElementById("bloquePerdido").style.display = "none"
 
       fetch(URL + "?accion=consultar&id=" + id)
 
@@ -789,6 +808,22 @@
       document.getElementById("estado").innerHTML = ""
       document.getElementById("msgOk").style.display = "none"
 
+      window.historialLead = []
+      window.dataOVs = {}
+
+      // limpiar selects
+      document.getElementById("listaCotizaciones").innerHTML = ""
+      document.getElementById("listaOV").innerHTML = ""
+
+      // limpiar inputs
+      document.getElementById("monedaCot").value = ""
+      document.getElementById("montoCot").value = ""
+      document.getElementById("numCot").value = ""
+
+      document.getElementById("monedaOV").value = ""
+      document.getElementById("montoOV").value = ""
+      document.getElementById("numOV").value = ""
+
     }
 
     //sección de Cotizado
@@ -868,6 +903,25 @@
     document.getElementById("listaCotizaciones").addEventListener("change", function () {
 
       const num = this.value
+
+      // 🔥 SI ESTÁ EN DEFAULT → OCULTAR TODO
+      if (num === "") {
+
+        // ❌ NO ocultar el contenedor
+        // document.getElementById("bloqueGestionCot").style.display = "none"
+
+        // ✅ SOLO ocultar inputs
+        document.getElementById("bloqueCotizacion").style.display = "none"
+        document.getElementById("estadoPostCot").style.display = "none"
+        document.getElementById("bloqueOV").style.display = "none"
+
+        // limpiar campos
+        document.getElementById("monedaCot").value = ""
+        document.getElementById("montoCot").value = ""
+        document.getElementById("numCot").value = ""
+
+        return
+      }
 
       // reset
       document.getElementById("estadoPostCot").style.display = "none"
