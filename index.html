@@ -394,12 +394,7 @@
       document.getElementById("bloqueOV").style.display = "none"
       document.getElementById("bloquePerdido").style.display = "none"
 
-      const controller = new AbortController()
-      setTimeout(() => controller.abort(), 8000)
-
-      fetch(URL + "?accion=consultar&id=" + id, {
-        signal: controller.signal
-      })
+      fetch(URL + "?accion=consultar&id=" + id)
 
         .then(r => r.json())
 
