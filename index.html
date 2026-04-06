@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
- 
+
 <head>
 
   <meta charset="UTF-8">
@@ -666,6 +666,20 @@
         const numCot = document.getElementById("numCot").value
         const selCot = document.getElementById("listaCotizaciones").value
 
+        let numCotFinal = ""
+
+        if (selCot === "NEW") {
+          numCotFinal = numCot
+        } else if (selCot) {
+          numCotFinal = selCot
+        } else {
+          numCotFinal = numCot
+        }
+
+        if (!numCotFinal || numCotFinal.trim() === "") {
+          alert("Número de cotización inválido")
+          return
+        }
 
         if (selCot === "NEW") {
           if (!moneda || !monto || !numCot) {
@@ -673,6 +687,7 @@
             return
           }
         }
+
         //-----Estado Cotizado------
         fetch(URL, {
           method: "POST",
@@ -682,9 +697,7 @@
             asesor: asesor || null,
             moneda: moneda,
             monto: monto,
-            numCot: selCot && selCot !== "NEW"
-              ? selCot
-              : numCot
+            numCot: numCotFinal
           })
         })
           .then(r => r.json())
@@ -702,9 +715,10 @@
                 document.getElementById("listaCotizaciones").value = ""
                 buscar()
               }, 1500)
+            } else {
+              alert(resp.msg || "No se pudo guardar")
             }
           })
-
           .catch(() => {
             alert("Error al guardar cotización")
           })
