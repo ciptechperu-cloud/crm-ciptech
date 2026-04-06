@@ -430,17 +430,7 @@
       let estado = data.estado
 
       // 🔴 PRIORIDAD ABSOLUTA: PERDIDO
-      if (data.estado === "PERDIDO") {
-        estado = "PERDIDO"
-      } else {
-
-        if (data.historial && data.historial.some(x => x.estado === "CERRADO")) {
-          estado = "CERRADO"
-        } else if (data.cotizaciones && data.cotizaciones.length > 0) {
-          estado = "COTIZADO"
-        }
-
-      }
+      estado = data.estado
 
       const selEstado = document.getElementById("estadoAvanzado")
       selEstado.innerHTML = ""
