@@ -44,11 +44,11 @@
     }
 
     #bloqueGestionCot select {
-      margin-bottom: 10px;
+      margin-bottom: 18px;
     }
 
     #estadoPostCot {
-      margin-top: 10px;
+      margin-top: 18px;
     }
 
     #listaCotizaciones {
@@ -357,25 +357,6 @@
 
       document.getElementById("loader").style.display = "block"
 
-      // 🔥 RESET TOTAL UI + MEMORIA
-      window.historialLead = []
-      window.dataOVs = {}
-
-      document.getElementById("listaCotizaciones").innerHTML = ""
-      document.getElementById("listaOV").innerHTML = ""
-
-      document.getElementById("monedaCot").value = ""
-      document.getElementById("montoCot").value = ""
-      document.getElementById("numCot").value = ""
-
-      document.getElementById("monedaOV").value = ""
-      document.getElementById("montoOV").value = ""
-      document.getElementById("numOV").value = ""
-
-      document.getElementById("bloqueCotizacion").style.display = "none"
-      document.getElementById("bloqueOV").style.display = "none"
-      document.getElementById("bloquePerdido").style.display = "none"
-
       fetch(URL + "?accion=consultar&id=" + id)
 
         .then(r => r.json())
@@ -666,20 +647,6 @@
         const numCot = document.getElementById("numCot").value
         const selCot = document.getElementById("listaCotizaciones").value
 
-        let numCotFinal = ""
-
-        if (selCot === "NEW") {
-          numCotFinal = numCot
-        } else if (selCot) {
-          numCotFinal = selCot
-        } else {
-          numCotFinal = numCot
-        }
-
-        if (!numCotFinal || numCotFinal.trim() === "") {
-          alert("Número de cotización inválido")
-          return
-        }
 
         if (selCot === "NEW") {
           if (!moneda || !monto || !numCot) {
@@ -687,7 +654,6 @@
             return
           }
         }
-
         //-----Estado Cotizado------
         fetch(URL, {
           method: "POST",
@@ -697,7 +663,9 @@
             asesor: asesor || null,
             moneda: moneda,
             monto: monto,
-            numCot: numCotFinal
+            numCot: selCot && selCot !== "NEW"
+              ? selCot
+              : numCot
           })
         })
           .then(r => r.json())
@@ -715,11 +683,9 @@
                 document.getElementById("listaCotizaciones").value = ""
                 buscar()
               }, 1500)
-            } else {
-              alert("Error: " + (resp.msg || "No se pudo guardar"))
-              console.log(resp)
             }
           })
+
           .catch(() => {
             alert("Error al guardar cotización")
           })
@@ -759,8 +725,7 @@
               document.getElementById("msgOk").style.display = "block"
               setTimeout(() => buscar(), 1200)
             } else {
-              alert("Error: " + (resp.msg || "No se pudo guardar"))
-              console.log(resp)
+              alert(resp.msg || "No se pudo guardar")
             }
           })
 
@@ -823,22 +788,6 @@
       document.getElementById("info").style.display = "none"
       document.getElementById("estado").innerHTML = ""
       document.getElementById("msgOk").style.display = "none"
-
-      window.historialLead = []
-      window.dataOVs = {}
-
-      // limpiar selects
-      document.getElementById("listaCotizaciones").innerHTML = ""
-      document.getElementById("listaOV").innerHTML = ""
-
-      // limpiar inputs
-      document.getElementById("monedaCot").value = ""
-      document.getElementById("montoCot").value = ""
-      document.getElementById("numCot").value = ""
-
-      document.getElementById("monedaOV").value = ""
-      document.getElementById("montoOV").value = ""
-      document.getElementById("numOV").value = ""
 
     }
 
@@ -919,25 +868,6 @@
     document.getElementById("listaCotizaciones").addEventListener("change", function () {
 
       const num = this.value
-
-      // 🔥 SI ESTÁ EN DEFAULT → OCULTAR TODO
-      if (num === "") {
-
-        // ❌ NO ocultar el contenedor
-        // document.getElementById("bloqueGestionCot").style.display = "none"
-
-        // ✅ SOLO ocultar inputs
-        document.getElementById("bloqueCotizacion").style.display = "none"
-        document.getElementById("estadoPostCot").style.display = "none"
-        document.getElementById("bloqueOV").style.display = "none"
-
-        // limpiar campos
-        document.getElementById("monedaCot").value = ""
-        document.getElementById("montoCot").value = ""
-        document.getElementById("numCot").value = ""
-
-        return
-      }
 
       // reset
       document.getElementById("estadoPostCot").style.display = "none"
