@@ -716,7 +716,8 @@
                 buscar()
               }, 1500)
             } else {
-              alert(resp.msg || "No se pudo guardar")
+              alert("Error: " + (resp.msg || "No se pudo guardar"))
+              console.log(resp)
             }
           })
           .catch(() => {
@@ -758,7 +759,8 @@
               document.getElementById("msgOk").style.display = "block"
               setTimeout(() => buscar(), 1200)
             } else {
-              alert(resp.msg || "No se pudo guardar")
+              alert("Error: " + (resp.msg || "No se pudo guardar"))
+              console.log(resp)
             }
           })
 
