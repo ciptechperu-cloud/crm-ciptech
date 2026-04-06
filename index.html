@@ -590,6 +590,8 @@
       }
 
       const estadoPost = document.getElementById("estadoPostCot").value
+      // 🔥 SI NO SELECCIONA NADA, ASUMIR FLUJO COTIZACIÓN
+      const estadoPostFinal = estadoPost || "COTIZADO"
 
       //Sección de CERRADO
       if (estadoPost == "CERRADO") {
@@ -657,7 +659,10 @@
 
 
       //Sección de Cotizado
-      if (estadoFinal == "COTIZADO" && estadoPost !== "CERRADO") {
+      if (
+        (estadoFinal == "COTIZADO" || estadoActual.includes("CERRADO")) &&
+        estadoPostFinal !== "CERRADO"
+      ) {
 
         estadoFinal = "COTIZADO"
 
@@ -667,12 +672,16 @@
         const selCot = document.getElementById("listaCotizaciones").value
 
 
-        if (selCot === "NEW") {
-          if (!moneda || !monto || !numCot) {
-            alert("Complete datos cotización")
-            return
-          }
+        // 🔥 DEFINIR FUERA (CLAVE)
+        const cotFinal = selCot && selCot !== "NEW"
+          ? selCot
+          : numCot
+
+        if (!cotFinal || !moneda || !monto) {
+          alert("Complete datos cotización")
+          return
         }
+
         //-----Estado Cotizado------
         fetch(URL, {
           method: "POST",
@@ -682,9 +691,7 @@
             asesor: asesor || null,
             moneda: moneda,
             monto: monto,
-            numCot: selCot && selCot !== "NEW"
-              ? selCot
-              : numCot
+            numCot: cotFinal
           })
         })
           .then(r => r.json())
@@ -702,6 +709,8 @@
                 document.getElementById("listaCotizaciones").value = ""
                 buscar()
               }, 1500)
+            } else {
+              alert("No se pudo guardar")
             }
           })
 
