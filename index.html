@@ -686,11 +686,11 @@
             console.log(resp)
           })
 
-          .catch(() => {
+          .catch((err) => {
             resetGuardarUI()
+            console.error("ERROR REAL:", err)
             alert("Error conexión")
           })
-
         return
       }
 
@@ -749,9 +749,10 @@
             }
           })
 
-          .catch(() => {
-            resetGuardarUI() // 🔥 FALTA
-            alert("Error al guardar cotización")
+          .catch((err) => {
+            resetGuardarUI()
+            console.error("ERROR REAL:", err)
+            alert("Error conexión")
           })
 
         return
@@ -834,8 +835,9 @@
             alert("No se pudo guardar")
           }
         })
-        .catch(() => {
-          resetGuardarUI() // 🔥 CLAVE
+        .catch((err) => {
+          resetGuardarUI()
+          console.error("ERROR REAL:", err)
           alert("Error conexión")
         })
 
