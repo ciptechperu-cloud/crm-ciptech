@@ -39,13 +39,13 @@
       margin-top: 14px;
     }
 
-    #asesor{
+    #asesor {
       font-weight: bold;
       background: #3168b2;
       color: #fff;
     }
 
-    #estadoInicial{
+    #estadoInicial {
       font-weight: bold;
       background: #3168b2;
       color: #fff;
@@ -407,6 +407,14 @@
       document.getElementById("bloqueOV").style.display = "none"
       document.getElementById("bloquePerdido").style.display = "none"
 
+      document.getElementById("msgOk").style.display = "none"
+      document.getElementById("estadoPostCot").value = ""
+
+      // 🔥 FALTANTES (CLAVE)
+      document.getElementById("estadoAvanzado").value = ""
+      document.getElementById("estadoInicial").value = ""
+      document.getElementById("asesor").value = ""
+
       fetch(URL + "?accion=consultar&id=" + id)
 
         .then(r => r.json())
@@ -702,6 +710,10 @@
 
         if (!cotFinal || !moneda || !monto) {
           alert("Complete datos cotización")
+
+          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+          document.querySelector(".btnGuardar").disabled = false
+
           return
         }
 
@@ -739,6 +751,8 @@
 
           .catch(() => {
             alert("Error al guardar cotización")
+            document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+            document.querySelector(".btnGuardar").disabled = false
           })
 
         return
@@ -756,6 +770,10 @@
         (!motivo || motivo.trim() === "")
       ) {
         alert("Ingrese motivo de pérdida")
+
+        document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+        document.querySelector(".btnGuardar").disabled = false
+
         return
       }
 
@@ -777,6 +795,8 @@
               setTimeout(() => buscar(), 1200)
             } else {
               alert(resp.msg || "No se pudo guardar")
+              document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+              document.querySelector(".btnGuardar").disabled = false
             }
           })
 
@@ -855,6 +875,19 @@
       document.getElementById("monedaOV").value = ""
       document.getElementById("montoOV").value = ""
       document.getElementById("numOV").value = ""
+
+      // 🔥 RESET COMPLETO DE ESTADOS
+      document.getElementById("estadoPostCot").value = ""
+      document.getElementById("estadoAvanzado").value = ""
+      document.getElementById("estadoInicial").value = ""
+      document.getElementById("asesor").value = ""
+
+      // ocultar bloques
+      document.getElementById("bloqueCotizacion").style.display = "none"
+      document.getElementById("bloqueGestionCot").style.display = "none"
+      document.getElementById("bloqueOV").style.display = "none"
+      document.getElementById("bloquePerdido").style.display = "none"
+      document.getElementById("estadoPostCot").style.display = "none"
 
     }
 
