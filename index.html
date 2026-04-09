@@ -700,16 +700,51 @@
 
         const moneda = document.getElementById("monedaCot").value
         const monto = document.getElementById("montoCot").value
+
+        let montoLimpio = monto.replace(",", ".").trim()
+
+        if (isNaN(montoLimpio) || montoLimpio === "") {
+          alert("Monto inválido")
+
+          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+          document.querySelector(".btnGuardar").disabled = false
+
+          return
+        }
+
+        montoLimpio = Number(montoLimpio)
+
         const numCot = document.getElementById("numCot").value
         const selCot = document.getElementById("listaCotizaciones").value
 
 
         // 🔥 DEFINIR FUERA (CLAVE)
-        const cotFinal = selCot && selCot !== "NEW"
-          ? selCot
-          : numCot
+        let cotFinal = ""
 
-        if (!cotFinal || !moneda || !monto) {
+        if (selCot && selCot !== "NEW") {
+          cotFinal = selCot
+        } else if (numCot) {
+          cotFinal = numCot.trim()
+        }
+
+        if (!cotFinal) {
+          alert("Número de cotización inválido")
+
+          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+          document.querySelector(".btnGuardar").disabled = false
+
+          return
+        }
+
+        console.log({
+          cotFinal,
+          selCot,
+          numCot,
+          moneda,
+          monto
+        })
+
+        if (!cotFinal || !moneda || !montoLimpio) {
           alert("Complete datos cotización")
 
           document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
@@ -726,7 +761,7 @@
             id: id,
             asesor: asesor || null,
             moneda: moneda,
-            monto: monto,
+            monto: montoLimpio,
             numCot: cotFinal
           })
         })
@@ -749,7 +784,7 @@
                 buscar()
               }, 1500)
             } else {
-              alert("No se pudo guardar")
+              alert(resp.msg || "No se pudo guardar")
             }
           })
 
@@ -835,7 +870,7 @@
             }
           }
           else {
-            alert("No se pudo guardar")
+            alert(resp.msg || "No se pudo guardar")
           }
         })
         .catch(() => {
