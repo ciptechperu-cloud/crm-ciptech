@@ -845,6 +845,10 @@
       //----- Estado atendido
 
       if (estadoActual.includes("COTIZADO") || estadoActual.includes("CERRADO")) {
+
+        document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+        document.querySelector(".btnGuardar").disabled = false
+
         console.warn("Bloqueado flujo ATENDER innecesario")
         return
       }
