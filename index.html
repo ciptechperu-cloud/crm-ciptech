@@ -744,7 +744,7 @@
           monto
         })
 
-        if (!cotFinal || !moneda || !montoLimpio) {
+        if (!cotFinal || !moneda || montoLimpio === "" || montoLimpio === null || isNaN(montoLimpio)) {
           alert("Complete datos cotización")
 
           document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
@@ -752,6 +752,14 @@
 
           return
         }
+
+        // 👇 AQUÍ VA EL LOG (CLAVE)
+        console.log("DATA FINAL:", {
+          cotFinal,
+          moneda,
+          montoLimpio,
+          tipoMonto: typeof montoLimpio
+        })
 
         //-----Estado Cotizado------
         fetch(URL, {
