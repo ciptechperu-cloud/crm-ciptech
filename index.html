@@ -733,6 +733,9 @@
           .then(r => r.json())
           .then(resp => {
 
+            document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+            document.querySelector(".btnGuardar").disabled = false
+
             if (resp.ok) {
 
               document.getElementById("bloqueCotizacion").style.display = "none"
