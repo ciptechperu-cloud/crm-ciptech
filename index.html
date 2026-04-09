@@ -692,8 +692,9 @@
 
       //Sección de Cotizado
       if (
-        (estadoFinal == "COTIZADO" || estadoActual.includes("CERRADO")) &&
-        estadoPostFinal !== "CERRADO"
+        estadoFinal === "COTIZADO" ||
+        estadoActual.includes("COTIZADO") ||
+        estadoActual.includes("CERRADO")
       ) {
 
         estadoFinal = "COTIZADO"
