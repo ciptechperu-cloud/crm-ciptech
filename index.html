@@ -854,11 +854,14 @@
 
       if (estadoActual.includes("COTIZADO") || estadoActual.includes("CERRADO")) {
 
-        document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-        document.querySelector(".btnGuardar").disabled = false
+        if (estadoPostFinal !== "COTIZADO" && estadoPostFinal !== "CERRADO") {
 
-        console.warn("Bloqueado flujo ATENDER innecesario")
-        return
+          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
+          document.querySelector(".btnGuardar").disabled = false
+
+          console.warn("Bloqueado flujo ATENDER innecesario")
+          return
+        }
       }
 
       fetch(URL, {
