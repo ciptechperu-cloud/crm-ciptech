@@ -844,6 +844,11 @@
 
       //----- Estado atendido
 
+      if (estadoActual.includes("COTIZADO") || estadoActual.includes("CERRADO")) {
+        console.warn("Bloqueado flujo ATENDER innecesario")
+        return
+      }
+
       fetch(URL, {
         method: "POST",
         body: JSON.stringify({
