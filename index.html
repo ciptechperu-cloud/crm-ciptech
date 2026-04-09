@@ -864,6 +864,16 @@
         }
       }
 
+      // 🚫 BLOQUE REAL (NO ROMPE NADA)
+      if (
+        estadoActual.includes("ATENDIDO") ||
+        estadoActual.includes("COTIZADO") ||
+        estadoActual.includes("CERRADO")
+      ) {
+        console.warn("ATENDER BLOQUEADO (ya gestionado)")
+        return
+      }
+
       fetch(URL, {
         method: "POST",
         body: JSON.stringify({
