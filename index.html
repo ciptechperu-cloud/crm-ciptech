@@ -615,15 +615,50 @@
 
       // Solo exigir estado si NO está ya en COTIZADO
       if (
-        estadoFinal === "COTIZADO" &&
-        estadoAvanzado !== "PERDIDO" &&
-        estadoPost !== "PERDIDO"
+        !estadoFinal &&
+        !estadoActual.includes("COTIZADO") &&
+        !estadoActual.includes("CERRADO")
       ) {
         alert("Seleccione estado")
         return
       }
 
       const estadoPost = document.getElementById("estadoPostCot").value
+      
+
+      // 🔴 PRIORIDAD ABSOLUTA: PERDIDO (ANTES DE TODO)
+      if (estadoPost == "PERDIDO" || estadoAvanzado == "PERDIDO") {
+
+        const motivo = document.getElementById("motivoPerdido").value
+
+        if (!motivo || motivo.trim() === "") {
+          alert("Ingrese motivo de pérdida")
+          return
+        }
+
+        fetch(URL, {
+          method: "POST",
+          body: JSON.stringify({
+            accion: "perdido",
+            id: id,
+            asesor: asesor || null,
+            comentario: motivo
+          })
+        })
+          .then(r => r.json())
+          .then(resp => {
+            if (resp.ok) {
+              document.getElementById("msgOk").style.display = "block"
+              setTimeout(() => buscar(), 1200)
+            } else {
+              alert(resp.msg || "No se pudo guardar")
+            }
+          })
+
+        return
+      }
+
+
       // 🔥 SI NO SELECCIONA NADA, ASUMIR FLUJO COTIZACIÓN
       const estadoPostFinal = estadoPost || "COTIZADO"
 
@@ -694,9 +729,9 @@
 
       //Sección de Cotizado
       if (
-        estadoFinal === "COTIZADO" ||
-        estadoActual.includes("COTIZADO") ||
-        estadoActual.includes("CERRADO")
+        estadoFinal === "COTIZADO" &&
+        estadoAvanzado !== "PERDIDO" &&
+        estadoPost !== "PERDIDO"
       ) {
 
         estadoFinal = "COTIZADO"
@@ -813,45 +848,6 @@
 
       //----- Estado perdido
 
-      const motivo = document.getElementById("motivoPerdido").value
-
-      if (
-        (estadoPost === "PERDIDO" || estadoAvanzado === "PERDIDO") &&
-        (!motivo || motivo.trim() === "")
-      ) {
-        alert("Ingrese motivo de pérdida")
-
-        document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-        document.querySelector(".btnGuardar").disabled = false
-
-        return
-      }
-
-      if (estadoPost == "PERDIDO" || estadoAvanzado == "PERDIDO") {
-
-        fetch(URL, {
-          method: "POST",
-          body: JSON.stringify({
-            accion: "perdido",
-            id: id,
-            asesor: asesor || null,
-            comentario: motivo
-          })
-        })
-          .then(r => r.json())
-          .then(resp => {
-            if (resp.ok) {
-              document.getElementById("msgOk").style.display = "block"
-              setTimeout(() => buscar(), 1200)
-            } else {
-              alert(resp.msg || "No se pudo guardar")
-              document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-              document.querySelector(".btnGuardar").disabled = false
-            }
-          })
-
-        return
-      }
 
       //----- Estado atendido
 
