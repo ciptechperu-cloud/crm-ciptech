@@ -295,10 +295,6 @@
             <option>Daniel Bravo</option>
             <option>Kris Cruz</option>
             <option>Brayan Martinez</option>
-            <option>Sofía Panduro</option>
-            <option>Jose Apolitano</option>
-            <option>Alex Dávila</option>
-            <option>Julio Blanco</option>
             <option>MKT</option>
           </select>
         </div>
@@ -628,7 +624,7 @@
       }
 
       const estadoPost = document.getElementById("estadoPostCot").value
-      
+
 
       // 🔴 PRIORIDAD ABSOLUTA: PERDIDO (ANTES DE TODO)
       if (estadoPost == "PERDIDO" || estadoAvanzado == "PERDIDO") {
@@ -733,7 +729,7 @@
 
       //Sección de Cotizado
       if (
-        estadoFinal === "COTIZADO" &&
+        (estadoFinal === "COTIZADO" || estadoActual.includes("COTIZADO")) &&
         estadoAvanzado !== "PERDIDO" &&
         estadoPost !== "PERDIDO"
       ) {
