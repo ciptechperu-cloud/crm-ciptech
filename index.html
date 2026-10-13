@@ -233,6 +233,35 @@
       font-weight: 600;
     }
 
+    /* ESTADO DE CARGA CRM */
+    .crm-status {
+      display: none;
+      margin: 14px 0 0;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #edf3fb;
+      color: #123e7a;
+      font-size: 14px;
+      line-height: 1.4;
+      text-align: left;
+    }
+
+    .crm-status[data-type="error"] {
+      background: #fff0f0;
+      color: #a32424;
+    }
+
+    .crm-status[data-type="success"] {
+      background: #ecf8e9;
+      color: #256a29;
+    }
+
+    button:disabled {
+      opacity: 0.68;
+      cursor: wait;
+      transform: none !important;
+    }
+
     /* MOBILE FULL APP */
 
     @media(max-width:480px) {
@@ -278,6 +307,8 @@
       <div class="loader" id="loader">
         <div class="spinner"></div>
       </div>
+
+      <div id="crmStatus" class="crm-status" role="status" aria-live="polite"></div>
 
       <div id="info" class="box"></div>
       <div id="estado" class="estado"></div>
@@ -392,88 +423,130 @@
 
     let leadActivo = null
 
+    let crmBuscando = false;
+
+    function crmMensaje(texto, tipo = "info") {
+      const elemento = document.getElementById("crmStatus");
+
+      elemento.textContent = texto;
+      elemento.dataset.type = tipo;
+      elemento.style.display = texto ? "block" : "none";
+    }
+
+    function crmEstadoBusqueda(activa) {
+      crmBuscando = activa;
+
+      const boton = document.getElementById("btnBuscarLead");
+      const campo = document.getElementById("idLead");
+
+      boton.disabled = activa;
+      campo.disabled = activa;
+
+      boton.textContent = activa ? "Buscando..." : "Buscar lead";
+
+      if (activa) {
+        crmMensaje("Buscando el lead, por favor espera...", "info");
+      }
+    }
+
     //FUNCIÓN BUSCAR - CONSULTA DE LEADS
+
     function buscar() {
 
-      const id = document.getElementById("idLead").value.trim()
+      if (crmBuscando) return;
+
+      const id = document.getElementById("idLead").value.trim();
 
       if (!id) {
-        alert("Ingrese ID")
-        return
+        crmMensaje("Ingresa un ID de lead para realizar la búsqueda.", "error");
+        document.getElementById("idLead").focus();
+        return;
       }
 
-      document.getElementById("loader").style.display = "block"
+      crmEstadoBusqueda(true);
+      document.getElementById("loader").style.display = "block";
 
-      // 🔥 RESET TOTAL UI + MEMORIA
-      window.historialLead = []
-      window.dataOVs = {}
+      // RESET TOTAL UI + MEMORIA
+      window.historialLead = [];
+      window.dataOVs = {};
 
-      document.getElementById("listaCotizaciones").innerHTML = ""
-      document.getElementById("listaOV").innerHTML = ""
+      document.getElementById("listaCotizaciones").innerHTML = "";
+      document.getElementById("listaOV").innerHTML = "";
 
-      document.getElementById("monedaCot").value = ""
-      document.getElementById("montoCot").value = ""
-      document.getElementById("numCot").value = ""
+      document.getElementById("monedaCot").value = "";
+      document.getElementById("montoCot").value = "";
+      document.getElementById("numCot").value = "";
 
-      document.getElementById("monedaOV").value = ""
-      document.getElementById("montoOV").value = ""
-      document.getElementById("numOV").value = ""
+      document.getElementById("monedaOV").value = "";
+      document.getElementById("montoOV").value = "";
+      document.getElementById("numOV").value = "";
 
-      document.getElementById("bloqueCotizacion").style.display = "none"
-      document.getElementById("bloqueOV").style.display = "none"
-      document.getElementById("bloquePerdido").style.display = "none"
+      document.getElementById("bloqueCotizacion").style.display = "none";
+      document.getElementById("bloqueOV").style.display = "none";
+      document.getElementById("bloquePerdido").style.display = "none";
 
-      document.getElementById("msgOk").style.display = "none"
-      document.getElementById("estadoPostCot").value = ""
+      document.getElementById("msgOk").style.display = "none";
+      document.getElementById("estadoPostCot").value = "";
 
-      // 🔥 FALTANTES (CLAVE)
-      document.getElementById("estadoAvanzado").value = ""
-      document.getElementById("estadoInicial").value = ""
-      document.getElementById("asesor").value = ""
+      document.getElementById("estadoAvanzado").value = "";
+      document.getElementById("estadoInicial").value = "";
+      document.getElementById("asesor").value = "";
 
-      fetch(URL + "?accion=consultar&id=" + id)
+      fetch(URL + "?accion=consultar&id=" + encodeURIComponent(id))
 
-        .then(r => r.json())
+        .then(r => {
+          if (!r.ok) throw new Error("HTTP " + r.status);
+          return r.json();
+        })
 
         .then(data => {
 
-          document.getElementById("loader").style.display = "none"
-
           if (!data || !data.lead) {
-            alert("Lead no encontrado")
-            return
+            crmMensaje("No se encontró un lead con el ID ingresado.", "error");
+            return;
           }
 
-          window.historialLead = data.historial
-          window.dataOVs = data.ovs
+          window.historialLead = data.historial;
+          window.dataOVs = data.ovs;
 
-          leadActivo = id
+          leadActivo = id;
 
           // BLOQUEAR ID
-          document.getElementById("idLead").readOnly = true
+          document.getElementById("idLead").readOnly = true;
 
           // BOTONES
-          document.getElementById("btnBuscarLead").style.display = "none"
-          document.getElementById("btnBuscarMini").style.display = "block"
+          document.getElementById("btnBuscarLead").style.display = "none";
+          document.getElementById("btnBuscarMini").style.display = "block";
 
-          // INFO
-          document.getElementById("info").style.display = "block"
+          // INFORMACIÓN DEL LEAD
+          document.getElementById("info").style.display = "block";
           document.getElementById("info").innerHTML =
             "Empresa: " + data.lead.empresa +
             "<br>RUC: " + data.lead.ruc +
             "<br>Teléfono: " + data.lead.telefono +
-            "<br>Origen: " + (data.lead.origen || "-")
+            "<br>Origen: " + (data.lead.origen || "-");
 
-          pintarLead(data)
+          pintarLead(data);
+
+          crmMensaje("", "info");
 
         })
 
-        .catch(() => {
-          document.getElementById("loader").style.display = "none"
-          alert("Error conexión")
+        .catch(error => {
+          console.error("Error al consultar lead:", error);
+          crmMensaje(
+            "No se pudo completar la búsqueda. Verifica tu conexión e inténtalo nuevamente.",
+            "error"
+          );
         })
+
+        .finally(() => {
+          document.getElementById("loader").style.display = "none";
+          crmEstadoBusqueda(false);
+        });
 
     }
+
 
     //FUNCIÓN PARA MOSTRAR LOS ESTADOS DEL LEAD
 
