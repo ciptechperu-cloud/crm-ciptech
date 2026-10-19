@@ -415,10 +415,19 @@
 
     function crmEstadoGuardado(activo) {
       const boton = document.querySelector(".btnGuardar");
+      const controlesContexto = [
+        document.getElementById("asesor"),
+        document.getElementById("idLead"),
+        document.getElementById("btnBuscarLead"),
+        document.getElementById("btnBuscarMini")
+      ];
 
       crmGuardando = activo;
       boton.disabled = activo;
       boton.textContent = activo ? "Guardando..." : "Guardar Cambios";
+      controlesContexto.forEach(control => {
+        if (control) control.disabled = activo;
+      });
 
       if (activo) {
         crmMensaje(
