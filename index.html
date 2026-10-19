@@ -223,16 +223,6 @@
       color: #123E7A;
     }
 
-    .msgOk {
-      background: #6fd14b;
-      color: white;
-      padding: 14px;
-      margin-top: 15px;
-      border-radius: 12px;
-      text-align: center;
-      font-weight: 600;
-    }
-
     /* ESTADO DE CARGA CRM */
     .crm-status {
       display: none;
@@ -407,10 +397,6 @@
 
 
         <button class="btnGuardar" onclick="guardar()">Guardar Cambios</button>
-        <div id="msgOk" class="msgOk" style="display:none">
-          Se guardó con éxito
-        </div>
-
       </div>
 
     </div>
@@ -502,7 +488,6 @@
       document.getElementById("bloqueOV").style.display = "none";
       document.getElementById("bloquePerdido").style.display = "none";
 
-      document.getElementById("msgOk").style.display = "none";
       document.getElementById("estadoPostCot").value = "";
 
       document.getElementById("estadoAvanzado").value = "";
@@ -725,7 +710,7 @@
         !estadoActual.includes("COTIZADO") &&
         !estadoActual.includes("CERRADO")
       ) {
-        alert("Seleccione estado")
+        crmMensaje("Seleccione estado", "error")
         return
       }
 
@@ -738,7 +723,7 @@
         const motivo = document.getElementById("motivoPerdido").value
 
         if (!motivo || motivo.trim() === "") {
-          alert("Ingrese motivo de pérdida")
+          crmMensaje("Ingrese motivo de pérdida", "error")
           return
         }
 
@@ -756,16 +741,16 @@
           .then(r => r.json())
           .then(resp => {
             if (resp.ok) {
-              document.getElementById("msgOk").style.display = "block"
+              crmMensaje("Se guardó la pérdida correctamente.", "success")
               setTimeout(() => buscar(), 1200)
             } else {
-              alert(resp.msg || "No se pudo guardar")
+              crmMensaje(resp.msg || "No se pudo guardar", "error")
             }
           })
 
           .catch(error => {
             console.error("Error al guardar pérdida:", error);
-            alert("Error de conexión al guardar la pérdida");
+            crmMensaje("Error de conexión al guardar la pérdida", "error");
           })
           .finally(() => {
             crmEstadoGuardado(false);
@@ -783,7 +768,7 @@
 
         const numCot = document.getElementById("listaCotizaciones").value || document.getElementById("numCot").value
         if (!numCot || numCot === "") {
-          alert("Seleccione cotización")
+          crmMensaje("Seleccione cotización", "error")
           document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
           document.querySelector(".btnGuardar").disabled = false
           return
@@ -793,7 +778,7 @@
         const monedaOV = document.getElementById("monedaOV").value
 
         if (!numCot || numCot === "NEW" || !numOV || !montoOV || !monedaOV) {
-          alert("Complete datos de cierre")
+          crmMensaje("Complete datos de cierre", "error")
           document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
           document.querySelector(".btnGuardar").disabled = false
           return
@@ -822,7 +807,7 @@
           .then(r => r.json())
           .then(resp => {
             if (resp.ok) {
-              document.getElementById("msgOk").style.display = "block"
+              crmMensaje("Se guardó la orden de venta correctamente.", "success")
               setTimeout(() => {
                 document.getElementById("estado").innerHTML = ""
                 document.getElementById("listaCotizaciones").value = ""
@@ -840,7 +825,7 @@
 
           .catch(error => {
             console.error("Error al guardar OV:", error);
-            alert("Error de conexión al guardar la orden de venta");
+            crmMensaje("Error de conexión al guardar la orden de venta", "error");
           })
           .finally(() => {
             crmEstadoGuardado(false);
@@ -865,7 +850,7 @@
         let montoLimpio = monto.replace(",", ".").trim()
 
         if (isNaN(montoLimpio) || montoLimpio === "") {
-          alert("Monto inválido")
+          crmMensaje("Monto inválido", "error")
 
           document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
           document.querySelector(".btnGuardar").disabled = false
@@ -889,7 +874,7 @@
         }
 
         if (!cotFinal) {
-          alert("Número de cotización inválido")
+          crmMensaje("Número de cotización inválido", "error")
 
           document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
           document.querySelector(".btnGuardar").disabled = false
@@ -906,7 +891,7 @@
         })
 
         if (!cotFinal || !moneda || montoLimpio === "" || montoLimpio === null || isNaN(montoLimpio)) {
-          alert("Complete datos cotización")
+          crmMensaje("Complete datos cotización", "error")
 
           document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
           document.querySelector(".btnGuardar").disabled = false
@@ -944,7 +929,7 @@
               document.getElementById("bloqueCotizacion").style.display = "none"
               document.getElementById("bloqueGestionCot").style.display = "block"
 
-              document.getElementById("msgOk").style.display = "block"
+              crmMensaje("Se guardó la cotización correctamente.", "success")
 
               // REFRESH SOLO SECCIÓN
               setTimeout(() => {
@@ -952,13 +937,13 @@
                 buscar()
               }, 1500)
             } else {
-              alert(resp.msg || "No se pudo guardar")
+              crmMensaje(resp.msg || "No se pudo guardar", "error")
             }
           })
 
           .catch(error => {
             console.error("Error al guardar cotización:", error);
-            alert("Error al guardar cotización");
+            crmMensaje("Error al guardar cotización", "error");
           })
           .finally(() => {
             crmEstadoGuardado(false);
@@ -1008,7 +993,7 @@
         .then(r => r.json())
         .then(resp => {
           if (resp && resp.ok) {
-            document.getElementById("msgOk").style.display = "block"
+            crmMensaje("Se guardó la atención correctamente.", "success")
             document.getElementById("bloqueCotizacion").style.display = "none"
             document.getElementById("bloqueGestionCot").style.display = "block"
 
@@ -1020,12 +1005,12 @@
             }
           }
           else {
-            alert(resp.msg || "No se pudo guardar")
+            crmMensaje(resp.msg || "No se pudo guardar", "error")
           }
         })
         .catch(error => {
           console.error("Error al guardar atención:", error);
-          alert("Error de conexión al guardar la atención");
+          crmMensaje("Error de conexión al guardar la atención", "error");
         })
         .finally(() => {
           crmEstadoGuardado(false);
@@ -1049,8 +1034,6 @@
       document.getElementById("zonaGestion").style.display = "none"
       document.getElementById("info").style.display = "none"
       document.getElementById("estado").innerHTML = ""
-      document.getElementById("msgOk").style.display = "none"
-
       window.historialLead = []
       window.dataOVs = {}
 
