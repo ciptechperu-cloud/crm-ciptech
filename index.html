@@ -425,6 +425,23 @@
 
     let crmBuscando = false;
 
+    let crmGuardando = false;
+
+    function crmEstadoGuardado(activo) {
+      const boton = document.querySelector(".btnGuardar");
+
+      crmGuardando = activo;
+      boton.disabled = activo;
+      boton.textContent = activo ? "Guardando..." : "Guardar Cambios";
+
+      if (activo) {
+        crmMensaje(
+          "Guardando los cambios. No cierres esta ventana.",
+          "info"
+        );
+      }
+    }
+
     function crmMensaje(texto, tipo = "info") {
       const elemento = document.getElementById("crmStatus");
 
@@ -682,6 +699,8 @@
     //GUARDAR CAMBIOS
     function guardar() {
 
+      if (crmGuardando) return;
+
       const id = leadActivo
 
       const asesor = document.getElementById("asesor").value
@@ -723,6 +742,8 @@
           return
         }
 
+        crmEstadoGuardado(true);
+
         fetch(URL, {
           method: "POST",
           body: JSON.stringify({
@@ -741,6 +762,14 @@
               alert(resp.msg || "No se pudo guardar")
             }
           })
+
+          .catch(error => {
+            console.error("Error al guardar pérdida:", error);
+            alert("Error de conexión al guardar la pérdida");
+          })
+          .finally(() => {
+            crmEstadoGuardado(false);
+          });
 
         return
       }
@@ -776,6 +805,7 @@
           ? selOV
           : document.getElementById("numOV").value
 
+        crmEstadoGuardado(true);
 
         fetch(URL, {
           method: "POST",
@@ -791,8 +821,6 @@
         })
           .then(r => r.json())
           .then(resp => {
-            document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-            document.querySelector(".btnGuardar").disabled = false
             if (resp.ok) {
               document.getElementById("msgOk").style.display = "block"
               setTimeout(() => {
@@ -809,6 +837,14 @@
             }
             console.log(resp)
           })
+
+          .catch(error => {
+            console.error("Error al guardar OV:", error);
+            alert("Error de conexión al guardar la orden de venta");
+          })
+          .finally(() => {
+            crmEstadoGuardado(false);
+          });
 
         return
       }
@@ -886,6 +922,8 @@
           tipoMonto: typeof montoLimpio
         })
 
+        crmEstadoGuardado(true);
+
         //-----Estado Cotizado------
         fetch(URL, {
           method: "POST",
@@ -900,9 +938,6 @@
         })
           .then(r => r.json())
           .then(resp => {
-
-            document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-            document.querySelector(".btnGuardar").disabled = false
 
             if (resp.ok) {
 
@@ -921,17 +956,16 @@
             }
           })
 
-          .catch(() => {
-            alert("Error al guardar cotización")
-            document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-            document.querySelector(".btnGuardar").disabled = false
+          .catch(error => {
+            console.error("Error al guardar cotización:", error);
+            alert("Error al guardar cotización");
           })
+          .finally(() => {
+            crmEstadoGuardado(false);
+          });
 
         return
       }
-
-      document.querySelector(".btnGuardar").innerText = "Guardando..."
-      document.querySelector(".btnGuardar").disabled = true
 
       //----- Estado perdido
 
@@ -960,6 +994,8 @@
         return
       }
 
+      crmEstadoGuardado(true);
+
       fetch(URL, {
         method: "POST",
         body: JSON.stringify({
@@ -976,8 +1012,6 @@
             document.getElementById("bloqueCotizacion").style.display = "none"
             document.getElementById("bloqueGestionCot").style.display = "block"
 
-            document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-            document.querySelector(".btnGuardar").disabled = false
             // SI ES ATENDIDO → REFRESH APP
             if (estadoFinal == "ATENDIDO") {
               setTimeout(() => {
@@ -989,11 +1023,13 @@
             alert(resp.msg || "No se pudo guardar")
           }
         })
-        .catch(() => {
-          alert("Error conexión")
-          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-          document.querySelector(".btnGuardar").disabled = false
+        .catch(error => {
+          console.error("Error al guardar atención:", error);
+          alert("Error de conexión al guardar la atención");
         })
+        .finally(() => {
+          crmEstadoGuardado(false);
+        });
 
     }
 
