@@ -466,6 +466,41 @@
       }
     }
 
+    function limpiarDatosLead() {
+      leadActivo = null;
+      window.historialLead = [];
+      window.dataOVs = {};
+
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("zonaGestion").style.display = "none";
+      document.getElementById("info").style.display = "none";
+      document.getElementById("info").innerHTML = "";
+      document.getElementById("infoLead").innerHTML = "";
+      document.getElementById("estado").innerHTML = "";
+
+      document.getElementById("listaCotizaciones").innerHTML = "";
+      document.getElementById("listaOV").innerHTML = "";
+      document.getElementById("monedaCot").value = "";
+      document.getElementById("montoCot").value = "";
+      document.getElementById("numCot").value = "";
+      document.getElementById("monedaOV").value = "";
+      document.getElementById("montoOV").value = "";
+      document.getElementById("numOV").value = "";
+      document.getElementById("motivoPerdido").value = "";
+      document.getElementById("estadoPostCot").value = "";
+      document.getElementById("estadoAvanzado").value = "";
+      document.getElementById("estadoInicial").value = "";
+      document.getElementById("asesor").value = "";
+
+      document.getElementById("bloqueCotizacion").style.display = "none";
+      document.getElementById("bloqueGestionCot").style.display = "none";
+      document.getElementById("bloqueOV").style.display = "none";
+      document.getElementById("bloquePerdido").style.display = "none";
+      document.getElementById("estadoPostCot").style.display = "none";
+
+      crmMensaje("");
+    }
+
     //FUNCIÓN BUSCAR - CONSULTA DE LEADS
 
     function buscar() {
@@ -480,6 +515,7 @@
         return;
       }
 
+      limpiarDatosLead();
       crmEstadoBusqueda(true);
       document.getElementById("loader").style.display = "block";
 
@@ -1030,6 +1066,7 @@
 
     function nuevaBusqueda() {
 
+      limpiarDatosLead()
       leadActivo = null
 
       document.getElementById("idLead").readOnly = false
