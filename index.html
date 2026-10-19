@@ -428,6 +428,11 @@
       }
     }
 
+    function crmCancelarGuardado(mensaje) {
+      crmEstadoGuardado(false);
+      crmMensaje(mensaje, "error");
+    }
+
     function crmMensaje(texto, tipo = "info") {
       const elemento = document.getElementById("crmStatus");
 
@@ -689,6 +694,13 @@
       const id = leadActivo
 
       const asesor = document.getElementById("asesor").value
+
+      if (!asesor || !asesor.trim()) {
+        crmCancelarGuardado("Seleccione un asesor antes de guardar.")
+        document.getElementById("asesor").focus()
+        return
+      }
+
       const estadoInicial = document.getElementById("estadoInicial").value
       const estadoAvanzado = document.getElementById("estadoAvanzado").value
 
@@ -710,7 +722,7 @@
         !estadoActual.includes("COTIZADO") &&
         !estadoActual.includes("CERRADO")
       ) {
-        crmMensaje("Seleccione estado", "error")
+        crmCancelarGuardado("Seleccione estado")
         return
       }
 
@@ -723,7 +735,7 @@
         const motivo = document.getElementById("motivoPerdido").value
 
         if (!motivo || motivo.trim() === "") {
-          crmMensaje("Ingrese motivo de pérdida", "error")
+          crmCancelarGuardado("Ingrese motivo de pérdida")
           return
         }
 
@@ -768,9 +780,7 @@
 
         const numCot = document.getElementById("listaCotizaciones").value || document.getElementById("numCot").value
         if (!numCot || numCot === "") {
-          crmMensaje("Seleccione cotización", "error")
-          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-          document.querySelector(".btnGuardar").disabled = false
+          crmCancelarGuardado("Seleccione cotización")
           return
         }
         const numOV = document.getElementById("numOV").value
@@ -778,9 +788,7 @@
         const monedaOV = document.getElementById("monedaOV").value
 
         if (!numCot || numCot === "NEW" || !numOV || !montoOV || !monedaOV) {
-          crmMensaje("Complete datos de cierre", "error")
-          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-          document.querySelector(".btnGuardar").disabled = false
+          crmCancelarGuardado("Complete datos de cierre")
           return
         }
 
@@ -850,10 +858,7 @@
         let montoLimpio = monto.replace(",", ".").trim()
 
         if (isNaN(montoLimpio) || montoLimpio === "") {
-          crmMensaje("Monto inválido", "error")
-
-          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-          document.querySelector(".btnGuardar").disabled = false
+          crmCancelarGuardado("Monto inválido")
 
           return
         }
@@ -874,10 +879,7 @@
         }
 
         if (!cotFinal) {
-          crmMensaje("Número de cotización inválido", "error")
-
-          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-          document.querySelector(".btnGuardar").disabled = false
+          crmCancelarGuardado("Número de cotización inválido")
 
           return
         }
@@ -891,10 +893,7 @@
         })
 
         if (!cotFinal || !moneda || montoLimpio === "" || montoLimpio === null || isNaN(montoLimpio)) {
-          crmMensaje("Complete datos cotización", "error")
-
-          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-          document.querySelector(".btnGuardar").disabled = false
+          crmCancelarGuardado("Complete datos cotización")
 
           return
         }
@@ -961,9 +960,7 @@
 
         if (estadoPostFinal !== "COTIZADO" && estadoPostFinal !== "CERRADO") {
 
-          document.querySelector(".btnGuardar").innerText = "Guardar Cambios"
-          document.querySelector(".btnGuardar").disabled = false
-
+          crmCancelarGuardado("La acción no es válida para el estado actual del lead.")
           console.warn("Bloqueado flujo ATENDER innecesario")
           return
         }
@@ -975,6 +972,7 @@
         estadoActual.includes("COTIZADO") ||
         estadoActual.includes("CERRADO")
       ) {
+        crmCancelarGuardado("El lead ya fue gestionado y no puede volver a atenderse.")
         console.warn("ATENDER BLOQUEADO (ya gestionado)")
         return
       }
