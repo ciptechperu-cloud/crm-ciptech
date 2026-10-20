@@ -47,6 +47,31 @@
       border-color: #a32424 !important;
     }
 
+    .modo-cotizacion {
+      display: none;
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #edf3fb;
+      color: #123E7A;
+      text-align: left;
+    }
+
+    .modo-cotizacion[data-modo="nueva"] {
+      background: #ecf8e9;
+      color: #256a29;
+    }
+
+    .modo-cotizacion strong,
+    .modo-cotizacion span {
+      display: block;
+    }
+
+    .modo-cotizacion span {
+      margin-top: 3px;
+      font-size: 13px;
+    }
+
     select {
       width: 100%;
       padding: 14px;
@@ -386,6 +411,11 @@
         <!-- CAMPOS PARA COTIZACIÓN -->
         <div id="bloqueCotizacion" class="campo" style="display:none">
 
+          <div id="modoCotizacion" class="modo-cotizacion" aria-live="polite">
+            <strong id="modoCotizacionTitulo"></strong>
+            <span id="modoCotizacionDetalle"></span>
+          </div>
+
           <label class="campo-label" for="monedaCot">Moneda de cotización</label>
           <select id="monedaCot">
             <option value="">Tipo Moneda</option>
@@ -518,6 +548,14 @@
       document.getElementById(id).focus();
     }
 
+    function crmModoCotizacion(modo, titulo = "", detalle = "") {
+      const contenedor = document.getElementById("modoCotizacion");
+      document.getElementById("modoCotizacionTitulo").textContent = titulo;
+      document.getElementById("modoCotizacionDetalle").textContent = detalle;
+      contenedor.dataset.modo = modo;
+      contenedor.style.display = modo ? "block" : "none";
+    }
+
     function crmMensaje(texto, tipo = "info") {
       const elemento = document.getElementById("crmStatus");
 
@@ -573,6 +611,7 @@
       document.getElementById("bloqueOV").style.display = "none";
       document.getElementById("bloquePerdido").style.display = "none";
       document.getElementById("bloqueEstadoPostCot").style.display = "none";
+      crmModoCotizacion("");
 
       crmMensaje("");
     }
@@ -701,6 +740,7 @@
 
       document.getElementById("asesor").value = data.asesor || ""
       document.getElementById("motivoPerdido").value = ""
+      crmModoCotizacion("")
 
       // 🔴 PRIORIDAD ABSOLUTA: PERDIDO
       estado = data.estado
@@ -1237,6 +1277,7 @@
 
           document.getElementById("bloqueCotizacion").style.display = "block"
           document.getElementById("bloqueGestionCot").style.display = "block"
+          crmModoCotizacion("")
 
           const sel = document.getElementById("listaCotizaciones")
           sel.innerHTML = ""
@@ -1268,6 +1309,7 @@
 
           document.getElementById("bloqueCotizacion").style.display = "none"
           document.getElementById("bloqueGestionCot").style.display = "none"
+          crmModoCotizacion("")
 
           document.getElementById("bloquePerdido").style.display = "block"
 
@@ -1275,6 +1317,7 @@
           document.getElementById("bloqueCotizacion").style.display = "none"
           document.getElementById("bloqueGestionCot").style.display = "none"
           document.getElementById("bloquePerdido").style.display = "none"
+          crmModoCotizacion("")
         }
 
       })
@@ -1320,6 +1363,7 @@
         document.getElementById("monedaCot").value = ""
         document.getElementById("montoCot").value = ""
         document.getElementById("numCot").value = ""
+        crmModoCotizacion("")
 
         return
       }
@@ -1335,6 +1379,11 @@
         document.getElementById("montoCot").value = ""
         document.getElementById("numCot").value = ""
         document.getElementById("numCot").readOnly = false
+        crmModoCotizacion(
+          "nueva",
+          "Nueva cotización",
+          "Ingresa el número, la moneda y el monto para crearla."
+        )
 
         // estado SIEMPRE al final
         document.getElementById("bloqueEstadoPostCot").style.display = "block"
@@ -1354,6 +1403,11 @@
           document.getElementById("montoCot").value = cot.montoCot || ""
           document.getElementById("numCot").value = cot.numCot || ""
           document.getElementById("numCot").readOnly = true
+          crmModoCotizacion(
+            "edicion",
+            "Editar cotización existente",
+            "Cotización " + cot.numCot + ": actualiza moneda o monto."
+          )
 
           // estado al final
           document.getElementById("bloqueEstadoPostCot").style.display = "block"
