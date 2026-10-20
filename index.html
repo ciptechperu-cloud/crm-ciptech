@@ -335,6 +335,26 @@
       font-size: 12px;
       font-weight: 700;
     }
+.lead-resumen-estado[data-estado="SIN_GESTIONAR"] {
+  background: #e5e7eb;
+  color: #374151;
+}
+.lead-resumen-estado[data-estado="ATENDIDO"] {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.lead-resumen-estado[data-estado="COTIZADO"] {
+  background: #fef3c7;
+  color: #92400e;
+}
+.lead-resumen-estado[data-estado="CERRADO"] {
+  background: #dcfce7;
+  color: #166534;
+}
+.lead-resumen-estado[data-estado="PERDIDO"] {
+  background: #fee2e2;
+  color: #b91c1c;
+}
 
     button:disabled {
       opacity: 0.68;
@@ -609,10 +629,17 @@
       contenedor.style.display = modo ? "block" : "none";
     }
 
-    function actualizarResumenLead(lead) {
+function normalizarEstadoChip(estado) {
+  return String(estado || "").trim().toUpperCase().replace(/\s+/g, "_");
+}
+
+function actualizarResumenLead(lead) {
       document.getElementById("leadResumenId").textContent = lead.id || "-";
       document.getElementById("leadResumenEmpresa").textContent = lead.empresa || "-";
-      document.getElementById("leadResumenEstado").textContent = lead.estado || "-";
+  const chipEstado = document.getElementById("leadResumenEstado");
+  const estado = lead.estado || "-";
+  chipEstado.textContent = estado;
+  chipEstado.dataset.estado = normalizarEstadoChip(estado);
       document.getElementById("leadResumen").style.display = "block";
     }
 
@@ -620,7 +647,9 @@
       document.getElementById("leadResumen").style.display = "none";
       document.getElementById("leadResumenId").textContent = "";
       document.getElementById("leadResumenEmpresa").textContent = "";
-      document.getElementById("leadResumenEstado").textContent = "";
+  const chipEstado = document.getElementById("leadResumenEstado");
+  chipEstado.textContent = "";
+  chipEstado.removeAttribute("data-estado");
     }
 
     function crmMensaje(texto, tipo = "info") {
