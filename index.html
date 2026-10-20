@@ -35,6 +35,18 @@
       text-align: left;
     }
 
+    .field-error {
+      margin: -2px 0 8px;
+      color: #a32424;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    [aria-invalid="true"] {
+      border-color: #a32424 !important;
+    }
+
     select {
       width: 100%;
       padding: 14px;
@@ -466,6 +478,46 @@
       crmMensaje(mensaje, "error");
     }
 
+    function crmMostrarErrorCampo(id, mensaje) {
+      const campo = document.getElementById(id);
+      const errorId = "error-" + id;
+      let error = document.getElementById(errorId);
+
+      if (!error) {
+        error = document.createElement("div");
+        error.id = errorId;
+        error.className = "field-error";
+        campo.insertAdjacentElement("afterend", error);
+      }
+
+      error.textContent = mensaje;
+      campo.setAttribute("aria-invalid", "true");
+      campo.setAttribute("aria-describedby", errorId);
+    }
+
+    function crmLimpiarErrorCampo(id) {
+      const campo = document.getElementById(id);
+      const error = document.getElementById("error-" + id);
+
+      if (error) error.remove();
+      if (campo) {
+        campo.removeAttribute("aria-invalid");
+        campo.removeAttribute("aria-describedby");
+      }
+    }
+
+    function crmLimpiarErroresCampos() {
+      document.querySelectorAll(".field-error").forEach(error => {
+        crmLimpiarErrorCampo(error.id.replace("error-", ""));
+      });
+    }
+
+    function crmCancelarPorCampo(id, mensaje) {
+      crmEstadoGuardado(false);
+      crmMostrarErrorCampo(id, mensaje);
+      document.getElementById(id).focus();
+    }
+
     function crmMensaje(texto, tipo = "info") {
       const elemento = document.getElementById("crmStatus");
 
@@ -776,13 +828,14 @@
 
       if (crmGuardando) return;
 
+      crmLimpiarErroresCampos()
+
       const id = leadActivo
 
       const asesor = document.getElementById("asesor").value
 
       if (!asesor || !asesor.trim()) {
-        crmCancelarGuardado("Seleccione un asesor antes de guardar.")
-        document.getElementById("asesor").focus()
+        crmCancelarPorCampo("asesor", "Seleccione un asesor antes de guardar.")
         return
       }
 
@@ -807,7 +860,10 @@
         !estadoActual.includes("COTIZADO") &&
         !estadoActual.includes("CERRADO")
       ) {
-        crmCancelarGuardado("Seleccione estado")
+        const campoEstado = estadoActual.includes("SIN GESTIONAR")
+          ? "estadoInicial"
+          : "estadoAvanzado"
+        crmCancelarPorCampo(campoEstado, "Seleccione un estado.")
         return
       }
 
@@ -820,7 +876,7 @@
         const motivo = document.getElementById("motivoPerdido").value
 
         if (!motivo || motivo.trim() === "") {
-          crmCancelarGuardado("Ingrese motivo de pérdida")
+          crmCancelarPorCampo("motivoPerdido", "Ingrese el motivo de pérdida.")
           return
         }
 
@@ -865,15 +921,30 @@
 
         const numCot = document.getElementById("listaCotizaciones").value || document.getElementById("numCot").value
         if (!numCot || numCot === "") {
-          crmCancelarGuardado("Seleccione cotización")
+          crmCancelarPorCampo("listaCotizaciones", "Seleccione una cotización.")
           return
         }
         const numOV = document.getElementById("numOV").value
         const montoOV = document.getElementById("montoOV").value
         const monedaOV = document.getElementById("monedaOV").value
 
-        if (!numCot || numCot === "NEW" || !numOV || !montoOV || !monedaOV) {
-          crmCancelarGuardado("Complete datos de cierre")
+        if (!numCot || numCot === "NEW") {
+          crmCancelarPorCampo("listaCotizaciones", "Seleccione una cotización para el cierre.")
+          return
+        }
+
+        if (!numOV) {
+          crmCancelarPorCampo("numOV", "Ingrese el número de orden de venta.")
+          return
+        }
+
+        if (!montoOV) {
+          crmCancelarPorCampo("montoOV", "Ingrese el monto de cierre.")
+          return
+        }
+
+        if (!monedaOV) {
+          crmCancelarPorCampo("monedaOV", "Seleccione la moneda de la orden de venta.")
           return
         }
 
@@ -943,7 +1014,7 @@
         let montoLimpio = monto.replace(",", ".").trim()
 
         if (isNaN(montoLimpio) || montoLimpio === "") {
-          crmCancelarGuardado("Monto inválido")
+          crmCancelarPorCampo("montoCot", "Ingrese un monto de cotización válido.")
 
           return
         }
@@ -964,7 +1035,7 @@
         }
 
         if (!cotFinal) {
-          crmCancelarGuardado("Número de cotización inválido")
+          crmCancelarPorCampo("numCot", "Ingrese un número de cotización válido.")
 
           return
         }
@@ -978,7 +1049,12 @@
         })
 
         if (!cotFinal || !moneda || montoLimpio === "" || montoLimpio === null || isNaN(montoLimpio)) {
-          crmCancelarGuardado("Complete datos cotización")
+          const campoCotizacion = !cotFinal
+            ? "numCot"
+            : !moneda
+              ? "monedaCot"
+              : "montoCot"
+          crmCancelarPorCampo(campoCotizacion, "Complete este campo para guardar la cotización.")
 
           return
         }
@@ -1399,6 +1475,13 @@
         }
 
       })
+
+    const eventosDeCampo = ["input", "change"]
+    eventosDeCampo.forEach(evento => {
+      document.addEventListener(evento, function (e) {
+        if (e.target.id) crmLimpiarErrorCampo(e.target.id)
+      })
+    })
 
   </script>
 
