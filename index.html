@@ -674,7 +674,8 @@
           <input id="montoCot" placeholder="Monto de Cotización">
 
           <label class="campo-label" for="numCot">N.º de cotización</label>
-          <input id="numCot" placeholder="N° de Cotización">
+          <input id="numCot" type="text" inputmode="numeric" autocomplete="off"
+            maxlength="6" pattern="[0-9]{6}" placeholder="N.º de cotización (6 dígitos)">
 
         </div>
 
@@ -703,7 +704,8 @@
           <label class="campo-label" for="montoOV">Monto de cierre</label>
           <input id="montoOV" placeholder="Monto de Cierre">
           <label class="campo-label" for="numOV">N.º de orden de venta</label>
-          <input id="numOV" placeholder="N° Orden de Venta">
+          <input id="numOV" type="text" inputmode="numeric" autocomplete="off"
+            maxlength="5" pattern="[0-9]{5}" placeholder="N.º de orden de venta (5 dígitos)">
         </div>
 
 
@@ -839,6 +841,17 @@ function actualizarResumenLead(lead) {
     function formatearTiempoConsulta(milisegundos) {
       if (milisegundos < 1000) return Math.round(milisegundos) + " ms";
       return (milisegundos / 1000).toFixed(1).replace(".", ",") + " s";
+    }
+
+    function esIdentificadorNumerico(valor, longitud) {
+      return new RegExp("^\\d{" + longitud + "}$").test(String(valor || "").trim());
+    }
+
+    function limitarCampoANumeros(id, longitud) {
+      const campo = document.getElementById(id);
+      campo.addEventListener("input", function () {
+        campo.value = campo.value.replace(/\D/g, "").slice(0, longitud);
+      });
     }
 
     function crmMensajeConTiempoDeGuardado(mensaje, tipo, inicioGuardado) {
@@ -1293,21 +1306,17 @@ function actualizarResumenLead(lead) {
       if (estadoPost == "CERRADO") {
 
         const numCot = document.getElementById("listaCotizaciones").value || document.getElementById("numCot").value
-        if (!numCot || numCot === "") {
-          crmCancelarPorCampo("listaCotizaciones", "Seleccione una cotización.")
-          return
-        }
         const numOV = document.getElementById("numOV").value
         const montoOV = document.getElementById("montoOV").value
         const monedaOV = document.getElementById("monedaOV").value
 
-        if (!numCot || numCot === "NEW") {
-          crmCancelarPorCampo("listaCotizaciones", "Seleccione una cotización para el cierre.")
+        if (!esIdentificadorNumerico(numCot, 6)) {
+          crmCancelarPorCampo("listaCotizaciones", "Seleccione una cotización válida de 6 dígitos.")
           return
         }
 
-        if (!numOV) {
-          crmCancelarPorCampo("numOV", "Ingrese el número de orden de venta.")
+        if (!esIdentificadorNumerico(numOV, 5)) {
+          crmCancelarPorCampo("numOV", "Ingrese un N.º de orden de venta de 5 dígitos.")
           return
         }
 
@@ -1409,8 +1418,9 @@ function actualizarResumenLead(lead) {
           cotFinal = numCot.trim()
         }
 
-        if (!cotFinal) {
-          crmCancelarPorCampo("numCot", "Ingrese un número de cotización válido.")
+        if (!esIdentificadorNumerico(cotFinal, 6)) {
+          const campoCotizacion = selCot && selCot !== "NEW" ? "listaCotizaciones" : "numCot"
+          crmCancelarPorCampo(campoCotizacion, "Ingrese un N.º de cotización de 6 dígitos.")
 
           return
         }
@@ -1854,6 +1864,9 @@ function actualizarResumenLead(lead) {
       }
 
     })
+
+    limitarCampoANumeros("numCot", 6)
+    limitarCampoANumeros("numOV", 5)
 
     document.getElementById("idLead")
       .addEventListener("keypress", function (e) {
