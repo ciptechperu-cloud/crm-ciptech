@@ -292,6 +292,46 @@
       color: #256a29;
     }
 
+    .lead-resumen {
+      display: none;
+      position: sticky;
+      top: 10px;
+      z-index: 2;
+      margin: 14px 0;
+      padding: 10px 12px;
+      border: 1px solid #b7cce7;
+      border-radius: 12px;
+      background: #f5f9ff;
+      color: #123E7A;
+      box-shadow: 0 4px 12px rgba(18, 62, 122, .12);
+      text-align: left;
+    }
+
+    .lead-resumen-principal {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 8px;
+    }
+
+    .lead-resumen-id,
+    .lead-resumen-empresa {
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .lead-resumen-empresa {
+      font-weight: 700;
+    }
+
+    .lead-resumen-estado {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #dceafa;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
     button:disabled {
       opacity: 0.68;
       cursor: wait;
@@ -346,6 +386,15 @@
       </div>
 
       <div id="crmStatus" class="crm-status" role="status" aria-live="polite"></div>
+
+      <div id="leadResumen" class="lead-resumen" aria-live="polite">
+        <div class="lead-resumen-principal">
+          <span id="leadResumenId" class="lead-resumen-id"></span>
+          <span aria-hidden="true">·</span>
+          <span id="leadResumenEmpresa" class="lead-resumen-empresa"></span>
+          <span id="leadResumenEstado" class="lead-resumen-estado"></span>
+        </div>
+      </div>
 
       <div id="info" class="box"></div>
       <div id="estado" class="estado"></div>
@@ -474,6 +523,7 @@
     const URL = "https://script.google.com/macros/s/AKfycbxLeAdRYsXPRmqvVGM6zoQIaydArRWuGKJg1GFo9BGqorFI0RFMOBEW48hb0XEmlemayA/exec";
 
     let leadActivo = null
+    let estadoLeadActivo = ""
 
     let crmBuscando = false;
 
@@ -556,6 +606,20 @@
       contenedor.style.display = modo ? "block" : "none";
     }
 
+    function actualizarResumenLead(lead) {
+      document.getElementById("leadResumenId").textContent = lead.id || "-";
+      document.getElementById("leadResumenEmpresa").textContent = lead.empresa || "-";
+      document.getElementById("leadResumenEstado").textContent = lead.estado || "-";
+      document.getElementById("leadResumen").style.display = "block";
+    }
+
+    function limpiarResumenLead() {
+      document.getElementById("leadResumen").style.display = "none";
+      document.getElementById("leadResumenId").textContent = "";
+      document.getElementById("leadResumenEmpresa").textContent = "";
+      document.getElementById("leadResumenEstado").textContent = "";
+    }
+
     function crmMensaje(texto, tipo = "info") {
       const elemento = document.getElementById("crmStatus");
 
@@ -584,6 +648,7 @@
       leadActivo = null;
       window.historialLead = [];
       window.dataOVs = {};
+      limpiarResumenLead();
 
       document.getElementById("loader").style.display = "none";
       document.getElementById("zonaGestion").style.display = "none";
@@ -591,6 +656,8 @@
       document.getElementById("info").innerHTML = "";
       document.getElementById("infoLead").innerHTML = "";
       document.getElementById("estado").innerHTML = "";
+      document.getElementById("estado").style.display = "none";
+      estadoLeadActivo = "";
 
       document.getElementById("listaCotizaciones").innerHTML = "";
       document.getElementById("listaOV").innerHTML = "";
@@ -688,10 +755,10 @@
           // INFORMACIÓN DEL LEAD
           document.getElementById("info").style.display = "block";
           document.getElementById("info").innerHTML =
-            "Empresa: " + data.lead.empresa +
-            "<br>RUC: " + data.lead.ruc +
+            "RUC: " + data.lead.ruc +
             "<br>Teléfono: " + data.lead.telefono +
-            "<br>Origen: " + (data.lead.origen || "-");
+            "<br>Origen: " + (data.lead.origen || "-") +
+            "<br>Asesor: " + (data.asesor || "-");
 
           pintarLead(data);
 
@@ -722,6 +789,12 @@
       document.getElementById("zonaGestion").style.display = "block"
 
       let estado = data.estado
+      estadoLeadActivo = estado
+      actualizarResumenLead({
+        id: data.lead.id,
+        empresa: data.lead.empresa,
+        estado: estado
+      })
 
       const camposComerciales = [
         "bloqueAsesor",
@@ -790,9 +863,8 @@
 
       }
 
-      document.getElementById("estado").innerHTML =
-        "Estado Actual: <b>" + estado + "</b><br>" +
-        "Asesor: <b>" + (data.asesor || "-") + "</b>"
+      document.getElementById("estado").innerHTML = ""
+      document.getElementById("estado").style.display = "none"
 
       document.getElementById("bloqueAsesor").style.display = "none"
       document.getElementById("bloqueEstadoInicial").style.display = "none"
@@ -892,7 +964,7 @@
         estadoFinal = "COTIZADO"
       }
 
-      const estadoActual = document.getElementById("estado").innerText
+      const estadoActual = estadoLeadActivo
 
       // Solo exigir estado si NO está ya en COTIZADO
       if (
