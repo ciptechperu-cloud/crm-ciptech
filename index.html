@@ -91,6 +91,22 @@
       resize: vertical;
     }
 
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: 3px solid #7ED957;
+      outline-offset: 3px;
+      border-color: #123E7A;
+      box-shadow: 0 0 0 1px #123E7A;
+    }
+
+    [aria-invalid="true"]:focus-visible {
+      outline-color: #d35b5b;
+      border-color: #a32424;
+      box-shadow: 0 0 0 1px #a32424;
+    }
+
     .campo input + .campo-label,
     .campo select + .campo-label {
       margin-top: 14px;
