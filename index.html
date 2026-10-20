@@ -26,6 +26,15 @@
       margin-top: 14px;
     }
 
+    .campo-label {
+      display: block;
+      margin: 0 0 6px;
+      color: #123E7A;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: left;
+    }
+
     select {
       width: 100%;
       padding: 14px;
@@ -289,6 +298,7 @@
       </button>
 
       <!-- COLOCAR ID DEL LEAD -->
+      <label class="campo-label" for="idLead">ID del lead</label>
       <input id="idLead" placeholder="ID Lead">
 
       <!-- BOTON DE BUSCAR LEAD -->
@@ -309,6 +319,7 @@
         <div class="boxInfo" id="infoLead"></div>
 
         <div id="bloqueAsesor" class="campo">
+          <label class="campo-label" for="asesor">Asesor</label>
           <select id="asesor">
             <option value="">Seleccionar Asesor</option>
             <option>Herson Zevallos</option>
@@ -335,6 +346,7 @@
         </div>
 
         <div id="bloqueEstadoInicial" class="campo">
+          <label class="campo-label" for="estadoInicial">Estado inicial</label>
           <select id="estadoInicial">
             <option value="">Seleccionar Estado</option>
             <option>ATENDIDO</option>
@@ -343,6 +355,7 @@
 
         <!-- DROPDOWN DESPUES DE ATENCIÓN -->
         <div id="bloqueEstadoAvanzado" class="campo">
+          <label class="campo-label" for="estadoAvanzado">Siguiente acción</label>
           <select id="estadoAvanzado">
             <option value="">Seleccionar Estado</option>
             <option>COTIZADO</option>
@@ -353,6 +366,7 @@
         <!-- DROPDOWN DESPUES DE COTIZACIÓN -->
         <div id="bloqueGestionCot" class="campo" style="display:none">
 
+          <label class="campo-label" for="listaCotizaciones">N.º de cotización</label>
           <select id="listaCotizaciones"></select>
 
         </div>
@@ -360,37 +374,47 @@
         <!-- CAMPOS PARA COTIZACIÓN -->
         <div id="bloqueCotizacion" class="campo" style="display:none">
 
+          <label class="campo-label" for="monedaCot">Moneda de cotización</label>
           <select id="monedaCot">
             <option value="">Tipo Moneda</option>
             <option>PEN</option>
             <option>USD</option>
           </select>
 
+          <label class="campo-label" for="montoCot">Monto de cotización</label>
           <input id="montoCot" placeholder="Monto de Cotización">
 
+          <label class="campo-label" for="numCot">N.º de cotización</label>
           <input id="numCot" placeholder="N° de Cotización">
 
         </div>
 
-        <select id="estadoPostCot">
-          <option value="">Seleccionar Estado</option>
-          <option>CERRADO</option>
-          <option>PERDIDO</option>
-        </select>
+        <div id="bloqueEstadoPostCot" class="campo" style="display:none">
+          <label class="campo-label" for="estadoPostCot">Resultado comercial</label>
+          <select id="estadoPostCot">
+            <option value="">Seleccionar Estado</option>
+            <option>CERRADO</option>
+            <option>PERDIDO</option>
+          </select>
+        </div>
 
         <div id="bloquePerdido" class="campo" style="display:none">
+          <label class="campo-label" for="motivoPerdido">Motivo de pérdida</label>
           <textarea id="motivoPerdido" placeholder="Motivo de pérdida"
             style="width:100%;padding:14px;border-radius:14px;border:2px solid #444;font-size:15px;"></textarea>
         </div>
 
         <div id="bloqueOV" class="campo" style="display:none">
           <select id="listaOV" style="display:none"></select>
+          <label class="campo-label" for="monedaOV">Moneda de la orden de venta</label>
           <select id="monedaOV">
             <option value="">Tipo Moneda</option>
             <option>PEN</option>
             <option>USD</option>
           </select>
+          <label class="campo-label" for="montoOV">Monto de cierre</label>
           <input id="montoOV" placeholder="Monto de Cierre">
+          <label class="campo-label" for="numOV">N.º de orden de venta</label>
           <input id="numOV" placeholder="N° Orden de Venta">
         </div>
 
@@ -496,7 +520,7 @@
       document.getElementById("bloqueGestionCot").style.display = "none";
       document.getElementById("bloqueOV").style.display = "none";
       document.getElementById("bloquePerdido").style.display = "none";
-      document.getElementById("estadoPostCot").style.display = "none";
+      document.getElementById("bloqueEstadoPostCot").style.display = "none";
 
       crmMensaje("");
     }
@@ -604,11 +628,27 @@
 
     function pintarLead(data) {
 
-      document.getElementById("estadoPostCot").style.display = "none"
-      document.getElementById("bloqueGestionCot").style.display = "none"
       document.getElementById("zonaGestion").style.display = "block"
 
       let estado = data.estado
+
+      const camposComerciales = [
+        "bloqueAsesor",
+        "bloqueEstadoInicial",
+        "bloqueEstadoAvanzado",
+        "bloqueGestionCot",
+        "bloqueCotizacion",
+        "bloqueEstadoPostCot",
+        "bloquePerdido",
+        "bloqueOV"
+      ]
+
+      camposComerciales.forEach(id => {
+        document.getElementById(id).style.display = "none"
+      })
+
+      document.getElementById("asesor").value = data.asesor || ""
+      document.getElementById("motivoPerdido").value = ""
 
       // 🔴 PRIORIDAD ABSOLUTA: PERDIDO
       estado = data.estado
@@ -686,7 +726,7 @@
 
         document.getElementById("bloqueEstadoAvanzado").style.display = "block" // 👈 CLAVE
 
-        document.getElementById("estadoPostCot").style.display = "none"
+        document.getElementById("bloqueEstadoPostCot").style.display = "none"
         document.getElementById("bloqueGestionCot").style.display = "none"
         document.getElementById("bloqueCotizacion").style.display = "none"
 
@@ -694,7 +734,7 @@
 
       if (estado == "COTIZADO" || estado == "CERRADO") {
 
-        document.getElementById("estadoPostCot").style.display = "block"
+        document.getElementById("bloqueEstadoPostCot").style.display = "block"
         document.getElementById("bloqueGestionCot").style.display = "block"
 
         if (estado == "COTIZADO") {
@@ -1105,7 +1145,7 @@
       document.getElementById("bloqueGestionCot").style.display = "none"
       document.getElementById("bloqueOV").style.display = "none"
       document.getElementById("bloquePerdido").style.display = "none"
-      document.getElementById("estadoPostCot").style.display = "none"
+      document.getElementById("bloqueEstadoPostCot").style.display = "none"
 
       document.getElementById("idLead").focus()
 
@@ -1197,7 +1237,7 @@
 
         // ✅ SOLO ocultar inputs
         document.getElementById("bloqueCotizacion").style.display = "none"
-        document.getElementById("estadoPostCot").style.display = "block"
+        document.getElementById("bloqueEstadoPostCot").style.display = "block"
         document.getElementById("bloqueOV").style.display = "none"
 
         // limpiar campos
@@ -1209,7 +1249,7 @@
       }
 
       // reset
-      document.getElementById("estadoPostCot").style.display = "none"
+      document.getElementById("bloqueEstadoPostCot").style.display = "none"
 
       if (num == "NEW") {
 
@@ -1221,7 +1261,7 @@
         document.getElementById("numCot").readOnly = false
 
         // estado SIEMPRE al final
-        document.getElementById("estadoPostCot").style.display = "block"
+        document.getElementById("bloqueEstadoPostCot").style.display = "block"
 
         return
       }
@@ -1240,7 +1280,7 @@
           document.getElementById("numCot").readOnly = true
 
           // estado al final
-          document.getElementById("estadoPostCot").style.display = "block"
+          document.getElementById("bloqueEstadoPostCot").style.display = "block"
 
           // ===== CARGAR OVS AUTOMÁTICAMENTE =====
           const selOV = document.getElementById("listaOV")
@@ -1310,7 +1350,7 @@
 
       if (estado === "COTIZADO") {
 
-        document.getElementById("estadoPostCot").style.display = "none"
+        document.getElementById("bloqueEstadoPostCot").style.display = "none"
 
         document.getElementById("bloqueGestionCot").style.display = "block"
         document.getElementById("bloqueCotizacion").style.display = "block"
