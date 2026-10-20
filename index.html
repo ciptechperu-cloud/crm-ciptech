@@ -902,6 +902,23 @@ function actualizarResumenLead(lead) {
       aviso.style.display = "block";
     }
 
+    function reiniciarDependenciasDeCotizacion() {
+      document.getElementById("estadoPostCot").value = "";
+      document.getElementById("bloqueEstadoPostCot").style.display = "none";
+      document.getElementById("bloqueOV").style.display = "none";
+      document.getElementById("bloquePerdido").style.display = "none";
+
+      const listaOV = document.getElementById("listaOV");
+      listaOV.innerHTML = "";
+      listaOV.style.display = "none";
+
+      document.getElementById("monedaOV").value = "";
+      document.getElementById("montoOV").value = "";
+      document.getElementById("numOV").value = "";
+      document.getElementById("numOV").readOnly = false;
+      ocultarValoresSugeridosOV();
+    }
+
     function crmMensajeConTiempoDeGuardado(mensaje, tipo, inicioGuardado) {
       const texto = String(mensaje || "").replace(/[.\s]+$/, "");
       const conector = tipo === "success" ? " en " : " tras ";
@@ -1740,6 +1757,7 @@ function actualizarResumenLead(lead) {
     document.getElementById("listaCotizaciones").addEventListener("change", function () {
 
       const num = this.value
+      reiniciarDependenciasDeCotizacion()
 
       // 🔥 SI ESTÁ EN DEFAULT → OCULTAR TODO
       if (num === "") {
@@ -1749,7 +1767,7 @@ function actualizarResumenLead(lead) {
 
         // ✅ SOLO ocultar inputs
         document.getElementById("bloqueCotizacion").style.display = "none"
-        document.getElementById("bloqueEstadoPostCot").style.display = "block"
+        document.getElementById("bloqueEstadoPostCot").style.display = "none"
         document.getElementById("bloqueOV").style.display = "none"
 
         // limpiar campos
@@ -1780,8 +1798,8 @@ function actualizarResumenLead(lead) {
           "Ingresa el número, la moneda y el monto para crearla."
         )
 
-        // estado SIEMPRE al final
-        document.getElementById("bloqueEstadoPostCot").style.display = "block"
+        // Una cotización nueva debe guardarse antes de elegir su resultado comercial.
+        document.getElementById("bloqueEstadoPostCot").style.display = "none"
 
         return
       }
