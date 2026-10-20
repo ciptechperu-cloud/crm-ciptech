@@ -204,6 +204,60 @@
       margin-top: 24px;
     }
 
+    #zonaGestion {
+      margin-top: 18px;
+      text-align: left;
+    }
+
+    .seccion-contexto,
+    .seccion-gestion {
+      padding: 18px;
+      border-radius: 16px;
+    }
+
+    .seccion-contexto {
+      background: #f4f7fb;
+      border: 1px solid #d7e2f0;
+    }
+
+    .seccion-gestion {
+      margin-top: 18px;
+      border: 1px solid #dfe5ec;
+      background: #fff;
+      box-shadow: 0 6px 16px rgba(18, 62, 122, .07);
+    }
+
+    .seccion-encabezado {
+      margin-bottom: 14px;
+    }
+
+    .seccion-titulo {
+      margin: 0;
+      color: #123E7A;
+      font-size: 18px;
+      line-height: 1.3;
+    }
+
+    .seccion-ayuda {
+      margin: 4px 0 0;
+      color: #596b82;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .seccion-contexto .box {
+      margin-top: 0;
+      text-align: left;
+    }
+
+    .seccion-gestion .campo:first-of-type {
+      margin-top: 0;
+    }
+
+    .seccion-gestion .btnGuardar {
+      margin-bottom: 0;
+    }
+
     #btnBuscarLead {
       margin-top: 16px;
     }
@@ -420,13 +474,24 @@
         </div>
       </div>
 
-      <div id="info" class="box"></div>
-      <div id="estado" class="estado"></div>
-
       <!-- DESPLEGABLES -->
       <div id="zonaGestion" style="display:none">
 
-        <div class="boxInfo" id="infoLead"></div>
+        <section class="seccion-contexto" aria-labelledby="tituloDatosLead">
+          <div class="seccion-encabezado">
+            <h3 id="tituloDatosLead" class="seccion-titulo">Datos del lead</h3>
+            <p class="seccion-ayuda">Información de referencia para esta gestión.</p>
+          </div>
+          <div id="info" class="box"></div>
+          <div id="estado" class="estado"></div>
+          <div class="boxInfo" id="infoLead"></div>
+        </section>
+
+        <section class="seccion-gestion" aria-labelledby="tituloRegistrarGestion">
+          <div class="seccion-encabezado">
+            <h3 id="tituloRegistrarGestion" class="seccion-titulo">Registrar gestión</h3>
+            <p class="seccion-ayuda">Selecciona la acción y completa únicamente los datos necesarios.</p>
+          </div>
 
         <div id="bloqueAsesor" class="campo">
           <label class="campo-label" for="asesor">Asesor</label>
@@ -535,6 +600,7 @@
 
 
         <button class="btnGuardar" onclick="guardar()">Guardar Cambios</button>
+        </section>
       </div>
 
     </div>
