@@ -726,6 +726,7 @@
     let crmBuscando = false;
 
     let crmGuardando = false;
+    let crmRecargaPendiente = null;
 
     function crmEstadoGuardado(activo) {
       const boton = document.querySelector(".btnGuardar");
@@ -904,9 +905,35 @@ function actualizarResumenLead(lead) {
       crmMensaje("");
     }
 
+    function cancelarRecargaLead() {
+      if (crmRecargaPendiente !== null) {
+        clearTimeout(crmRecargaPendiente);
+        crmRecargaPendiente = null;
+      }
+    }
+
+    function programarRecargaLead(esperaMs = 1200, antesDeRecargar) {
+      const idProgramado = leadActivo;
+      if (!idProgramado) return;
+
+      cancelarRecargaLead();
+
+      crmRecargaPendiente = setTimeout(() => {
+        crmRecargaPendiente = null;
+
+        const idEnCampo = document.getElementById("idLead").value.trim();
+        if (crmBuscando || leadActivo !== idProgramado || idEnCampo !== idProgramado) return;
+
+        if (typeof antesDeRecargar === "function") antesDeRecargar();
+        buscar(true);
+      }, esperaMs);
+    }
+
     //FUNCIÓN BUSCAR - CONSULTA DE LEADS
 
-    function buscar() {
+    function buscar(esRecargaProgramada = false) {
+
+      if (!esRecargaProgramada) cancelarRecargaLead();
 
       if (crmBuscando) return;
 
@@ -1241,7 +1268,7 @@ function actualizarResumenLead(lead) {
           .then(resp => {
             if (resp.ok) {
               crmMensajeConTiempoDeGuardado("Se guardó la pérdida correctamente", "success", inicioGuardado)
-              setTimeout(() => buscar(), 1200)
+              programarRecargaLead(1200)
             } else {
               crmMensajeConTiempoDeGuardado(resp.msg || "No se pudo guardar la pérdida", "error", inicioGuardado)
             }
@@ -1319,7 +1346,7 @@ function actualizarResumenLead(lead) {
           .then(resp => {
             if (resp.ok) {
               crmMensajeConTiempoDeGuardado("Se guardó la orden de venta correctamente", "success", inicioGuardado)
-              setTimeout(() => {
+              programarRecargaLead(1500, () => {
                 document.getElementById("estado").innerHTML = ""
                 document.getElementById("listaCotizaciones").value = ""
                 document.getElementById("estadoPostCot").value = ""
@@ -1328,8 +1355,7 @@ function actualizarResumenLead(lead) {
                 document.getElementById("numOV").value = ""
                 document.getElementById("montoOV").value = ""
                 document.getElementById("monedaOV").value = ""
-                buscar()
-              }, 1500)
+              })
             } else {
               crmMensajeConTiempoDeGuardado(resp.msg || "No se pudo guardar la orden de venta", "error", inicioGuardado)
             }
@@ -1442,10 +1468,9 @@ function actualizarResumenLead(lead) {
               crmMensajeConTiempoDeGuardado("Se guardó la cotización correctamente", "success", inicioGuardado)
 
               // REFRESH SOLO SECCIÓN
-              setTimeout(() => {
+              programarRecargaLead(1500, () => {
                 document.getElementById("listaCotizaciones").value = ""
-                buscar()
-              }, 1500)
+              })
             } else {
               crmMensajeConTiempoDeGuardado(resp.msg || "No se pudo guardar la cotización", "error", inicioGuardado)
             }
@@ -1533,6 +1558,7 @@ function actualizarResumenLead(lead) {
 
     function nuevaBusqueda() {
 
+      cancelarRecargaLead()
       limpiarDatosLead()
       leadActivo = null
 
