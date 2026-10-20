@@ -1532,11 +1532,9 @@ function actualizarResumenLead(lead) {
             document.getElementById("bloqueCotizacion").style.display = "none"
             document.getElementById("bloqueGestionCot").style.display = "block"
 
-            // SI ES ATENDIDO → REFRESH APP
+            // Mantener el lead abierto y recargar su estado actualizado.
             if (estadoFinal == "ATENDIDO") {
-              setTimeout(() => {
-                nuevaBusqueda()
-              }, 1200)
+              programarRecargaLead(1200)
             }
           }
           else {
