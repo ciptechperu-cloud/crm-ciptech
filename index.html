@@ -280,17 +280,20 @@
 
     .btn-mini {
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 18px;
+      right: 18px;
       background: #1f4e8c;
       color: #fff;
       border: none;
-      padding: 6px 10px;
-      border-radius: 10px;
-      font-size: 11px;
+      min-height: 38px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
       cursor: pointer;
       display: none;
       line-height: 1.2;
+      box-shadow: 0 3px 8px rgba(18, 62, 122, .2);
     }
 
     .btn-mini {
@@ -552,8 +555,9 @@
       <div class="t2">MKT Ciptech</div>
 
       <!-- BOTON NUEVA BUSQUEDA -->
-      <button id="btnBuscarMini" onclick="nuevaBusqueda()" class="btn-mini">
-        Buscar Lead
+      <button id="btnBuscarMini" onclick="nuevaBusqueda()" class="btn-mini"
+        aria-label="Iniciar una nueva búsqueda de lead" title="Limpiar el lead actual y buscar otro">
+        <span aria-hidden="true">↻</span> Nueva búsqueda
       </button>
 
       <!-- COLOCAR ID DEL LEAD -->
