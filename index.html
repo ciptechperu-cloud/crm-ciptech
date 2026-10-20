@@ -72,6 +72,18 @@
       font-size: 13px;
     }
 
+    .ov-valores-sugeridos {
+      display: none;
+      margin: 0 0 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #edf3fb;
+      color: #123E7A;
+      font-size: 13px;
+      line-height: 1.4;
+      text-align: left;
+    }
+
     input,
     select,
     textarea {
@@ -694,6 +706,7 @@
         </div>
 
         <div id="bloqueOV" class="campo" style="display:none">
+          <div id="ovValoresSugeridos" class="ov-valores-sugeridos" aria-live="polite"></div>
           <select id="listaOV" style="display:none"></select>
           <label class="campo-label" for="monedaOV">Moneda de la orden de venta</label>
           <select id="monedaOV">
@@ -852,6 +865,41 @@ function actualizarResumenLead(lead) {
       campo.addEventListener("input", function () {
         campo.value = campo.value.replace(/\D/g, "").slice(0, longitud);
       });
+    }
+
+    function ocultarValoresSugeridosOV() {
+      const aviso = document.getElementById("ovValoresSugeridos");
+      aviso.textContent = "";
+      aviso.style.display = "none";
+    }
+
+    function sugerirValoresOVDesdeCotizacion() {
+      const numCot = document.getElementById("listaCotizaciones").value;
+      const listaOV = document.getElementById("listaOV");
+      const ovExistenteSeleccionada = listaOV.value && listaOV.value !== "NEW";
+
+      if (!numCot || numCot === "NEW" || ovExistenteSeleccionada) {
+        ocultarValoresSugeridosOV();
+        return;
+      }
+
+      const cotizacion = (window.historialLead || []).find(registro =>
+        String(registro.numCot).trim() === String(numCot).trim()
+      );
+
+      if (!cotizacion) {
+        ocultarValoresSugeridosOV();
+        return;
+      }
+
+      document.getElementById("monedaOV").value = cotizacion.monedaCot || "";
+      document.getElementById("montoOV").value = cotizacion.montoCot || "";
+      document.getElementById("numOV").value = "";
+      document.getElementById("numOV").readOnly = false;
+
+      const aviso = document.getElementById("ovValoresSugeridos");
+      aviso.textContent = "Valores sugeridos desde la cotización " + numCot + ". Puedes modificarlos para esta orden de venta.";
+      aviso.style.display = "block";
     }
 
     function crmMensajeConTiempoDeGuardado(mensaje, tipo, inicioGuardado) {
@@ -1709,6 +1757,7 @@ function actualizarResumenLead(lead) {
         document.getElementById("montoCot").value = ""
         document.getElementById("numCot").value = ""
         crmModoCotizacion("")
+        ocultarValoresSugeridosOV()
 
         return
       }
@@ -1719,6 +1768,7 @@ function actualizarResumenLead(lead) {
       if (num == "NEW") {
 
         document.getElementById("bloqueCotizacion").style.display = "block"
+        ocultarValoresSugeridosOV()
 
         document.getElementById("monedaCot").value = ""
         document.getElementById("montoCot").value = ""
@@ -1789,6 +1839,7 @@ function actualizarResumenLead(lead) {
           }
           if (document.getElementById("estadoPostCot").value === "CERRADO") {
             document.getElementById("bloqueOV").style.display = "block"
+            sugerirValoresOVDesdeCotizacion()
           }
         }
 
@@ -1804,6 +1855,7 @@ function actualizarResumenLead(lead) {
         document.getElementById("bloquePerdido").style.display = "none"
       }
       document.getElementById("bloqueOV").style.display = "none"
+      if (estado !== "CERRADO") ocultarValoresSugeridosOV()
       if (this.value === "CERRADO") {
         document.getElementById("bloqueEstadoAvanzado").style.display = "none"
       }
@@ -1812,6 +1864,7 @@ function actualizarResumenLead(lead) {
 
         document.getElementById("bloqueCotizacion").style.display = "none"
         document.getElementById("bloqueOV").style.display = "block"
+        sugerirValoresOVDesdeCotizacion()
 
       }
 
@@ -1820,6 +1873,7 @@ function actualizarResumenLead(lead) {
         document.getElementById("bloqueCotizacion").style.display = "none"
         document.getElementById("bloqueOV").style.display = "none"
         document.getElementById("bloquePerdido").style.display = "block"
+        ocultarValoresSugeridosOV()
 
       }
 
@@ -1831,6 +1885,7 @@ function actualizarResumenLead(lead) {
         document.getElementById("bloqueCotizacion").style.display = "block"
         document.getElementById("bloqueOV").style.display = "none"
         document.getElementById("bloquePerdido").style.display = "none"
+        ocultarValoresSugeridosOV()
 
       }
 
@@ -1841,11 +1896,7 @@ function actualizarResumenLead(lead) {
       const numOV = this.value
 
       if (!numOV || numOV == "NEW") {
-
-        document.getElementById("monedaOV").value = ""
-        document.getElementById("montoOV").value = ""
-        document.getElementById("numOV").value = ""
-        document.getElementById("numOV").readOnly = false
+        sugerirValoresOVDesdeCotizacion()
         return
 
       }
@@ -1860,6 +1911,7 @@ function actualizarResumenLead(lead) {
         document.getElementById("montoOV").value = ov.montoOV || ""
         document.getElementById("numOV").value = ov.numOV || ""
         document.getElementById("numOV").readOnly = true
+        ocultarValoresSugeridosOV()
 
       }
 
