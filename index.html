@@ -835,6 +835,20 @@ function actualizarResumenLead(lead) {
       elemento.style.display = texto ? "flex" : "none";
     }
 
+    function formatearTiempoConsulta(milisegundos) {
+      if (milisegundos < 1000) return Math.round(milisegundos) + " ms";
+      return (milisegundos / 1000).toFixed(1).replace(".", ",") + " s";
+    }
+
+    function crmMensajeConTiempoDeGuardado(mensaje, tipo, inicioGuardado) {
+      const texto = String(mensaje || "").replace(/[.\s]+$/, "");
+      const conector = tipo === "success" ? " en " : " tras ";
+      crmMensaje(
+        texto + conector + formatearTiempoConsulta(performance.now() - inicioGuardado) + ".",
+        tipo
+      );
+    }
+
     function crmEstadoBusqueda(activa) {
       crmBuscando = activa;
 
@@ -933,6 +947,8 @@ function actualizarResumenLead(lead) {
       document.getElementById("estadoInicial").value = "";
       document.getElementById("asesor").value = "";
 
+      const inicioConsulta = performance.now();
+
       fetch(URL + "?accion=consultar&id=" + encodeURIComponent(id))
 
         .then(r => {
@@ -943,7 +959,11 @@ function actualizarResumenLead(lead) {
         .then(data => {
 
           if (!data || !data.lead) {
-            crmMensaje("No se encontró un lead con el ID ingresado.", "error");
+            crmMensaje(
+              "No se encontró un lead con el ID ingresado. Consulta completada en " +
+              formatearTiempoConsulta(performance.now() - inicioConsulta) + ".",
+              "error"
+            );
             return;
           }
 
@@ -969,14 +989,20 @@ function actualizarResumenLead(lead) {
 
           pintarLead(data);
 
-          crmMensaje("Lead cargado correctamente.", "success");
+          crmMensaje(
+            "Lead cargado correctamente en " +
+            formatearTiempoConsulta(performance.now() - inicioConsulta) + ".",
+            "success"
+          );
 
         })
 
         .catch(error => {
           console.error("Error al consultar lead:", error);
           crmMensaje(
-            "No se pudo completar la búsqueda. Verifica tu conexión e inténtalo nuevamente.",
+            "No se pudo completar la búsqueda tras " +
+            formatearTiempoConsulta(performance.now() - inicioConsulta) +
+            ". Verifica tu conexión e inténtalo nuevamente.",
             "error"
           );
         })
@@ -1199,6 +1225,7 @@ function actualizarResumenLead(lead) {
           return
         }
 
+        const inicioGuardado = performance.now();
         crmEstadoGuardado(true);
 
         fetch(URL, {
@@ -1213,16 +1240,16 @@ function actualizarResumenLead(lead) {
           .then(r => r.json())
           .then(resp => {
             if (resp.ok) {
-              crmMensaje("Se guardó la pérdida correctamente.", "success")
+              crmMensajeConTiempoDeGuardado("Se guardó la pérdida correctamente", "success", inicioGuardado)
               setTimeout(() => buscar(), 1200)
             } else {
-              crmMensaje(resp.msg || "No se pudo guardar", "error")
+              crmMensajeConTiempoDeGuardado(resp.msg || "No se pudo guardar la pérdida", "error", inicioGuardado)
             }
           })
 
           .catch(error => {
             console.error("Error al guardar pérdida:", error);
-            crmMensaje("Error de conexión al guardar la pérdida", "error");
+            crmMensajeConTiempoDeGuardado("Error de conexión al guardar la pérdida", "error", inicioGuardado);
           })
           .finally(() => {
             crmEstadoGuardado(false);
@@ -1273,6 +1300,7 @@ function actualizarResumenLead(lead) {
           ? selOV
           : document.getElementById("numOV").value
 
+        const inicioGuardado = performance.now();
         crmEstadoGuardado(true);
 
         fetch(URL, {
@@ -1290,7 +1318,7 @@ function actualizarResumenLead(lead) {
           .then(r => r.json())
           .then(resp => {
             if (resp.ok) {
-              crmMensaje("Se guardó la orden de venta correctamente.", "success")
+              crmMensajeConTiempoDeGuardado("Se guardó la orden de venta correctamente", "success", inicioGuardado)
               setTimeout(() => {
                 document.getElementById("estado").innerHTML = ""
                 document.getElementById("listaCotizaciones").value = ""
@@ -1302,13 +1330,15 @@ function actualizarResumenLead(lead) {
                 document.getElementById("monedaOV").value = ""
                 buscar()
               }, 1500)
+            } else {
+              crmMensajeConTiempoDeGuardado(resp.msg || "No se pudo guardar la orden de venta", "error", inicioGuardado)
             }
             console.log(resp)
           })
 
           .catch(error => {
             console.error("Error al guardar OV:", error);
-            crmMensaje("Error de conexión al guardar la orden de venta", "error");
+            crmMensajeConTiempoDeGuardado("Error de conexión al guardar la orden de venta", "error", inicioGuardado);
           })
           .finally(() => {
             crmEstadoGuardado(false);
@@ -1386,6 +1416,7 @@ function actualizarResumenLead(lead) {
           tipoMonto: typeof montoLimpio
         })
 
+        const inicioGuardado = performance.now();
         crmEstadoGuardado(true);
 
         //-----Estado Cotizado------
@@ -1408,7 +1439,7 @@ function actualizarResumenLead(lead) {
               document.getElementById("bloqueCotizacion").style.display = "none"
               document.getElementById("bloqueGestionCot").style.display = "block"
 
-              crmMensaje("Se guardó la cotización correctamente.", "success")
+              crmMensajeConTiempoDeGuardado("Se guardó la cotización correctamente", "success", inicioGuardado)
 
               // REFRESH SOLO SECCIÓN
               setTimeout(() => {
@@ -1416,13 +1447,13 @@ function actualizarResumenLead(lead) {
                 buscar()
               }, 1500)
             } else {
-              crmMensaje(resp.msg || "No se pudo guardar", "error")
+              crmMensajeConTiempoDeGuardado(resp.msg || "No se pudo guardar la cotización", "error", inicioGuardado)
             }
           })
 
           .catch(error => {
             console.error("Error al guardar cotización:", error);
-            crmMensaje("Error al guardar cotización", "error");
+            crmMensajeConTiempoDeGuardado("Error al guardar cotización", "error", inicioGuardado);
           })
           .finally(() => {
             crmEstadoGuardado(false);
@@ -1457,6 +1488,7 @@ function actualizarResumenLead(lead) {
         return
       }
 
+      const inicioGuardado = performance.now();
       crmEstadoGuardado(true);
 
       fetch(URL, {
@@ -1471,7 +1503,7 @@ function actualizarResumenLead(lead) {
         .then(r => r.json())
         .then(resp => {
           if (resp && resp.ok) {
-            crmMensaje("Se guardó la atención correctamente.", "success")
+            crmMensajeConTiempoDeGuardado("Se guardó la atención correctamente", "success", inicioGuardado)
             document.getElementById("bloqueCotizacion").style.display = "none"
             document.getElementById("bloqueGestionCot").style.display = "block"
 
@@ -1483,12 +1515,12 @@ function actualizarResumenLead(lead) {
             }
           }
           else {
-            crmMensaje(resp.msg || "No se pudo guardar", "error")
+            crmMensajeConTiempoDeGuardado(resp.msg || "No se pudo guardar la atención", "error", inicioGuardado)
           }
         })
         .catch(error => {
           console.error("Error al guardar atención:", error);
-          crmMensaje("Error de conexión al guardar la atención", "error");
+          crmMensajeConTiempoDeGuardado("Error de conexión al guardar la atención", "error", inicioGuardado);
         })
         .finally(() => {
           crmEstadoGuardado(false);
