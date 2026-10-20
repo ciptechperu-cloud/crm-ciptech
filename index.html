@@ -472,19 +472,69 @@
 
     /* MOBILE FULL APP */
 
-    @media(max-width:480px) {
+    @media (min-width: 768px) {
+
+      .app {
+        padding: 40px 24px;
+      }
+
+      .card {
+        max-width: 900px;
+        padding: 36px 40px 42px;
+      }
+
+      .card > .campo-label,
+      #idLead,
+      #btnBuscarLead,
+      #crmStatus {
+        max-width: 520px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      #btnBuscarLead {
+        display: block;
+        margin-top: 16px;
+      }
+
+      #zonaGestion[style*="display: block"] {
+        display: grid !important;
+        grid-template-columns: minmax(250px, .85fr) minmax(0, 1.35fr);
+        gap: 22px;
+        align-items: start;
+      }
+
+      .seccion-gestion {
+        margin-top: 0;
+      }
+    }
+
+    @media (max-width: 767px) {
 
       .app {
         align-items: flex-start;
-        padding: 14px;
+        padding: 0;
       }
 
       .card {
         max-width: 100%;
-        min-height: 100vh;
+        min-height: 100dvh;
         border-radius: 0;
         box-shadow: none;
-        padding-top: 70px;
+        padding: 68px 18px calc(24px + env(safe-area-inset-bottom));
+      }
+
+      .seccion-contexto,
+      .seccion-gestion {
+        padding: 16px;
+      }
+
+      .lead-resumen {
+        top: 8px;
+      }
+
+      #zonaGestion {
+        margin-top: 16px;
       }
 
     }
